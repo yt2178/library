@@ -1,19 +1,24 @@
 package com.yt.myapplication;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int TOTAL_PAGES = 2000;
+    private static int TOTAL_PAGES = 0;
     private static final String TOTAL_PAGES_FILE_NAME = "total_pages";
     private FileManager m_fileManager;
     private int m_pagesLearned;
@@ -56,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-        Toast.makeText(this, "סיימת את ה1000 דף שלקחת על עצמך חזק וברוך", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "סיימת את ה"+TOTAL_PAGES+ "דף שלקחת על עצמך, חזק וברוך", Toast.LENGTH_SHORT).show();
     }
 
     public void onClickRemovePointButton(View view) {
@@ -69,18 +74,51 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.menu_history) {
+      if (menuItem.getItemId() == R.id.menu_About) {
+          startActivity(new Intent(this, About.class));
+      } if (menuItem.getItemId() == R.id.menu_history) {
             startActivity(new Intent(this, History.class));
         }else if (menuItem.getItemId() == R.id.menu_set_target){
             openSetTargetDialog();
         }
         return true;
     }
+    private void openSetTargetDialog(){
+        // יצירת דיאלוג
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("הגדר יעד דפים");
+        // יצירת הקלטת טקסט
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        builder.setView(input);
+        // הוספת כפתור OK
+        builder.setPositiveButton("אישור", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String target = input.getText().toString();
+                if (!target.isEmpty()){
+                    try {
+                        int targetPages = Integer.parseInt(target);
 
+                            TOTAL_PAGES = targetPages;  // עדכון יעד הדפים
+                            Toast.makeText(MainActivity.this, "היעד הוגדר בהצלחה!", Toast.LENGTH_LONG).show();
+                            updatePointsDisplay();  // עדכון התצוגה לאחר עדכון היעד
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(MainActivity.this, "אנא הזן מספר תקין", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+
+        builder.setNegativeButton("ביטול", null);
+
+        // הצגת הדיאלוג
+        builder.show();
+    }
 
     private void updatePointsDisplay() {
         this.m_textViewPagesLearned.setText(Integer.toString(this.m_pagesLearned));
-        this.m_textViewPagesRemaining.setText(Integer.toString(2000 - this.m_pagesLearned));
+        this.m_textViewPagesRemaining.setText(Integer.toString(TOTAL_PAGES - this.m_pagesLearned));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
