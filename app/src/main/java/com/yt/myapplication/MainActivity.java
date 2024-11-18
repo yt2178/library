@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    private static int TOTAL_PAGES = 0;
+    private static String TOTAL_PAGES = "לא הוגדר";
     private static final String TOTAL_PAGES_FILE_NAME = "total_pages";
     private FileManager m_fileManager;
     private int m_pagesLearned;
@@ -33,9 +33,15 @@ public class MainActivity extends AppCompatActivity {
         this.m_fileManager = new FileManager(this);
         try {
             String readInternalFile = this.m_fileManager.readInternalFile(TOTAL_PAGES_FILE_NAME);
-            this.m_pagesLearned = readInternalFile.length() == 0 ? 0 : Integer.parseInt(readInternalFile);
+            if (readInternalFile.length() == 0) {
+                TOTAL_PAGES = "לא הוגדר";  // אם אין קובץ או אם הוא ריק
+                this.m_pagesLearned = 0;
+            } else {
+                this.m_pagesLearned = Integer.parseInt(readInternalFile);
+            }
         } catch (IOException e) {
             Toast.makeText(this, "הקובץ לא נמצא!!!", Toast.LENGTH_SHORT).show();
+            TOTAL_PAGES = "לא הוגדר";  // אם קרתה שגיאה, היעד לא הוגדר
             this.m_pagesLearned = 0;
         }
         updatePointsDisplay();
@@ -51,17 +57,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickAddPointButton(View view) {
-        if (this.m_pagesLearned < TOTAL_PAGES) {
+        int totalPages = Integer.parseInt(TOTAL_PAGES);//vnr, x
+        if (this.m_pagesLearned < totalPages) {
             this.m_pagesLearned++;
             updatePointsDisplay();
 
             // בדיקה אם המשתמש השלים את כל הדפים
-            if (this.m_pagesLearned == TOTAL_PAGES) {
+            if (this.m_pagesLearned == totalPages) {
                 startActivity(new Intent(this, CongratulationsActivity.class));
             }
             return;
         }
-        Toast.makeText(this, "סיימת את ה"+TOTAL_PAGES+ "דף שלקחת על עצמך, חזק וברוך", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "סיימת את ה"+TOTAL_PAGES + "דף שלקחת על עצמך, חזק וברוך", Toast.LENGTH_SHORT).show();
     }
 
     public void onClickRemovePointButton(View view) {
@@ -99,17 +106,18 @@ public class MainActivity extends AppCompatActivity {
                 if (!target.isEmpty()){
                     try {
                         int targetPages = Integer.parseInt(target);
-
-                            TOTAL_PAGES = targetPages;  // עדכון יעד הדפים
+                            TOTAL_PAGES = Integer.toString(targetPages);  // עדכון יעד הדפים
                             Toast.makeText(MainActivity.this, "היעד הוגדר בהצלחה!", Toast.LENGTH_LONG).show();
                             updatePointsDisplay();  // עדכון התצוגה לאחר עדכון היעד
                     } catch (NumberFormatException e) {
                         Toast.makeText(MainActivity.this, "אנא הזן מספר תקין", Toast.LENGTH_SHORT).show();
                     }
-                }
+                }   else {
+                TOTAL_PAGES = "לא הוגדר"; // אם לא הוזן יעד, הצג "לא הוגדר"
+                updatePointsDisplay();  // עדכון התצוגה לאחר עדכון היעד
             }
-        });
-
+        }
+    });
         builder.setNegativeButton("ביטול", null);
 
         // הצגת הדיאלוג
@@ -118,7 +126,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void updatePointsDisplay() {
         this.m_textViewPagesLearned.setText(Integer.toString(this.m_pagesLearned));
-        this.m_textViewPagesRemaining.setText(Integer.toString(TOTAL_PAGES - this.m_pagesLearned));
+        if (TOTAL_PAGES.equals("לא הוגדר")){
+            this.m_textViewPagesRemaining.setText("לא הוגדר");
+        }else
+        this.m_textViewPagesRemaining.setText(Integer.toString(Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
