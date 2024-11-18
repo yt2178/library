@@ -57,20 +57,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickAddPointButton(View view) {
-        int totalPages = Integer.parseInt(TOTAL_PAGES);//vnr, x
-        if (this.m_pagesLearned < totalPages) {
+        if (TOTAL_PAGES.equals("לא הוגדר")) {
             this.m_pagesLearned++;
             updatePointsDisplay();
+        }else{
+            int totalPages = Integer.parseInt(TOTAL_PAGES);//המרת String ל- int
+            if (this.m_pagesLearned < totalPages) {
+                this.m_pagesLearned++;
+                updatePointsDisplay();
 
-            // בדיקה אם המשתמש השלים את כל הדפים
-            if (this.m_pagesLearned == totalPages) {
-                startActivity(new Intent(this, CongratulationsActivity.class));
+                // בדיקה אם המשתמש השלים את כל הדפים
+                if (this.m_pagesLearned == totalPages) {
+                    startActivity(new Intent(this, CongratulationsActivity.class));
+                }
+            } else {
+                Toast.makeText(this, "סיימת את ה" + TOTAL_PAGES + "דף שלקחת על עצמך, חזק וברוך", Toast.LENGTH_SHORT).show();
             }
-            return;
         }
-        Toast.makeText(this, "סיימת את ה"+TOTAL_PAGES + "דף שלקחת על עצמך, חזק וברוך", Toast.LENGTH_SHORT).show();
     }
-
     public void onClickRemovePointButton(View view) {
         if (this.m_pagesLearned > 0) {
             this.m_pagesLearned--;
