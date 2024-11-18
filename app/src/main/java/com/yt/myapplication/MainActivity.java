@@ -1,6 +1,7 @@
 package com.yt.myapplication;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -122,10 +124,22 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     });
-        builder.setNegativeButton("ביטול", null);
+        // הוספת כפתור Cancel
+        builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // וודא שהמקלדת לא תיפתח שוב אחרי ביטול
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+            }});
 
         // הצגת הדיאלוג
         builder.show();
+        // הבאת המוקד (פוקוס) לתוך ה-EditText
+        input.requestFocus();
+        // קריאה לפונקציה שתפתח את המקלדת אחרי שהדיאלוג יוצג
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
 
     private void updatePointsDisplay() {
