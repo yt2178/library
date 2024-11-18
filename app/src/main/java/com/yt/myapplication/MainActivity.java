@@ -126,12 +126,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void updatePointsDisplay() {
         this.m_textViewPagesLearned.setText(Integer.toString(this.m_pagesLearned));
-        if (TOTAL_PAGES.equals("לא הוגדר")){
+        if (TOTAL_PAGES.equals("לא הוגדר")) {
             this.m_textViewPagesRemaining.setText("לא הוגדר");
-        }else
-        this.m_textViewPagesRemaining.setText(Integer.toString(Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned));
+        } else {
+            this.m_textViewPagesRemaining.setText(Integer.toString(Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned));
+        }
     }
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
