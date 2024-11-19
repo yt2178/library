@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileManager {
     private final Context m_context;
@@ -79,7 +81,23 @@ public class FileManager {
     public void writeInternalFile(String str, String str2, boolean z) throws IOException {
         writeInternalFile(str, str2.getBytes(), z);
     }
-
+    public void appendToFile(String fileName, String data) throws IOException {
+        FileOutputStream outputStream = this.m_context.openFileOutput(fileName, Context.MODE_APPEND);
+        outputStream.write((data + "\n").getBytes());
+        outputStream.close();
+    }
+    // פונקציה לקריאת קובץ
+    public List<String> readFileLines(String fileName) throws IOException {
+        List<String> lines = new ArrayList<>();
+        FileInputStream inputStream = this.m_context.openFileInput(fileName);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        reader.close();
+        return lines;
+    }
     public boolean deleteInternalFile(String str) {
         return this.m_context.deleteFile(str);
     }

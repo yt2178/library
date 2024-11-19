@@ -6,23 +6,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
-        android:textSize="30.0sp"
+        android:textSize="20.0sp"
         android:textStyle="bold"
-        android:id="@+id/textViewDaf2"
-        android:background="#ff2fafe7"
+        android:id="@+id/textView2"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="28.0dip"
         android:layout_marginTop="4.0dip"
-        android:text="מספר הדפים שנשאר"
-        android:textAlignment="center"
+        android:text="בס''ד"
+        android:textAllCaps="true"
+        android:textAlignment="textStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPagesLearned" />
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:textSize="30.0sp"
         android:textStyle="bold"
-        android:id="@+id/textViewNumberPagesLearned"
+        android:id="@+id/textViewPagesLearned"
         android:background="#ff03a9f4"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -35,18 +35,34 @@
         app:layout_constraintTop_toTopOf="parent" />
     <TextView
         android:textSize="30.0sp"
-        android:id="@+id/textViewPagesLearned"
+        android:id="@+id/textViewNumberPagesLearned"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8.0dip"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPagesLearned" />
+
+    <TextView
+        android:textSize="30.0sp"
+        android:textStyle="bold"
+        android:id="@+id/textViewPagesRemaining"
+        android:background="#ff2fafe7"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4.0dip"
+        android:text="מספר הדפים שנשאר"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesLearned" />
+
     <TextView
         android:textSize="30.0sp"
-        android:id="@+id/textViewPagesRemaining"
+        android:id="@+id/textViewNumberPagesRemaining"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8.0dip"
@@ -54,7 +70,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDaf2" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewPagesRemaining" />
     <Button
         android:textStyle="bold"
         android:id="@+id/buttonAddPoint"
@@ -77,18 +93,5 @@
         android:textAlignment="center"
         app:backgroundTint="#ff3f51b5"
         app:layout_constraintTop_toBottomOf="@+id/buttonAddPoint" />
-    <TextView
-        android:textSize="20.0sp"
-        android:textStyle="bold"
-        android:id="@+id/textView2"
-        android:layout_width="fill_parent"
-        android:layout_height="28.0dip"
-        android:layout_marginTop="4.0dip"
-        android:text="בס''ד"
-        android:textAllCaps="true"
-        android:textAlignment="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

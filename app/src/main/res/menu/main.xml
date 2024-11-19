@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/ask_User_Name"
+        android:title="שם משתמש"/>
     <item
         android:id="@+id/menu_set_target"
         android:title="הגדר יעד דפים" />
@@ -14,4 +16,5 @@
     <item
         android:id="@+id/menu_About"
         android:title="אודות"/>
+
 </menu>
