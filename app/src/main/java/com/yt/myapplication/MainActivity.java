@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
-
+        checkIfUserNameExists();
         this.m_textViewPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
         this.m_textViewPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
