@@ -1,96 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <TextView
-        android:textSize="20.0sp"
-        android:textStyle="bold"
         android:id="@+id/textView2"
         android:layout_width="fill_parent"
         android:layout_height="28.0dip"
         android:layout_marginTop="4.0dip"
         android:text="בס''ד"
-        android:textAllCaps="true"
         android:textAlignment="textStart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <TextView
-        android:textSize="30.0sp"
+        android:textAllCaps="true"
+        android:textSize="20.0sp"
         android:textStyle="bold"
-        android:id="@+id/textViewPagesLearned"
-        android:background="#ff03a9f4"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40.0dip"
-        android:text="מספר הדפים שנלמדו"
-        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
-        android:textSize="30.0sp"
         android:id="@+id/textViewNumberPagesLearned"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8.0dip"
+        android:layout_marginTop="12dp"
+        android:background="#2196F3"
         android:textAlignment="center"
+        android:textSize="30.0sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPagesLearned" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
-        android:textSize="30.0sp"
-        android:textStyle="bold"
-        android:id="@+id/textViewPagesRemaining"
-        android:background="#ff2fafe7"
+        android:id="@+id/textViewNumberPagesRemaining"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4.0dip"
-        android:text="מספר הדפים שנשאר"
+        android:layout_marginTop="12dp"
+        android:background="#2196F3"
         android:textAlignment="center"
+        android:textSize="30.0sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesLearned" />
 
-    <TextView
-        android:textSize="30.0sp"
-        android:id="@+id/textViewNumberPagesRemaining"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8.0dip"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPagesRemaining" />
     <Button
-        android:textStyle="bold"
         android:id="@+id/buttonAddPoint"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52.0dip"
-        android:text="הוסף עמוד שלמדת"
+        android:layout_marginTop="40dp"
         android:onClick="onClickAddPointButton"
+        android:text="הוסף עמוד שלמדת"
         android:textAlignment="center"
-        app:backgroundTint="#ff3f51b5"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPagesRemaining" />
-    <Button
+        android:textSize="16sp"
         android:textStyle="bold"
+        app:backgroundTint="#ff3f51b5"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesRemaining"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Button
         android:id="@+id/buttonRemovePoint"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12.0dip"
-        android:text="הסר עמוד שהוסף בטעות"
         android:onClick="onClickRemovePointButton"
+        android:text="הסר עמוד שהוסף בטעות"
         android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:backgroundTint="#ff3f51b5"
         app:layout_constraintTop_toBottomOf="@+id/buttonAddPoint" />
 

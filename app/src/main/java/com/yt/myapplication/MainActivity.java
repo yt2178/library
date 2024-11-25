@@ -24,7 +24,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static String TOTAL_PAGES = "לא הוגדר";// יעד הדפים שהמשתמש בחר (ברירת מחדל: "לא הוגדר")
-    private static final String TOTAL_PAGES_FILE_NAME = "user_data.txt";
+    private static final String TOTAL_PAGES_FILE_NAME = "user_data.shinantam";
     private FileManager m_fileManager; // אובייקט לניהול קבצים
     private int m_pagesLearned; // משתנה למעקב אחרי מספר הדפים שלמד המשתמש
     private TextView m_textViewPagesLearned; // תצוגת מספר הדפים שלמד
@@ -33,13 +33,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
-        checkIfUserNameExists();
+
         this.m_textViewPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
         this.m_textViewPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
         try {
             String readInternalFile = this.m_fileManager.readInternalFile(TOTAL_PAGES_FILE_NAME);// קריאת הקובץ
             if (readInternalFile.length() == 0) {//אם הקובץ ריק
+                this.m_fileManager.writeInternalFile(TOTAL_PAGES_FILE_NAME, "0", false);
                 TOTAL_PAGES = "לא הוגדר";  // אם אין קובץ או אם הוא ריק
                 this.m_pagesLearned = 0;
 
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             TOTAL_PAGES = "לא הוגדר";  // אם קרתה שגיאה, היעד לא הוגדר
             this.m_pagesLearned = 0;
         }
+        checkIfUserNameExists();
         updatePointsDisplay();
     }
 
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         try {
             this.m_fileManager.writeInternalFile(TOTAL_PAGES_FILE_NAME, Integer.toString(this.m_pagesLearned), false);
+
 
         } catch (IOException e) {
             Log.e("IOError", "could not best score");
@@ -74,27 +77,63 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String userName = input.getText().toString();
-                if (!userName.isEmpty()) {
+                // אם השם לא ריק, שומר את השם שהוזן
+                if (userName.isEmpty()) {
+                    userName = "בחור יקר";  // אם לא הוזן שם, הגדר שם ברירת מחדל
+                }
                     try {
-                        m_fileManager.appendToFile("total_pages.txt", "שם משתמש: " + userName);
-                        Toast.makeText(MainActivity.this, "שם המשתמש נשמר בהצלחה!", Toast.LENGTH_SHORT).show();
+                        // שמירת שם המשתמש לקובץ
+                        m_fileManager.appendToFile("total_pages.shinantam", "שם משתמש: " + userName);
+                        if (userName.equals("בחור יקר")) {
+                            Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(MainActivity.this, "שם המשתמש נשמר בהצלחה!", Toast.LENGTH_SHORT).show();
+                        }
                     } catch (IOException e) {
                         Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש.", Toast.LENGTH_SHORT).show();
                     }
+
+                // וודא שהמקלדת לא תיפתח שוב אחרי אישור
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
                 }
-            }
+
         });
 
-        builder.setNegativeButton("ביטול", null);
+        builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String userName = "בחור יקר";  // אם נלחץ על ביטול, הגדר את השם כ"בחור יקר"
+                try {
+                    m_fileManager.appendToFile("total_pages.shinantam", "שם משתמש: " + userName);
+                    Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש.", Toast.LENGTH_SHORT).show();
+                }
+                // וודא שהמקלדת לא תיפתח שוב אחרי ביטול
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+            }
+        });
         builder.show();
+        // הבאת המוקד (פוקוס) לתוך ה-EditText
+        input.requestFocus();
+        // קריאה לפונקציה שתפתח את המקלדת אחרי שהדיאלוג יוצג
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(input, InputMethodManager.SHOW_FORCED);
     }
 
     private void checkIfUserNameExists() {
         try {
-            List<String> lines = m_fileManager.readFileLines("total_pages.txt");
+            FileManager fileManager = new FileManager(this);  // יצירת האובייקט FileManager
+            List<String> lines = m_fileManager.readFileLines("total_pages.shinantam");
+            if (lines.isEmpty()) {
+                askUserName();
+                return;
+            }
             for (String line : lines) {
                 if (line.startsWith("שם משתמש: ")) {
-                    String userName = line.substring(12); // חותכים את "שם משתמש: "
+                    String userName = line.substring("שם משתמש: ".length()); // חתוך את "שם משתמש: " בלי לציין מספר קבוע
                     Toast.makeText(this, "ברוך הבא, " + userName + "!", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -116,16 +155,13 @@ public class MainActivity extends AppCompatActivity {
                 this.m_pagesLearned++;
                 updatePointsDisplay();
 
-                // עדכון מספר הדפים שנותרו
-                int pagesRemaining = totalPages - this.m_pagesLearned;
-                this.m_textViewPagesRemaining.setText(Integer.toString(pagesRemaining)); // עדכון תצוגה של דפים שנותרו
 
                 // בדיקה אם המשתמש השלים את כל הדפים
                 if (this.m_pagesLearned == totalPages) {
                     startActivity(new Intent(this, CongratulationsActivity.class));
                 }
             } else {
-                Toast.makeText(this, "סיימת את ה-" + TOTAL_PAGES + " דף שלקחת על עצמך, חזק וברוך!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "סיימת את ה-" + TOTAL_PAGES + " דף שלקחת על עצמך, חזק וברוך!", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -201,11 +237,12 @@ public class MainActivity extends AppCompatActivity {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
     }
     private void updatePointsDisplay() {
-        this.m_textViewPagesLearned.setText(Integer.toString(this.m_pagesLearned));
+        this.m_textViewPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
         if (TOTAL_PAGES.equals("לא הוגדר")) {
-            this.m_textViewPagesRemaining.setText("לא הוגדר");
+            this.m_textViewPagesRemaining.setText("מספר דפים שנלמדו: לא הוגדר");
         } else {
-            this.m_textViewPagesRemaining.setText(Integer.toString(Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned));
+            int remainingPages = Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned;
+            this.m_textViewPagesRemaining.setText("מספר דפים שנותרו: " + remainingPages);;
         }
     }
     public boolean onCreateOptionsMenu(Menu menu) {
