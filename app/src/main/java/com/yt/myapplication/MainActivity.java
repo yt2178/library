@@ -37,6 +37,15 @@ public class MainActivity extends AppCompatActivity {
         // מציב את ה-Toolbar כ-ActionBar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // חזרה לאחור - סגירת האקטיביטי הנוכחי
+                onBackPressed();
+            }
+        });
+
 
         this.m_textViewPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
         this.m_textViewPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
@@ -119,6 +128,20 @@ public class MainActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
             }
         });
+        // הוספת Listener במקרה של חזרה (Back) או ביטול הדיאלוג (למשל, לחיצה על כפתור חזור במכשיר)
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                String userName = "בחור יקר";  // הגדרת שם ברירת מחדל במקרה של ביטול הדיאלוג
+                try {
+                    m_fileManager.appendToFile("total_pages.shinantam", "שם משתמש: " + userName);
+                    Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         builder.show();
         // הבאת המוקד (פוקוס) לתוך ה-EditText
         input.requestFocus();
