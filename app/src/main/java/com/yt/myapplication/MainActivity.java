@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static String TOTAL_PAGES = "לא הוגדר";// יעד הדפים שהמשתמש בחר (ברירת מחדל: "לא הוגדר")
-    private static final String TOTAL_PAGES_FILE_NAME = "user_data.shinantam";
+    private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
     private FileManager m_fileManager; // אובייקט לניהול קבצים
     private int m_pagesLearned; // משתנה למעקב אחרי מספר הדפים שלמד המשתמש
     private TextView m_textViewPagesLearned; // תצוגת מספר הדפים שלמד
@@ -33,14 +34,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
+        // מציב את ה-Toolbar כ-ActionBar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         this.m_textViewPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
         this.m_textViewPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
         try {
-            String readInternalFile = this.m_fileManager.readInternalFile(TOTAL_PAGES_FILE_NAME);// קריאת הקובץ
+            String readInternalFile = this.m_fileManager.readInternalFile(TOTAL_USER_DATA_NAME);// קריאת הקובץ
             if (readInternalFile.length() == 0) {//אם הקובץ ריק
-                this.m_fileManager.writeInternalFile(TOTAL_PAGES_FILE_NAME, "0", false);
+                this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "0", false);
                 TOTAL_PAGES = "לא הוגדר";  // אם אין קובץ או אם הוא ריק
                 this.m_pagesLearned = 0;
 
@@ -59,8 +63,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         try {
-            this.m_fileManager.writeInternalFile(TOTAL_PAGES_FILE_NAME, Integer.toString(this.m_pagesLearned), false);
-
+            this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, Integer.toString(this.m_pagesLearned), false);
+            this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, Integer.toString(this.m_pagesLearned), false);
 
         } catch (IOException e) {
             Log.e("IOError", "could not best score");
@@ -174,19 +178,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Toast.makeText(this, "לא ניתן לרדת מתחת ל-0 דף!", Toast.LENGTH_SHORT).show();
     }
-
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-      if (menuItem.getItemId() == R.id.menu_About) {
-          startActivity(new Intent(this, About.class));
-      } if (menuItem.getItemId() == R.id.menu_history) {
-            startActivity(new Intent(this, History.class));
-        } if (menuItem.getItemId() == R.id.ask_User_Name) {
-            askUserName();
-        }else if (menuItem.getItemId() == R.id.menu_set_target){
-            openSetTargetDialog();
-        }
-        return true;
-    }
     private void openSetTargetDialog(){
         // יצירת דיאלוג
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -244,6 +235,20 @@ public class MainActivity extends AppCompatActivity {
             int remainingPages = Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned;
             this.m_textViewPagesRemaining.setText("מספר דפים שנותרו: " + remainingPages);;
         }
+    }
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == R.id.menu_settings) {
+            startActivity(new Intent(this, Settings.class));
+        } if (menuItem.getItemId() == R.id.menu_About) {
+            startActivity(new Intent(this, About.class));
+        } if (menuItem.getItemId() == R.id.menu_history) {
+            startActivity(new Intent(this, History.class));
+        } if (menuItem.getItemId() == R.id.ask_User_Name) {
+            askUserName();
+        }else if (menuItem.getItemId() == R.id.menu_set_target){
+            openSetTargetDialog();
+        }
+        return true;
     }
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
