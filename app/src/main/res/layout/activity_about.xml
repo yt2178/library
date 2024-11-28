@@ -34,4 +34,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </TextView>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="409dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="4dp"
+
+        android:elevation="4dp"
+        android:title="כותרת"
+        android:titleTextColor="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
