@@ -26,10 +26,11 @@
         android:id="@+id/textViewNumberPagesLearned"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="נלמדו"
         android:layout_marginTop="12dp"
         android:background="#7CB34E2C"
+        android:text="נלמדו"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="26.0sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +46,7 @@
         android:background="#7CB34E2C"
         android:text="נשאר"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="26.0sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,7 +94,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="#F8F6F6" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

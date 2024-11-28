@@ -31,6 +31,6 @@ public class Welcome extends AppCompatActivity {
                 startActivity(intent);
                 finish(); // לסיים את הקטיביטי הנוכחי כדי שלא יחזור אליו
             }
-        }, 3000); // 3000 מילישניות = 3 שניות
+        }, 2000); // 3000 מילישניות = 3 שניות
     }
 }

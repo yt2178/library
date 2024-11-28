@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 this.m_pagesLearned = Integer.parseInt(readInternalFile);//אם יש בקובץ מידע זה ממיר אותו למספר
             }
         } catch (IOException e) {
-            Toast.makeText(this, "הקובץ לא נמצא!!!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "!כניסה ראשונה, ברוכים הבאים", Toast.LENGTH_SHORT).show();
             TOTAL_PAGES = "לא הוגדר";  // אם קרתה שגיאה, היעד לא הוגדר
             this.m_pagesLearned = 0;
         }
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         try {
-            this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, Integer.toString(this.m_pagesLearned), false);
             this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, Integer.toString(this.m_pagesLearned), false);
 
         } catch (IOException e) {
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String userName = "בחור יקר";  // אם נלחץ על ביטול, הגדר את השם כ"בחור יקר"
                 try {
-                    m_fileManager.appendToFile("total_pages.shinantam", "שם משתמש: " + userName);
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "שם משתמש: " + userName, false);
                     Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש.", Toast.LENGTH_SHORT).show();
@@ -134,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCancel(DialogInterface dialog) {
                 String userName = "בחור יקר";  // הגדרת שם ברירת מחדל במקרה של ביטול הדיאלוג
                 try {
-                    m_fileManager.appendToFile("total_pages.shinantam", "שם משתמש: " + userName);
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "שם משתמש: " , false);
                     Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש.", Toast.LENGTH_SHORT).show();
@@ -153,8 +152,8 @@ public class MainActivity extends AppCompatActivity {
     private void checkIfUserNameExists() {
         try {
             FileManager fileManager = new FileManager(this);  // יצירת האובייקט FileManager
-            List<String> lines = m_fileManager.readFileLines("total_pages.shinantam");
-            if (lines.isEmpty()) {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            if (lines.isEmpty()) {//אם הרשימה ריקה לבקש שם משתמש
                 askUserName();
                 return;
             }
@@ -260,7 +259,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.menu_settings) {
+        if (menuItem.getItemId() == R.id.menu_select_maschet) {
+            startActivity(new Intent(this, Select_Masechet.class));
+        }if (menuItem.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, Settings.class));
         } if (menuItem.getItemId() == R.id.menu_About) {
             startActivity(new Intent(this, About.class));
