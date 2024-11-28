@@ -263,11 +263,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, Select_Masechet.class));
         }if (menuItem.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, Settings.class));
-        } if (menuItem.getItemId() == R.id.menu_About) {
+        }if (menuItem.getItemId() == R.id.menu_About) {
             startActivity(new Intent(this, About.class));
-        } if (menuItem.getItemId() == R.id.menu_history) {
+        }if (menuItem.getItemId() == R.id.menu_history) {
             startActivity(new Intent(this, History.class));
-        } if (menuItem.getItemId() == R.id.ask_User_Name) {
+        }if (menuItem.getItemId() == R.id.ask_User_Name) {
             askUserName();
         }else if (menuItem.getItemId() == R.id.menu_set_target){
             openSetTargetDialog();
