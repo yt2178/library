@@ -1,6 +1,7 @@
 package com.yt.myapplication;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,21 +20,21 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    private static String TOTAL_PAGES = "לא הוגדר";// יעד הדפים שהמשתמש בחר (ברירת מחדל: "לא הוגדר")
+    private static String TOTAL_PAGES = "0";// יעד הדפים שהמשתמש בחר (ברירת מחדל: "לא הוגדר")
     private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
     // הגדרה של קבוע
     private static final String USERNAME_PREFIX = "שם משתמש: ";
 
     private FileManager m_fileManager; // אובייקט לניהול קבצים
-    private String m_pagesLearned; // משתנה למעקב אחרי מספר הדפים שלמד המשתמש
-    private TextView m_textViewPagesLearned; // תצוגת מספר הדפים שלמד
-    private TextView m_textViewPagesRemaining;// תצוגת מספר הדפים שנותרו
+    private int m_pagesLearned; // משתנה למעקב אחרי מספר הדפים שלמד המשתמש
+    private TextView textViewNumberPagesLearned; // תצוגת מספר הדפים שלמד
+    private TextView textViewNumberPagesRemaining;// תצוגת מספר הדפים שנותרו
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -49,12 +50,21 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        checkIfUserNameExists();
+        updatePointsDisplay();
 
-
-        this.m_textViewPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
-        this.m_textViewPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
+        this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
+        this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
         try {
+        File file = new File(getFilesDir(), TOTAL_USER_DATA_NAME);
+        if (!file.exists()) {
+            // אם הקובץ לא קיים, יצור אותו עם נתוני ברירת מחדל
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו:0", false);
+            Toast.makeText(this, "כניסה ראשונה, ברוכים הבאים!", Toast.LENGTH_SHORT).show();
+            return; // צא מהפונקציה כי אין צורך להמשיך
+        }
+
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             if (lines.isEmpty()) {//אם הרשימה ריקה
                 this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו:" + "0", false);
@@ -64,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
             for (String line : lines) {
                 if (line.startsWith("דפים שנלמדו:")) {
                     // חותך את "דפים שנלמדו:" בלי לציין מספר קבוע ושומר אות במשתנה
-                    this.m_pagesLearned = line.substring("דפים שנלמדו:".length());
+                    String learnedPages = line.substring("דפים שנלמדו:".length());
+                    this.m_pagesLearned = Integer.parseInt(learnedPages);
                     return;
                 }
             }
@@ -116,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     lines.set(0, USERNAME_PREFIX + userName);
                 }
-                m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME,String.join("/n",lines),false);
+                m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME,String.join("\n",lines),false);
                         if (userName.equals("בחור יקר")) {
                             Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
                         }else {
@@ -143,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         lines.add(USERNAME_PREFIX + userName); // שורה ראשונה: שם המשתמש
                     }else{//אם השורות לא ריקות
                         lines.set(0, USERNAME_PREFIX + userName);//הגדרת השורה הראשונה בתור שם משתמש
-                        lines.set(1,m_pagesLearned);
+                        lines.set(1, String.valueOf(m_pagesLearned));
                     }
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל1", Toast.LENGTH_SHORT).show();
@@ -177,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkIfUserNameExists() {
         try {
+            this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             if (lines.isEmpty()) {//אם הרשימה ריקה לבקש שם משתמש
                 askUserName();
@@ -199,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
     private void openSetTargetDialog(){
         // יצירת דיאלוג
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("הגדר יעד דפים");
+        builder.setTitle("אנא הגדר יעד דפים");
 
         final EditText input = new EditText(this);//יצירת שדה קלט של טקסט
         input.setInputType(InputType.TYPE_CLASS_NUMBER);//הגדרת שדה הקלט שיקלוט רק מספרים
@@ -220,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "אנא הזן מספר תקין", Toast.LENGTH_SHORT).show();
                     }
                 }   else {
-                TOTAL_PAGES = "לא הוגדר"; // אם לא הוזן יעד, הצג "לא הוגדר"
+                TOTAL_PAGES = "0"; // אם לא הוזן יעד, הצג "לא הוגדר"
                 updatePointsDisplay();  // עדכון התצוגה לאחר עדכון היעד
             }
         }
@@ -240,26 +252,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickAddPointButton(View view) {
-        if (TOTAL_PAGES.equals("לא הוגדר")) {
-            // המרת המחרוזת למספר
-            int learnedPages = Integer.parseInt(this.m_pagesLearned);
+        if (TOTAL_PAGES.equals("0")) {
             // הוספת נקודה
-            learnedPages++;
-            // המרה חזרה לסטרינג ושמירה במשתנה
-            this.m_pagesLearned = String.valueOf(learnedPages);
+            this.m_pagesLearned++;
             updatePointsDisplay();
         }else{
-            int totalPages = Integer.parseInt(TOTAL_PAGES);// המרת  TOTAL_PAGES - String ל- totalPages - int
-           int learnedPages = Integer.parseInt(this.m_pagesLearned);// המרת  this.m_pagesLearned - String ל- learnedPages - int
-            if (learnedPages < totalPages) { //בדיקה אם שמשתמש הגיעה ליעד
-                learnedPages++;
-                // המרה חזרה לסטרינג ושמירה
-                this.m_pagesLearned = String.valueOf(learnedPages);
+            int totalPages = Integer.parseInt(TOTAL_PAGES);
+              if (this.m_pagesLearned < totalPages) { //בדיקה אם שמשתמש הגיעה ליעד
+                  this.m_pagesLearned++;
+
                 updatePointsDisplay();
 
 
                 // בדיקה אם המשתמש השלים את כל הדפים
-                if (learnedPages == totalPages) {
+                if (this.m_pagesLearned == totalPages) {
                     startActivity(new Intent(this, CongratulationsActivity.class));
                 }
             } else {
@@ -268,28 +274,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void onClickRemovePointButton(View view) {
-        // המרת המחרוזת למספר
-        int learnedPages = Integer.parseInt(this.m_pagesLearned);
-        if (learnedPages > 0) {
-            learnedPages--;
-            // המרה חזרה לסטרינג ושמירה במשתנה
-            this.m_pagesLearned = String.valueOf(learnedPages);
+
+        if (this.m_pagesLearned > 0) {
+            this.m_pagesLearned--;
             updatePointsDisplay();
             return;
         }
         Toast.makeText(this, "לא ניתן לרדת מתחת ל-0 דף!", Toast.LENGTH_SHORT).show();
     }
+    @SuppressLint("SetTextI18n")
     private void updatePointsDisplay() {
-        this.m_textViewPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
-        if (TOTAL_PAGES.equals("לא הוגדר")) {
-            this.m_textViewPagesRemaining.setText("מספר דפים שנלמדו: לא הוגדר");
+        this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
+        this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
+        this.textViewNumberPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
+        if (TOTAL_PAGES.equals("0")) {
+            this.textViewNumberPagesRemaining.setText("מספר דפים שנלמדו: לא הוגדר");
         } else {
-            // המרת המחרוזת למספר
-            int learnedPages = Integer.parseInt(this.m_pagesLearned);
-            int remainingPages = Integer.parseInt(TOTAL_PAGES) - learnedPages;
-            // המרה חזרה לסטרינג ושמירה במשתנה
-            this.m_pagesLearned = String.valueOf(learnedPages);
-            this.m_textViewPagesRemaining.setText("מספר דפים שנותרו: " + remainingPages);;
+            int remainingPages = Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned;
+            this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + remainingPages);
         }
     }
     public boolean onOptionsItemSelected(MenuItem menuItem) {

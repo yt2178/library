@@ -8,10 +8,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/besad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="בס''ד"
+        android:text="@string/besad"
         android:textAlignment="textStart"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/besad" />
 
     <TextView
         android:id="@+id/textViewNumberPagesRemaining"
@@ -89,7 +89,7 @@
         android:background="#74A05036"
         android:elevation="4dp"
         android:gravity="center|start"
-        android:title="כותרת"
+        android:title="@string/app_name"
         android:titleTextColor="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
