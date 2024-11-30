@@ -64,7 +64,7 @@
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="#ff3f51b5"
+        app:backgroundTint="#9E4124"
         app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesRemaining"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -78,7 +78,7 @@
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:backgroundTint="#ff3f51b5"
+        app:backgroundTint="#9E4124"
         app:layout_constraintTop_toBottomOf="@+id/buttonAddPoint" />
 
     <androidx.appcompat.widget.Toolbar
