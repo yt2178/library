@@ -76,44 +76,13 @@ public class Select_Masechet extends AppCompatActivity {
         //סדר זרעים
         masechetList.add("ברכות");
         //סדר מועד
-        masechetList.add("שבת");
-        masechetList.add("עירובין");
-        masechetList.add("פסחים");
-        masechetList.add("ראש השנה");
-        masechetList.add("יומא");
-        masechetList.add("סוכה");
-        masechetList.add("ביצה");
-        masechetList.add("תענית");
-        masechetList.add("מגילה");
-        masechetList.add("מועד קטן");
-        masechetList.add("חגיגה");
+        masechetList.add("שבת");masechetList.add("עירובין");masechetList.add("פסחים");masechetList.add("ראש השנה");masechetList.add("יומא");masechetList.add("סוכה");masechetList.add("ביצה");masechetList.add("תענית");masechetList.add("מגילה");masechetList.add("מועד קטן");masechetList.add("חגיגה");
         //סדר נשים
-        masechetList.add("יבמות");
-        masechetList.add("כתובות");
-        masechetList.add("נדרים");
-        masechetList.add("נזיר");
-        masechetList.add("סוטה");
-        masechetList.add("גיטין");
-        masechetList.add("קידושין");
+        masechetList.add("יבמות");masechetList.add("כתובות");masechetList.add("נדרים");masechetList.add("נזיר");masechetList.add("סוטה");masechetList.add("גיטין");masechetList.add("קידושין");
         //סדר נזיקין
-        masechetList.add("בבא קמא");
-        masechetList.add("בבא מציעא");
-        masechetList.add("בבא בתרא");
-        masechetList.add("סנהדרין");
-        masechetList.add("מכות");
-        masechetList.add("שבועות");
-        masechetList.add("עבודה זרה");
-        masechetList.add("הוריות");
+        masechetList.add("בבא קמא");masechetList.add("בבא מציעא");masechetList.add("בבא בתרא");masechetList.add("סנהדרין");masechetList.add("מכות");masechetList.add("שבועות");masechetList.add("עבודה זרה");masechetList.add("הוריות");
         //סדר קודשים
-        masechetList.add("זבחים");
-        masechetList.add("מנחות");
-        masechetList.add("חולין");
-        masechetList.add("בכורות");
-        masechetList.add("ערכין");
-        masechetList.add("תמורה");
-        masechetList.add("כריתות");
-        masechetList.add("מעילה");
-        masechetList.add("תמיד");
+        masechetList.add("זבחים");masechetList.add("מנחות");masechetList.add("חולין");masechetList.add("בכורות");masechetList.add("ערכין");masechetList.add("תמורה");masechetList.add("כריתות");masechetList.add("מעילה");masechetList.add("תמיד");
         //סדר טהרות
         masechetList.add("נדה");
 

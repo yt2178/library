@@ -23,7 +23,12 @@
         <ListView
             android:id="@+id/masechetListView"
             android:layout_width="252dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:background="@color/black"
+            android:selector="@drawable/your_list_selector"
+            android:layout_item_height="@layout/masechet_item" />
 
         <ListView
             android:id="@+id/dafListView"

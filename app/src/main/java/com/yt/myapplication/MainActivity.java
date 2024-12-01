@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static String TOTAL_PAGES = "0";// יעד הדפים שהמשתמש בחר
     private FileManager m_fileManager; // אובייקט לניהול קבצים
     private int m_pagesLearned; // משתנה למעקב אחרי מספר הדפים שלמד המשתמש
+    private int m_pagesRemaining; // משתנה למעקב אחרי מספר הדפים שנשאר למשתמש
     private TextView textViewNumberPagesLearned; // תצוגת מספר הדפים שלמד
     private TextView textViewNumberPagesRemaining;// תצוגת מספר הדפים שנותרו
 
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 lines.add("דפים שנלמדו: " + m_pagesLearned);
             } else if (lines.size() > 1) {
                 lines.set(1, "דפים שנלמדו: " + m_pagesLearned);
+                lines.set(2,"דפים שנשארו: "+ m_pagesRemaining);
             } else {
                 lines.add("דפים שנלמדו: " + m_pagesLearned);
             }
@@ -156,7 +158,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } catch (IOException e) {
-            Log.e("FileError", "שגיאה בקריאת הקובץ");
             Toast.makeText(this, "שגיאה בקריאת הקובץ!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -211,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
                     }else{//אם השורות לא ריקות
                         if (lines.size() > 1) {
                         lines.set(1, String.valueOf(m_pagesLearned));
+
                         }
                     }
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME,String.join("\n",lines),false);
@@ -373,8 +375,9 @@ public class MainActivity extends AppCompatActivity {
         if (TOTAL_PAGES.equals("0")) {
             this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: לא הוגדר");
         } else {
-            int remainingPages = Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned;
-            this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + remainingPages);
+            this.m_pagesRemaining = Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned;
+            this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + this.m_pagesRemaining);
+
         }
     }
     public boolean onOptionsItemSelected(MenuItem menuItem) {
