@@ -26,7 +26,7 @@
         android:id="@+id/textViewNumberPagesLearned"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="4dp"
         android:background="#7CB34E2C"
         android:text="נלמדו"
         android:textAlignment="center"
@@ -37,6 +37,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/besad" />
+
 
     <TextView
         android:id="@+id/textViewNumberPagesRemaining"
@@ -54,32 +55,58 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesLearned" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAddPoint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesRemaining"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <ListView
+            android:id="@+id/masechetListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </ListView>
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonAddPoint"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginBottom="12dp"
         android:onClick="onClickAddPointButton"
         android:text="הוסף עמוד שלמדת"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"
         app:backgroundTint="#9E4124"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesRemaining"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintBottom_toTopOf="@+id/buttonRemovePoint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonRemovePoint"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12.0dip"
+        android:layout_marginBottom="16dp"
         android:onClick="onClickRemovePointButton"
         android:text="הסר עמוד שהוסף בטעות"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"
         app:backgroundTint="#9E4124"
-        app:layout_constraintTop_toBottomOf="@+id/buttonAddPoint" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

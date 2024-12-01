@@ -12,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,19 +24,25 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    private static String TOTAL_PAGES = "0";// יעד הדפים שהמשתמש בחר (ברירת מחדל: "לא הוגדר")
     private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
     // הגדרה של קבוע
     private static final String USERNAME_PREFIX = "שם משתמש: ";
-
+    private static final int REQUEST_CODE = 1;
+    private static String TOTAL_PAGES = "0";// יעד הדפים שהמשתמש בחר
     private FileManager m_fileManager; // אובייקט לניהול קבצים
     private int m_pagesLearned; // משתנה למעקב אחרי מספר הדפים שלמד המשתמש
     private TextView textViewNumberPagesLearned; // תצוגת מספר הדפים שלמד
     private TextView textViewNumberPagesRemaining;// תצוגת מספר הדפים שנותרו
+
+    private ListView masechetListView; // רשימה להצגת המסכתות
+    private ArrayAdapter<String> adapter; // ה-Adapter שמחבר בין הרשימה לרשימה הגרפית
+    private List<String> masechetList; // רשימה של מסכתות שנבחרו
+
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -53,6 +61,19 @@ public class MainActivity extends AppCompatActivity {
         checkIfUserNameExists();
         updatePointsDisplay();
 
+        // אתחול ה-ListView
+        masechetListView = findViewById(R.id.masechetListView);
+        // אתחול הרשימה
+        masechetList = new ArrayList<>();
+        // יצירת ה-Adapter שמחבר את המידע לרשימה
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, masechetList);
+
+        // חיבור ה-Adapter ל-ListView
+        masechetListView.setAdapter(adapter);
+
+        // קריאה לשורות הקובץ, אם קיימות
+        loadMasechetListFromFile();
+
         this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
         this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
@@ -60,32 +81,31 @@ public class MainActivity extends AppCompatActivity {
         File file = new File(getFilesDir(), TOTAL_USER_DATA_NAME);
         if (!file.exists()) {
             // אם הקובץ לא קיים, יצור אותו עם נתוני ברירת מחדל
-            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו:0", false);
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו: 0", false);
             Toast.makeText(this, "כניסה ראשונה, ברוכים הבאים!", Toast.LENGTH_SHORT).show();
             return; // צא מהפונקציה כי אין צורך להמשיך
         }
-
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             if (lines.isEmpty()) {//אם הרשימה ריקה
-                this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו:" + "0", false);
+                this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו: 0", false);
                 Toast.makeText(this, "!כניסה ראשונה, ברוכים הבאים", Toast.LENGTH_SHORT).show();
                 return;
             }
             for (String line : lines) {
-                if (line.startsWith("דפים שנלמדו:")) {
+                if (line.startsWith("דפים שנלמדו: ")) {
                     // חותך את "דפים שנלמדו:" בלי לציין מספר קבוע ושומר אות במשתנה
-                    String learnedPages = line.substring("דפים שנלמדו:".length());
+                    String learnedPages = line.substring("דפים שנלמדו: ".length());
                     this.m_pagesLearned = Integer.parseInt(learnedPages);
-                    return;
+                    break;
                 }
             }
 
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה! לא הצליח להפוך את הקובץ לרשימה!", Toast.LENGTH_SHORT).show();
         }
-        checkIfUserNameExists();
         updatePointsDisplay();
     }
+
 
     @Override
     protected void onPause() {
@@ -94,18 +114,82 @@ public class MainActivity extends AppCompatActivity {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             if (lines.isEmpty()) {
                 lines.add(USERNAME_PREFIX + "בחור יקר");
-                lines.add("דפים שנלמדו:" + m_pagesLearned);
+                lines.add("דפים שנלמדו: " + m_pagesLearned);
             } else if (lines.size() > 1) {
-                lines.set(1, "דפים שנלמדו:" + m_pagesLearned);
+                lines.set(1, "דפים שנלמדו: " + m_pagesLearned);
             } else {
-                lines.add("דפים שנלמדו:" + m_pagesLearned);
+                lines.add("דפים שנלמדו: " + m_pagesLearned);
             }
             m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
         } catch (IOException e) {
-            Log.e("IOError", "לא ניתן לשמור את נתוני המשתמש!");
+            Toast.makeText(this, "לא ניתן לשמור את נתוני המשתמש!", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void loadMasechetListFromFile() {
+        try {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            // אם הקובץ לא ריק, נוסיף את כל המסכתות שנשמרו לרשימה
+            if (!lines.isEmpty()) {
+                for (String line : lines) {
+                    // מוסיף כל שורה לרשימה (אלא אם מדובר בנתונים לא רלוונטיים כמו "דפים שנלמדו")
+                    if (line.startsWith("שם משתמש:")
+                      ||line.startsWith("דפים שנלמדו:")
+                      ||line.startsWith("מסכתות שנבחרו:"))
+                    {
+                        continue; // לא נוסיף את השורות המיותרות
+                    }
+                    masechetList.add(line); // הוספת כל מסכת שנשמרה
+                }
+            }
+
+            // עדכון ה-Adapter אחרי קריאת הנתונים
+            adapter.notifyDataSetChanged();
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בקריאת המסכתות מהקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            // קבלת שם המסכת שנבחרה
+            String selectedMasechet = data.getStringExtra("selectedMasechet");
+            if (!masechetList.contains(selectedMasechet)) {
+                // הוספת שם המסכת שנבחרה לרשימה
+                masechetList.add(selectedMasechet);
+
+                // לעדכן את ה-Adapter כך שהרשימה תתעדכן
+                adapter.notifyDataSetChanged();
+
+                // שמירת שם המסכת שנבחרה בקובץ
+                saveSelectedMasechetToFile(selectedMasechet);
+            } else {
+                // הצגת הודעה למשתמש אם המסכת כבר קיימת
+                Toast.makeText(this, selectedMasechet + " כבר קיימת ברשימה", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private void saveSelectedMasechetToFile(String masechet) {
+        try {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+
+            // אם אין נתונים בקובץ, נוסיף את שם המסכת החדש
+            if (lines.isEmpty()) {
+                lines.add("מסכתות שנבחרו: ");
+            }
+
+            // הוספת שם המסכת החדש
+            lines.add(masechet);
+
+            // שמירת הנתונים בקובץ
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+        } catch (IOException e) {
+            Log.e("FileError", "שגיאה בשמירת המסכת לקובץ");
+            Toast.makeText(this, "שגיאה בשמירת המסכת לקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void askUserName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("הזן את שמך");
@@ -157,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                         lines.set(1, String.valueOf(m_pagesLearned));
                     }
                 } catch (IOException e) {
-                    Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל1", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל כשנלחץ ביטול", Toast.LENGTH_SHORT).show();
                 }
                 hideKeyboard(input);
             }
@@ -175,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                         lines.set(0, USERNAME_PREFIX + userName);//הגדרת השורה הראשונה בתור שם משתמש
                     }
                 } catch (IOException e) {
-                    Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל2", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל כשבוצעה יציאה מהדיאלוג", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -185,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
         input.requestFocus();
         showKeyboard(input);
     }
-
     private void checkIfUserNameExists() {
         try {
             this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
@@ -197,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
             for (String line : lines) {
                 if (line.startsWith(USERNAME_PREFIX)) {
                     String userName = line.substring(USERNAME_PREFIX.length()).trim(); // חתוך את "שם משתמש: " בלי לציין מספר קבוע,,והסר רווחים מיותרים
-                    Toast.makeText(this, "ברוך הבא, " + userName + "!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "ברוך הבא, " + userName + "!", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
@@ -207,7 +290,6 @@ public class MainActivity extends AppCompatActivity {
             askUserName();
         }
     }
-
     private void openSetTargetDialog(){
         // יצירת דיאלוג
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -250,7 +332,6 @@ public class MainActivity extends AppCompatActivity {
         input.requestFocus();
       showKeyboard(input);
     }
-
     public void onClickAddPointButton(View view) {
         if (TOTAL_PAGES.equals("0")) {
             // הוספת נקודה
@@ -288,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
         this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         this.textViewNumberPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
         if (TOTAL_PAGES.equals("0")) {
-            this.textViewNumberPagesRemaining.setText("מספר דפים שנלמדו: לא הוגדר");
+            this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: לא הוגדר");
         } else {
             int remainingPages = Integer.parseInt(TOTAL_PAGES) - this.m_pagesLearned;
             this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + remainingPages);
@@ -296,7 +377,8 @@ public class MainActivity extends AppCompatActivity {
     }
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         if (menuItem.getItemId() == R.id.menu_select_maschet) {
-            startActivity(new Intent(this, Select_Masechet.class));
+            Intent intent = new Intent(this, Select_Masechet.class);
+            startActivityForResult(intent, REQUEST_CODE); // כך נוכל לקבל תוצאה
         }if (menuItem.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, Settings.class));
         }if (menuItem.getItemId() == R.id.menu_About) {

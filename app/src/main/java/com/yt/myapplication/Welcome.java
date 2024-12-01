@@ -49,14 +49,12 @@ public class Welcome extends AppCompatActivity {
         try {
             File file = new File(getFilesDir(), TOTAL_USER_DATA_NAME);
             if (!file.exists()) {
-                // אם הקובץ לא קיים, יצור אותו עם שם משתמש ברירת מחדל
-                fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, USERNAME_PREFIX + "בחור יקר", false);
+                // אם הקובץ לא קיים, יציג רק בטקסט
                 textViewUserName.setText("ברוך הבא, בחור יקר!");
             } else {
                 // אם הקובץ קיים, נקרא את תוכן הקובץ
                 List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
                 if (lines.isEmpty()) {
-                    fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, USERNAME_PREFIX + "בחור יקר", false);
                     textViewUserName.setText("ברוך הבא, בחור יקר!");
                 } else {
                     // קריאת שם המשתמש מהשורה הראשונה
