@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="fill_parent"
-    android:background= "@drawable/img_screen_background"
+    android:background= "@drawable/img_screen_background_main_activity"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -114,7 +114,7 @@
         android:layout_height="45dp"
         android:layout_marginTop="2dp"
         android:background="#74A05036"
-        android:elevation="4dp"
+        android:elevation="8dp"
         android:gravity="center|start"
         android:title="@string/app_name"
         android:titleTextColor="#ffffff"

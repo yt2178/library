@@ -1,22 +1,25 @@
 package com.yt.myapplication;
 
-import android.content.Intent;
 import android.os.Bundle;
+
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Select_Masechet extends AppCompatActivity {
-
+    private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
     private ListView masechetListView;
     private List<String> masechetList;
+    private List<String> selectedMasechetList;  // רשימה חדשה למסכתות שנבחרו
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +40,38 @@ public class Select_Masechet extends AppCompatActivity {
 
         masechetListView = findViewById(R.id.masechetListView);
         masechetList = new ArrayList<>();
+        selectedMasechetList = new ArrayList<>(); // אתחול הרשימה שנבחרה
 
-        // רשימה לדוגמה של מסכתות
+        // הוספת כל המסכתות לרשימה
+        addMasechetList();
+
+        // קריאת רשימת המסכתות שנבחרו מהקובץ
+        loadSelectedMasechetFromFile();
+
+        // הצגת הרשימה בעזרת Adapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, masechetList);
+        masechetListView.setAdapter(adapter);
+
+        // טופס טיפול בבחירת מסכת
+        masechetListView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedMasechet = masechetList.get(position); // שמור את המסכת שנבחרה
+
+            // בדיקה אם המסכת כבר נבחרה
+            if (selectedMasechetList.contains(selectedMasechet)) {
+                Toast.makeText(Select_Masechet.this, "המסכת " + selectedMasechet + " כבר נבחרה!", Toast.LENGTH_SHORT).show();
+            } else {
+                // הוספת Toast על המסכת שנבחרה
+                Toast.makeText(Select_Masechet.this, "הוספת מסכת " + selectedMasechet, Toast.LENGTH_SHORT).show();
+
+                // הוספת המסכת שנבחרה לרשימה של המסכתות שנבחרו
+                selectedMasechetList.add(selectedMasechet);
+
+                // שמירת המסכת שנבחרה בקובץ
+                saveSelectedMasechetToFile(selectedMasechet);
+            }
+        });
+    }
+    private void addMasechetList() {
         // הוספת כל המסכתות לרשימה
         //סדר זרעים
         masechetList.add("ברכות");
@@ -94,11 +127,79 @@ public class Select_Masechet extends AppCompatActivity {
 
         masechetListView.setOnItemClickListener((parent, view, position, id) -> {
             String selectedMasechet = masechetList.get(position); // שמור את המסכת שנבחרה
-          //אנחנו יוצרים אובייקט Intent חדש כדי לשלוח תוצאה לאקטיביטי הראשי (MainActivity). אנחנו שולחים את שם המסכת שנבחרה עם הפונקציה putExtra שמקבלת את השם של הנתון ואת הערך.
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("selectedMasechet", selectedMasechet);// שלח את המסכת לאקטיביטי הראשי
-            setResult(RESULT_OK, resultIntent);// שלח תוצאה לאקטיביטי הראשי
-            finish();  // סגור את אקטיביטי Select_Masechet
+            // הוספת Toast על המסכת שנבחרה
+            Toast.makeText(Select_Masechet.this, "הוספת מסכת " + selectedMasechet, Toast.LENGTH_SHORT).show();
+
+            // שמירת המסכת שנבחרה בקובץ
+            saveSelectedMasechetToFile(selectedMasechet);
+
         });
+
     }
-}
+    private void loadSelectedMasechetFromFile() {
+        try {
+            FileManager fileManager = new FileManager(this);
+            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+
+            for (String line : lines) {
+                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    // חיתוך המידע אחרי "מסכתות שנבחרו:"
+                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
+
+                    // אם יש פסיק בסוף, נוודא שאין אותו
+                    if (masechetData.endsWith(",")) {
+                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
+                    }
+
+                    // חיתוך המידע לפי פסיקים
+                    String[] masechetArray = masechetData.split(",");
+
+                    // הוספת כל המסכתות לרשימה
+                    for (String masechet : masechetArray) {
+                        selectedMasechetList.add(masechet.trim());
+                    }
+                    break; // מצאנו את השורה, אין צורך להמשיך לחפש
+                }
+            }
+
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בקריאת הקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void saveSelectedMasechetToFile(String masechet) {
+        try {
+            // קריאה לקובץ שבו נשמרות המסכתות
+            FileManager fileManager = new FileManager(this);
+            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+
+            boolean masechetLineFound = false;
+
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    // אם מצאנו את השורה, נוסיף את המסכת החדשה אחרי פסיק
+                    if (line.endsWith(",")) {
+                        // אם כבר יש פסיק בסוף, נוסיף רק את המסכת החדשה
+                        lines.set(i, line + " " + masechet + ",");
+                    } else {
+                        // אם אין פסיק בסוף, נוסיף פסיק לפני המסכת החדשה
+                        lines.set(i, line + " " + masechet + ",");
+                    }
+                    masechetLineFound = true;
+                    break;
+                }
+            }
+
+            // אם לא מצאנו שורה שמתחילה ב-"מסכתות שנבחרו:", נוסיף שורה חדשה
+            if (!masechetLineFound) {
+                lines.add("מסכתות שנבחרו: " + masechet + ",");
+            }
+
+            // שמירה חזרה לקובץ
+            fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בשמירת המסכת לקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }}

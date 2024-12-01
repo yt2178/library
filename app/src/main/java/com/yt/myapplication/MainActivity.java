@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -39,13 +40,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewNumberPagesLearned; // תצוגת מספר הדפים שלמד
     private TextView textViewNumberPagesRemaining;// תצוגת מספר הדפים שנותרו
 
-    private ListView masechetListView; // רשימה להצגת המסכתות
-    private ArrayAdapter<String> adapter; // ה-Adapter שמחבר בין הרשימה לרשימה הגרפית
-    private List<String> masechetList; // רשימה של מסכתות שנבחרו
+    private ListView masechetListView;
+    private List<String> selectedMasechetList; // הוספנו את הרשימה כאן
 
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         // מציב את ה-Toolbar כ-ActionBar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -61,18 +62,19 @@ public class MainActivity extends AppCompatActivity {
         checkIfUserNameExists();
         updatePointsDisplay();
 
-        // אתחול ה-ListView
+        // אתחול ה-ListView והרשימה
         masechetListView = findViewById(R.id.masechetListView);
-        // אתחול הרשימה
-        masechetList = new ArrayList<>();
-        // יצירת ה-Adapter שמחבר את המידע לרשימה
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, masechetList);
+        selectedMasechetList = new ArrayList<>();
 
-        // חיבור ה-Adapter ל-ListView
+        m_fileManager = new FileManager(this);
+
+        // קריאת המסכתות שנבחרו מהקובץ
+        loadSelectedMasechetFromFile();
+
+        // הצגת המסכתות ברשימה (ListView)
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         masechetListView.setAdapter(adapter);
 
-        // קריאה לשורות הקובץ, אם קיימות
-        loadMasechetListFromFile();
 
         this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
         this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             if (lines.isEmpty()) {
@@ -126,70 +129,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadMasechetListFromFile() {
+    // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
+    private void loadSelectedMasechetFromFile() {
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
-            // אם הקובץ לא ריק, נוסיף את כל המסכתות שנשמרו לרשימה
-            if (!lines.isEmpty()) {
-                for (String line : lines) {
-                    // מוסיף כל שורה לרשימה (אלא אם מדובר בנתונים לא רלוונטיים כמו "דפים שנלמדו")
-                    if (line.startsWith("שם משתמש:")
-                      ||line.startsWith("דפים שנלמדו:")
-                      ||line.startsWith("מסכתות שנבחרו:"))
-                    {
-                        continue; // לא נוסיף את השורות המיותרות
+
+            for (String line : lines) {
+                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
+                if (line.startsWith("מסכתות שנבחרו:")) {
+// חיתוך המידע ללא רווח עד סוף השורה אחרי "מסכתות שנבחרו:"והפיכתו למשתנה שמכיל את כל רשימת המסכתות
+                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
+
+                    if (masechetData.endsWith(",")) { // אם יש פסיק בסוף, נוודא שאין אותו
+                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
                     }
-                    masechetList.add(line); // הוספת כל מסכת שנשמרה
+
+                    // חיתוך המידע לפי פסיקים
+                    String[] masechetArray = masechetData.split(",");
+
+                    // הוספת כל המסכתות לרשימה
+                    for (String masechet : masechetArray) {
+                        selectedMasechetList.add(masechet.trim());
+                    }
+                    break; // מצאנו את השורה, אין צורך להמשיך לחפש
                 }
             }
 
-            // עדכון ה-Adapter אחרי קריאת הנתונים
-            adapter.notifyDataSetChanged();
         } catch (IOException e) {
-            Toast.makeText(this, "שגיאה בקריאת המסכתות מהקובץ!", Toast.LENGTH_SHORT).show();
+            Log.e("FileError", "שגיאה בקריאת הקובץ");
+            Toast.makeText(this, "שגיאה בקריאת הקובץ!", Toast.LENGTH_SHORT).show();
         }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-            // קבלת שם המסכת שנבחרה
-            String selectedMasechet = data.getStringExtra("selectedMasechet");
-            if (!masechetList.contains(selectedMasechet)) {
-                // הוספת שם המסכת שנבחרה לרשימה
-                masechetList.add(selectedMasechet);
-
-                // לעדכן את ה-Adapter כך שהרשימה תתעדכן
-                adapter.notifyDataSetChanged();
-
-                // שמירת שם המסכת שנבחרה בקובץ
-                saveSelectedMasechetToFile(selectedMasechet);
-            } else {
-                // הצגת הודעה למשתמש אם המסכת כבר קיימת
-                Toast.makeText(this, selectedMasechet + " כבר קיימת ברשימה", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    private void saveSelectedMasechetToFile(String masechet) {
-        try {
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
-
-            // אם אין נתונים בקובץ, נוסיף את שם המסכת החדש
-            if (lines.isEmpty()) {
-                lines.add("מסכתות שנבחרו: ");
-            }
-
-            // הוספת שם המסכת החדש
-            lines.add(masechet);
-
-            // שמירת הנתונים בקובץ
-            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
-        } catch (IOException e) {
-            Log.e("FileError", "שגיאה בשמירת המסכת לקובץ");
-            Toast.makeText(this, "שגיאה בשמירת המסכת לקובץ!", Toast.LENGTH_SHORT).show();
-        }
-    }
     private void askUserName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("הזן את שמך");
@@ -201,15 +172,16 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String userName = input.getText().toString();
-                // אם השם ריק, שומר את השם שהוזן
-                if (userName.isEmpty()) {
-                    userName = "בחור יקר";  // אם לא הוזן שם, הגדר המשתנה כברירת מחדל
-                }try {
+             try {
                 List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
                 if (lines.isEmpty()) {
+                    if (userName.isEmpty()) {
+                        userName = "בחור יקר";  // אם לא הוזן שם, הגדר המשתנה כברירת מחדל
+                    }
                     lines.add(USERNAME_PREFIX + userName); // שורה ראשונה: שם המשתמש
                 }else{
                     lines.set(0, USERNAME_PREFIX + userName);
+
                 }
                 m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME,String.join("\n",lines),false);
                         if (userName.equals("בחור יקר")) {
@@ -232,17 +204,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String userName = "בחור יקר";  // אם נלחץ על ביטול, הגדר את השם כ"בחור יקר"
                 Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
-                try {
+               try {
                     List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);//קורא את הקובץ לרשימה שנשמרת במשתנה
                     if (lines.isEmpty()) {//אם  כל השורות ריקות
-                        lines.add(USERNAME_PREFIX + userName); // שורה ראשונה: שם המשתמש
+                        lines.add(USERNAME_PREFIX + userName);
                     }else{//אם השורות לא ריקות
-                        lines.set(0, USERNAME_PREFIX + userName);//הגדרת השורה הראשונה בתור שם משתמש
+                        if (lines.size() > 1) {
                         lines.set(1, String.valueOf(m_pagesLearned));
+                        }
                     }
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME,String.join("\n",lines),false);
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל כשנלחץ ביטול", Toast.LENGTH_SHORT).show();
                 }
+
                 hideKeyboard(input);
             }
         });
@@ -255,14 +230,41 @@ public class MainActivity extends AppCompatActivity {
                     List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);//קורא את הקובץ לרשימה שנשמרת במשתנה
                     if (lines.isEmpty()) {//אם  כל השורות ריקות
                         lines.add(USERNAME_PREFIX + userName); // שורה ראשונה: שם המשתמש
-                    }else{//אם השורות לא ריקות
-                        lines.set(0, USERNAME_PREFIX + userName);//הגדרת השורה הראשונה בתור שם משתמש
+                    }else {
+                        // אם השורות לא ריקות, אנחנו לא רוצים לשנות את השם אם יש שם קודם.
+                        if (lines.get(0).startsWith(USERNAME_PREFIX)) {
+                            return;  // אם השם כבר קיים בשורה הראשונה, אל תשנה אותו
+                        }
                     }
+                        lines.set(0, USERNAME_PREFIX + userName); // הגדרת שם ברירת מחדל בשורה הראשונה
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל כשבוצעה יציאה מהדיאלוג", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        // הוספת Listener במקרה של חזרה (Back) או ביטול הדיאלוג (למשל, לחיצה על כפתור חזור במכשיר)
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                String userName = "בחור יקר";  // הגדרת שם ברירת מחדל במקרה של ביטול הדיאלוג
+                try {
+                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+                    if (lines.isEmpty()) {
+                        lines.add(USERNAME_PREFIX + userName); // אם כל השורות ריקות
+                    } else {
+                        // אם השורות לא ריקות, אנחנו לא רוצים לשנות את השם אם יש שם קודם.
+                        if (lines.get(0).startsWith(USERNAME_PREFIX)) {
+                            return;  // אם השם כבר קיים בשורה הראשונה, אל תשנה אותו
+                        }
+                        lines.set(0, USERNAME_PREFIX + userName); // הגדרת שם ברירת מחדל בשורה הראשונה
+                    }
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+                } catch (IOException e) {
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל כשבוצעה יציאה מהדיאלוג", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
         builder.show();
         // הבאת המוקד (פוקוס) לתוך ה-EditText
