@@ -5,38 +5,33 @@ import java.util.List;
 
 public class Masechtot {
 
-    private String startPage = "ב."; // כל מסכת מתחילה ב-ב.
-    private String endPage; // כל מסכת מסתיימת בדף אחר
-
-    // בנאי שמקבל את דף הסיום של המסכת
-    public Masechtot(String endPage) {
-        this.endPage = endPage;
-    }
-    // פונקציה שתחשב את כל הדפים של המסכת
-    public List<String> getPages() {
-        List<String> pages = new ArrayList<>();
-        String currentPage = startPage;
-
-        // נוסיף דפים עד שהגענו לדף הסיום
-        while (!currentPage.equals(endPage)) {
-            pages.add(currentPage);
-            currentPage = getNextPage(currentPage);
-        }
-        pages.add(endPage); // נוסיף את דף הסיום
-        return pages;
-    }
-    // פונקציה שתחשב את הדף הבא (מעבר בין עמוד א' לב' וכך הלאה)
-    private String getNextPage(String currentPage) {
-        char letter = currentPage.charAt(0); // ניקח את האות הראשונה (ב, ג, ד, וכו')
-        char nextLetter = (char) (letter + 1); // נבצע עליה אחת באות
-        String nextPage = nextLetter + "."; // נוסיף עמוד א' (נקודה)
-
-        // אם הדף היה עמוד א. נעבור לעמוד ב.
-        if (currentPage.endsWith(".")) {
-            nextPage = nextLetter + ":"; // עמוד ב' (קולון)
-        }
-
-        return nextPage;
-    }
+//    private String name;  // שם המסכת (כמו "ברכות", "שבת" וכו')
+//    private List<Daf> dafim;  // רשימה של הדפים במסכת
+//
+//    // בונה את המסכת עם שם המסכת ורשימת הדפים
+//    public Masechet(String name) {
+//        this.name = name;  // מאחסן את שם המסכת
+//        this.dafim = new ArrayList<>();  // יוצר רשימה ריקה של דפים
+//    }
+//
+//    // הוספת דף למסכת
+//    public void addDaf(Daf daf) {
+//        dafim.add(daf);  // מוסיף דף לרשימה של דפים
+//    }
+//
+//    // מחזיר את שם המסכת
+//    public String getName() {
+//        return name;
+//    }
+//
+//    // מחזיר את רשימת הדפים
+//    public List<Daf> getDafim() {
+//        return dafim;
+//    }
+//
+//    // מחזיר את המסכת בצורה של מחרוזת
+//    @Override
+//    public String toString() {
+//        return name + ": " + dafim.toString();  // מחזיר את שם המסכת ואת הדפים שלה
+//    }
 }
-
