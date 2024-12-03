@@ -292,9 +292,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         final AlertDialog dialog = builder.create();
         // במהלך יצירת הדיאלוג, נסמן אותו כפתוח
         isDialogOpen = true;
+
         dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent event) {

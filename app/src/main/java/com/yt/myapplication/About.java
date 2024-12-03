@@ -2,6 +2,7 @@ package com.yt.myapplication;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,11 @@ public class About extends AppCompatActivity {
         // מציב את ה-Toolbar כ-ActionBar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);//כפתור חזור
+        // קביעת כותרת במרכז
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true); // כפתור חזור
+        // קביעת הכותרת דרך ה-TextView
+        TextView toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("אודות");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

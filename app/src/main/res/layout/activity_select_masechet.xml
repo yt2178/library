@@ -26,31 +26,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="245dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-
-        android:padding="1dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/masechetRecyclerView"
+        android:layout_width="227dp"
+        android:layout_height="310dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.509"
+        app:layout_constraintHorizontal_bias="0.408"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/besad">
-
-        <ListView
-            android:id="@+id/masechetListView"
-            android:layout_width="245dp"
-            android:layout_height="389dp"
-            android:rotationX="23" />
-
-        <ListView
-            android:id="@+id/dafListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -76,6 +61,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.121" />
+        app:layout_constraintTop_toBottomOf="@+id/besad"
+        app:layout_constraintVertical_bias="0.044" />
 </androidx.constraintlayout.widget.ConstraintLayout>
