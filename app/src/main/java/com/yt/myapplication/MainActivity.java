@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
-import android.util.Log;
+
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewNumberPagesLearned; // תצוגת מספר הדפים שלמד
     private TextView textViewNumberPagesRemaining;// תצוגת מספר הדפים שנותרו
 
+    private boolean isDialogOpen = false;
     private ListView masechetListView;
     private List<String> selectedMasechetList; // הוספנו את הרשימה כאן
 
@@ -69,8 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         m_fileManager = new FileManager(this);
 
-        // קריאת המסכתות שנבחרו מהקובץ
-        loadSelectedMasechetFromFile();
+        isDialogOpen = false;
 
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
@@ -90,11 +92,17 @@ public class MainActivity extends AppCompatActivity {
         }
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             if (lines.isEmpty()) {//אם הרשימה ריקה
+                lines.add(USERNAME_PREFIX + "בחור יקר");
+                lines.add("דפים שנלמדו: " + m_pagesLearned);
+                lines.add("דפים שנשארו: "+ m_pagesRemaining);
+                lines.add("מסכתות שנבחרו: ");
                 this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו: 0", false);
                 Toast.makeText(this, "!כניסה ראשונה, ברוכים הבאים", Toast.LENGTH_SHORT).show();
                 return;
             }
             for (String line : lines) {
+                // קריאת המסכתות שנבחרו מהקובץ
+                loadSelectedMasechetFromFile();
                 if (line.startsWith("דפים שנלמדו: ")) {
                     // חותך את "דפים שנלמדו:" בלי לציין מספר קבוע ושומר אות במשתנה
                     String learnedPages = line.substring("דפים שנלמדו: ".length());
@@ -113,18 +121,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
+        isDialogOpen = false;
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             if (lines.isEmpty()) {
                 lines.add(USERNAME_PREFIX + "בחור יקר");
-                lines.add("דפים שנלמדו: " + m_pagesLearned);
-            } else if (lines.size() > 1) {
+                lines.add("דפים שנלמדו: " + "0");
+                lines.add("דפים שנשארו: "+ "0");
+                lines.add("מסכתות שנבחרו: ");
+            } else if (lines.size() > 2) {
+
                 lines.set(1, "דפים שנלמדו: " + m_pagesLearned);
-                lines.set(2,"דפים שנשארו: "+ m_pagesRemaining);
+                if (m_pagesRemaining > 0) {
+                    lines.set(2, "דפים שנשארו: " + m_pagesRemaining);
+                } else {
+                    lines.set(2, "דפים שנשארו: 0");
+                }
+
             } else {
                 lines.add("דפים שנלמדו: " + m_pagesLearned);
-            }
+                lines.add("דפים שנשארו: "+ m_pagesRemaining);
+                }
+
             m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
         } catch (IOException e) {
             Toast.makeText(this, "לא ניתן לשמור את נתוני המשתמש!", Toast.LENGTH_SHORT).show();
@@ -158,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } catch (IOException e) {
-            Toast.makeText(this, "שגיאה בקריאת הקובץ!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -180,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
                         userName = "בחור יקר";  // אם לא הוזן שם, הגדר המשתנה כברירת מחדל
                     }
                     lines.add(USERNAME_PREFIX + userName); // שורה ראשונה: שם המשתמש
+                    lines.add("דפים שנלמדו: " + m_pagesLearned);
+                    lines.add("דפים שנשארו: "+ m_pagesRemaining);
+                    lines.add("מסכתות שנבחרו: ");
+
                 }else{
                     lines.set(0, USERNAME_PREFIX + userName);
 
@@ -209,6 +231,10 @@ public class MainActivity extends AppCompatActivity {
                     List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);//קורא את הקובץ לרשימה שנשמרת במשתנה
                     if (lines.isEmpty()) {//אם  כל השורות ריקות
                         lines.add(USERNAME_PREFIX + userName);
+                        lines.add("דפים שנלמדו: " + m_pagesLearned);
+                        lines.add("דפים שנשארו: "+ m_pagesRemaining);
+                        lines.add("מסכתות שנבחרו: ");
+
                     }else{//אם השורות לא ריקות
                         if (lines.size() > 1) {
                         lines.set(1, String.valueOf(m_pagesLearned));
@@ -266,6 +292,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        final AlertDialog dialog = builder.create();
+        // במהלך יצירת הדיאלוג, נסמן אותו כפתוח
+        isDialogOpen = true;
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_MENU) {
+                    // לחיצה על כפתור ה-menu תבצע את פעולה של כפתור ה"אישור"
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+                    return true;  // מונע את הפעולה הרגילה של התפריט
+                }
+                return false;  // אם זה לא כפתור Menu, תחזור להתנהגות הרגילה
+            }
+        });
+        // הוספת מאזין שיתבצע כאשר הדיאלוג נסגר
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isDialogOpen = false;
+                    }
+                }, 1000); // 1000 מילישניות = 1 שניות
+            }
+        });
 
 
         builder.show();
@@ -294,10 +346,21 @@ public class MainActivity extends AppCompatActivity {
             askUserName();
         }
     }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_MENU && isDialogOpen) {
+            // מונעים את פתיחת התפריט אם הדיאלוג פתוח
+            return true;  // חוסם את ההתנהגות הרגילה של כפתור ה-Menu
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+
     private void openSetTargetDialog(){
         // יצירת דיאלוג
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("אנא הגדר יעד דפים");
+        builder.setTitle("אנא הגדר יעד דפים");// הגדרת כותרת לדיאלוג.
 
         final EditText input = new EditText(this);//יצירת שדה קלט של טקסט
         input.setInputType(InputType.TYPE_CLASS_NUMBER);//הגדרת שדה הקלט שיקלוט רק מספרים
@@ -318,24 +381,58 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "אנא הזן מספר תקין", Toast.LENGTH_SHORT).show();
                     }
                 }   else {
-                TOTAL_PAGES = "0"; // אם לא הוזן יעד, הצג "לא הוגדר"
                 updatePointsDisplay();  // עדכון התצוגה לאחר עדכון היעד
             }
         }
     });
         // הוספת כפתור Cancel
         builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                isDialogOpen = false;
                 hideKeyboard(input);
             }});
 
+        final AlertDialog dialog = builder.create();
+        // במהלך יצירת הדיאלוג, נסמן אותו כפתוח
+        isDialogOpen = true;
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_MENU) {
+                    // לחיצה על כפתור ה-menu תבצע את פעולה של כפתור ה"אישור"
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+                    return true;  // מונע את הפעולה הרגילה של התפריט
+                }
+                return false;  // אם זה לא כפתור Menu, תחזור להתנהגות הרגילה
+            }
+        });
+
+
+        // הוספת מאזין שיתבצע כאשר הדיאלוג נסגר
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isDialogOpen = false;
+                    }
+                }, 1000); // 1000 מילישניות = 1 שניות
+            }
+        });
+
+
+
         // הצגת הדיאלוג
-        builder.show();
+        dialog.show();
+
         // הבאת המוקד (פוקוס) לתוך ה-EditText
         input.requestFocus();
       showKeyboard(input);
     }
+
     public void onClickAddPointButton(View view) {
         if (TOTAL_PAGES.equals("0")) {
             // הוספת נקודה
@@ -409,6 +506,5 @@ public class MainActivity extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
 }
 
