@@ -348,7 +348,18 @@ public class MainActivity extends AppCompatActivity {
             askUserName();
         }
     }
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            String selectedMasechet = data.getStringExtra("selected_masechet");
+            if (selectedMasechet != null && !selectedMasechetList.contains(selectedMasechet)) {
+                selectedMasechetList.add(selectedMasechet);
+                // עדכון ה-ListView
+                ((ArrayAdapter<String>) masechetListView.getAdapter()).notifyDataSetChanged();
+            }
+        }
+    }
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_MENU && isDialogOpen) {
@@ -479,19 +490,21 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R.id.menu_select_maschet) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_select_maschet) {
             Intent intent = new Intent(this, Select_Masechet.class);
-            startActivityForResult(intent, REQUEST_CODE); // כך נוכל לקבל תוצאה
-        }if (menuItem.getItemId() == R.id.menu_settings) {
+            startActivityForResult(intent, REQUEST_CODE);
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, Settings.class));
-        }if (menuItem.getItemId() == R.id.menu_About) {
+        }if (item.getItemId() == R.id.menu_About) {
             startActivity(new Intent(this, About.class));
-        }if (menuItem.getItemId() == R.id.menu_history) {
+        }if (item.getItemId() == R.id.menu_history) {
             startActivity(new Intent(this, History.class));
-        }if (menuItem.getItemId() == R.id.ask_User_Name) {
+        }if (item.getItemId() == R.id.ask_User_Name) {
             askUserName();
-        }else if (menuItem.getItemId() == R.id.menu_set_target){
+        }else if (item.getItemId() == R.id.menu_set_target){
             openSetTargetDialog();
         }
         return true;
