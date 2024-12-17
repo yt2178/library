@@ -152,6 +152,9 @@ public class MainActivity extends AppCompatActivity {
     // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
     private void loadSelectedMasechetFromFile() {
         try {
+            // ניקוי הרשימה לפני הטעינה
+            selectedMasechetList.clear();
+
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
 
             for (String line : lines) {
@@ -352,11 +355,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            String selectedMasechet = data.getStringExtra("selected_masechet");
-            if (selectedMasechet != null && !selectedMasechetList.contains(selectedMasechet)) {
-                selectedMasechetList.add(selectedMasechet);
+            // קבלת הרשימה שנשלחה
+            ArrayList<String> selectedMasechetList = data.getStringArrayListExtra("selected_masechet_list");
+            if (selectedMasechetList != null && !selectedMasechetList.contains(selectedMasechetList)) {
                 // עדכון ה-ListView
-                ((ArrayAdapter<String>) masechetListView.getAdapter()).notifyDataSetChanged();
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
+                masechetListView.setAdapter(adapter);
             }
         }
     }

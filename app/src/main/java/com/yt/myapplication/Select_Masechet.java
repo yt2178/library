@@ -19,8 +19,11 @@ import java.util.Objects;
 
 public class Select_Masechet extends AppCompatActivity {
     private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
-    private ListView masechetListView;
-    private ArrayList<String> masechetList;
+    private ListView masechetListView;//משתנה מסוג ListView שמייצג את הרשימה שמוצגת למשתמש.
+    private ArrayList<String> masechetList;//רשימה (ArrayList) שמכילה את כל המסכתות שמוצגות למשתמש.
+    // רשימה לאחסון המסכתות שנבחרו
+    private ArrayList<String> selectedMasechetList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,46 +95,83 @@ public class Select_Masechet extends AppCompatActivity {
         // הגדרת המתאם לרשימה
         masechetListView.setAdapter(adapter);
 
+        // רשימה של המסכתות שנבחרו
+        ArrayList<String> selectedMasechetList = new ArrayList<>();
+
         // טיפול בלחיצה על פריט ברשימה
         masechetListView.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedMasechet = masechetList.get(position);
-            saveSelectedMasechetToFile(selectedMasechet);
+            String selectedMasechet = masechetList.get(position);//קבלת מיקום הלחיצה ושמירתו במשתנה
+
+            // בדיקה אם המסכת כבר נבחרה
+            if (selectedMasechetList.contains(selectedMasechet)) {
+                Toast.makeText(this, "המסכת כבר נבחרה!", Toast.LENGTH_SHORT).show();
+            } else {
+                // הוספת המסכת שנבחרה לרשימה
+                selectedMasechetList.add(selectedMasechet);
+                // שליחה ל-Intent עם כל המסכתות שנבחרו
+                saveSelectedMasechetToFile(selectedMasechet);
+            }
+
+           //שליחה לפונקציה את המסכתות שנבחרה
             Intent resultIntent = new Intent();//העברת נתונים בין אקטיביטי
-            resultIntent.putExtra("selected_masechet", selectedMasechet);//העברת הנתון המפתח הוא  ב -" " והערך אחרי הפסיק
+            resultIntent.putStringArrayListExtra("selected_masechet_list", selectedMasechetList);//העברת הנתון המפתח הרשימה הוא  ב -" " והערך אחרי הפסיק
             setResult(RESULT_OK, resultIntent);//סיום האקטיביטי והחזרת התוצאה
         });
 
     }
     private void saveSelectedMasechetToFile(String masechet) {
         try {
+            // ניהול הקובץ
             FileManager fileManager = new FileManager(this);
             List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
 
             boolean masechetLineFound = false;
+            boolean masechetAlreadySelected = false;
 
+            // בדיקה אם המסכת כבר נבחרה בעבר
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
                 if (line.startsWith("מסכתות שנבחרו:")) {
-                    if (line.endsWith(",")) {
-                        lines.set(i, line + " " + masechet);}
-                     else {
-                        lines.set(i, line + " " + masechet + ",");
+                    // אם המסכת נמצאת ברשימה, אל תוסיף אותה שוב
+                    String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
+                    String[] selectedMasechetArray = selectedMasechetLine.split(",");
+                    for (String selected : selectedMasechetArray) {
+                        if (selected.trim().equals(masechet)) {
+                            masechetAlreadySelected = true;
+                            break;
+                        }
+                    }
+                    // אם המסכת לא קיימת, הוסף אותה
+                    if (!masechetAlreadySelected) {
+                        if (line.endsWith(",")) {
+                            lines.set(i, line + " " + masechet + ",");  // הוסף את המסכת אחרי פסיק
+                        }
                     }
                     masechetLineFound = true;
                     break;
                 }
             }
 
+            // אם לא נמצאה שורה של "מסכתות שנבחרו:", הוסף שורה חדשה
             if (!masechetLineFound) {
                 lines.add("מסכתות שנבחרו: " + masechet + ",");
             }
 
-            fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+            // אם המסכת כבר נבחרה, הצג הודעת שגיאה
+            if (masechetAlreadySelected) {
+                Toast.makeText(this, "כבר בחרת מסכת זאת!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "המסכת נוספה בהצלחה!", Toast.LENGTH_SHORT).show();
+                // אם לא נבחרה, שמור את השינויים בקובץ
+                fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+            }
 
         } catch (IOException e) {
+            // אם יש שגיאה בקריאת או כתיבת הקובץ, הצג הודעת שגיאה
             Toast.makeText(this, "שגיאה בשמירת המסכת לקובץ!", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() != KeyEvent.ACTION_DOWN) {

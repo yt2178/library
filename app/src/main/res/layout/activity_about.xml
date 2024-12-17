@@ -50,9 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="כותרת"
-            android:textColor="#ffffff"
-            android:textSize="20sp"
+            android:text="אודות"
+            android:textColor="#000000"
+            android:textSize="22sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
