@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         // מציב את ה-Toolbar כ-ActionBar
         Toolbar toolbar = findViewById(R.id.toolbar);
