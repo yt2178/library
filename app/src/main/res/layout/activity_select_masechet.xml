@@ -5,18 +5,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/img_screen_background_select_masechet">
 
-    <TextView
-        android:id="@+id/besad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="@string/besad"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -46,18 +34,17 @@
         android:text="רשימת המסכתות"
         android:textColor="#000000"
         android:textSize="24sp"
-        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/besad" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <ImageView
         android:id="@+id/parchmentBackground"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="12dp"
         android:layout_marginBottom="16dp"
 
         android:scaleType="fitXY"
@@ -70,23 +57,25 @@
         android:id="@+id/masechetListView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="38dp"
         android:layout_marginBottom="32dp"
+        android:background="@android:color/transparent"
         android:divider="#80000000"
         android:dividerHeight="1dp"
         android:fadingEdge="vertical"
         android:fadingEdgeLength="16dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:nextFocusDown="@id/masechetListView"
         android:nextFocusUp="@id/masechetListView"
+        android:nextFocusDown="@id/masechetListView"
         android:scrollbars="none"
-        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@id/parchmentBackground"
         app:layout_constraintEnd_toEndOf="@id/parchmentBackground"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/parchmentBackground"
-        app:layout_constraintTop_toTopOf="@id/parchmentBackground" />
+        app:layout_constraintTop_toTopOf="@id/parchmentBackground"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

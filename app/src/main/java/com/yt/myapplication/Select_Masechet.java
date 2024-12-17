@@ -19,10 +19,10 @@ import java.util.Objects;
 
 public class Select_Masechet extends AppCompatActivity {
     private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
-    private ListView masechetListView;//משתנה מסוג ListView שמייצג את הרשימה שמוצגת למשתמש.
+    private ListView masechetListView;//משתנה מסוג ListView שמייצג את המסכתות שמוצגת למשתמש.
     private ArrayList<String> masechetList;//רשימה (ArrayList) שמכילה את כל המסכתות שמוצגות למשתמש.
-    // רשימה לאחסון המסכתות שנבחרו
-    private ArrayList<String> selectedMasechetList = new ArrayList<>();
+    private ArrayList<String> selectedMasechetList; // רשימה של המסכתות שנבחרו
+    private CustomAdapterListMasechet adapter;// המתאם שלנו
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,7 @@ public class Select_Masechet extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
         masechetListView = findViewById(R.id.masechetListView);
         masechetListView.setFocusable(true);
         masechetListView.setFocusableInTouchMode(true);
@@ -88,15 +89,16 @@ public class Select_Masechet extends AppCompatActivity {
         masechetList.add("מידות");
         masechetList.add("נידה");
 
-        // יצירת מתאם (Adapter) להצגת המסכתות ברשימה
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, masechetList);
+        // יצירת רשימה של המסכתות שנבחרו
+        selectedMasechetList = new ArrayList<>();
+        // קריאת המסכתות שנבחרו מתוך הקובץ
+        loadSelectedMasechetFromFile();
+
+        // יצירת המתאם (Adapter) שלנו שמציג את המסכתות ברשימה
+        adapter = new CustomAdapterListMasechet(this, masechetList, selectedMasechetList);
 
         // הגדרת המתאם לרשימה
         masechetListView.setAdapter(adapter);
-
-        // רשימה של המסכתות שנבחרו
-        ArrayList<String> selectedMasechetList = new ArrayList<>();
 
         // טיפול בלחיצה על פריט ברשימה
         masechetListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -110,6 +112,8 @@ public class Select_Masechet extends AppCompatActivity {
                 selectedMasechetList.add(selectedMasechet);
                 // שליחה ל-Intent עם כל המסכתות שנבחרו
                 saveSelectedMasechetToFile(selectedMasechet);
+                // עדכון המתאם
+                adapter.notifyDataSetChanged();
             }
 
            //שליחה לפונקציה את המסכתות שנבחרה
@@ -118,6 +122,24 @@ public class Select_Masechet extends AppCompatActivity {
             setResult(RESULT_OK, resultIntent);//סיום האקטיביטי והחזרת התוצאה
         });
 
+    }
+    // קריאת המסכתות שנבחרו מתוך הקובץ
+    private void loadSelectedMasechetFromFile() {
+        try {
+            FileManager fileManager = new FileManager(this);
+            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            for (String line : lines) {
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
+                    String[] selectedMasechetArray = selectedMasechetLine.split(",");
+                    for (String selected : selectedMasechetArray) {
+                        selectedMasechetList.add(selected.trim());
+                    }
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בטעינת המסכתות שנבחרו!", Toast.LENGTH_SHORT).show();
+        }
     }
     private void saveSelectedMasechetToFile(String masechet) {
         try {
