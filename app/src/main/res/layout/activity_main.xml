@@ -69,9 +69,10 @@
 
         <ListView
             android:id="@+id/masechetListView"
+            android:divider="@android:color/darker_gray"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:dividerHeight="0.3dp">
         </ListView>
 
     </LinearLayout>

@@ -66,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
 
         // אתחול ה-ListView והרשימה
         selectedmasechetListView = findViewById(R.id.masechetListView);
+        selectedmasechetListView.setFocusable(true);
+        selectedmasechetListView.setFocusableInTouchMode(true);
+        selectedmasechetListView.requestFocus();
+
         selectedMasechetList = new ArrayList<>();
 
         m_fileManager = new FileManager(this);
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
+        selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
 
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -122,7 +127,14 @@ public class MainActivity extends AppCompatActivity {
         }
         updatePointsDisplay();
     }
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // הגדרת פוקוס על ה-ListView
+        selectedmasechetListView.requestFocus();
+        selectedmasechetListView.setFocusable(true);
+        selectedmasechetListView.setFocusableInTouchMode(true);
+    }
 
     @Override
     protected void onPause() {
