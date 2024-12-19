@@ -17,7 +17,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -30,7 +29,7 @@ public class Settings extends AppCompatActivity {
 
     private boolean isFileExist(String fileName) {
         String[] files = m_fileManager.getInternalFileList();
-        return Arrays.asList(files).contains(fileName);
+        return java.util.Arrays.asList(files).contains(fileName);
     }
 
     @Override
@@ -58,18 +57,25 @@ public class Settings extends AppCompatActivity {
 
         // בדיקה אם האפליקציה נפתחה מקובץ .shinantam
         Uri data = getIntent().getData();
-        if (data != null && data.getPath() != null && data.getPath().endsWith(".shinantam")) {
-            Log.d(TAG, "Opening file: " + data.getPath());
-            // הצגת דיאלוג האם לשחזר את הנתונים
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("שחזור נתונים");
-            builder.setMessage("האם ברצונך לשחזר את הנתונים מקובץ הגיבוי?");
-            builder.setPositiveButton("כן", (dialog, which) -> {
-                File backupFile = new File(data.getPath());
-                restoreData(backupFile);
-            });
-            builder.setNegativeButton("לא", null);
-            builder.show();
+        if (data != null) {
+            try {
+                // המרת ה-URI לנתיב קובץ
+                String filePath = UriUtils.getPathFromUri(this, data);
+                if (filePath != null && filePath.endsWith(".shinantam")) {
+                    Log.d(TAG, "Opening file: " + filePath);
+                    // הצגת דיאלוג האם לשחזר את הנתונים
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("שחזור נתונים");
+                    builder.setMessage("האם ברצונך לשחזר את הנתונים מקובץ הגיבוי?");
+                    File backupFile = new File(filePath);
+                    builder.setPositiveButton("כן", (dialog, which) -> restoreData(backupFile));
+                    builder.setNegativeButton("לא", null);
+                    builder.show();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error handling file: " + e.getMessage());
+                Toast.makeText(this, "שגיאה בפתיחת הקובץ", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
