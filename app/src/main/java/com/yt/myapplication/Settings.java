@@ -90,8 +90,17 @@ public class Settings extends AppCompatActivity {
 
             // העתקת הקובץ המקורי לקובץ הגיבוי
             String content = m_fileManager.readInternalFile(TOTAL_USER_DATA_NAME);
+            Log.d(TAG, "Content to backup: " + content);
+
+            // שימוש ב-FileOutputStream עם הוספת סימני שורה חדשה
             FileOutputStream outputStream = new FileOutputStream(backupFile);
-            outputStream.write(content.getBytes());
+            String[] lines = content.split("\n");
+            for (int i = 0; i < lines.length; i++) {
+                outputStream.write(lines[i].getBytes("UTF-8"));
+                if (i < lines.length - 1) {
+                    outputStream.write("\n".getBytes("UTF-8"));
+                }
+            }
             outputStream.close();
 
             Toast.makeText(this, "הגיבוי הושלם בהצלחה!", Toast.LENGTH_SHORT).show();
@@ -137,7 +146,10 @@ public class Settings extends AppCompatActivity {
             inputStream.read(data);
             inputStream.close();
 
-            String content = new String(data);
+            String content = new String(data, "UTF-8");
+            Log.d(TAG, "Content to restore: " + content);
+
+            // שמירת הקובץ עם שמירה על סימני שורה חדשה
             m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, content, false);
 
             Toast.makeText(this, "השחזור הושלם בהצלחה!", Toast.LENGTH_SHORT).show();

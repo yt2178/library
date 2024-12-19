@@ -28,6 +28,7 @@ import androidx.appcompat.widget.Toolbar;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                 lines.add("דפים שנשארו: "+ "0");
                 lines.add("מסכתות שנבחרו: ");
             } else if (lines.size() > 2) {
-
+                lines.set(0,USERNAME_PREFIX + "בחור יקר");
                 lines.set(1, "דפים שנלמדו: " + m_pagesLearned);
                 if (m_pagesRemaining > 0) {
                     lines.set(2, "דפים שנשארו: " + m_pagesRemaining);

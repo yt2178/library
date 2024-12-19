@@ -1,6 +1,7 @@
 package com.yt.myapplication;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -40,7 +41,6 @@ public class Select_Masechet extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
         masechetListView = findViewById(R.id.masechetListView);
         masechetListView.setFocusable(true);
         masechetListView.setFocusableInTouchMode(true);

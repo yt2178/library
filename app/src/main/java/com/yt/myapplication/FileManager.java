@@ -9,6 +9,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,25 +19,22 @@ public class FileManager {
 
     public String readInternalFile(String str) throws IOException {
         String content = "";
-        FileInputStream inputStream = this.m_context.openFileInput(str);
+        InputStream inputStream = this.m_context.openFileInput(str);
         if (inputStream == null) {
             return content;
         }
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         StringBuilder stringBuilder = new StringBuilder();
-        while (true) {
-            String readLine = bufferedReader.readLine();
-            content = readLine;
-            if (readLine != null) {
-                stringBuilder.append(content);
-            } else {
-                bufferedReader.close();
-                inputStreamReader.close();
-                inputStream.close();
-                return stringBuilder.toString();
-            }
+        String separator = System.getProperty("line.separator");
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            stringBuilder.append(line).append(separator);
         }
+        bufferedReader.close();
+        inputStreamReader.close();
+        inputStream.close();
+        return stringBuilder.toString();
     }
 
     public static File getPublicPicturesDirectory(String str) {
@@ -78,9 +77,12 @@ public class FileManager {
         return "mounted".equals(Environment.getExternalStorageState());
     }
 
-    public void writeInternalFile(String str, String str2, boolean z) throws IOException {
-        writeInternalFile(str, str2.getBytes(), z);
+    public void writeInternalFile(String fileName, String content, boolean append) throws IOException {
+        FileOutputStream fos = this.m_context.openFileOutput(fileName, append ? Context.MODE_APPEND : Context.MODE_PRIVATE);
+        fos.write(content.getBytes(Charset.forName("UTF-8")));
+        fos.close();
     }
+
     public void appendToFile(String fileName, String data) throws IOException {
         FileOutputStream outputStream = this.m_context.openFileOutput(fileName, Context.MODE_APPEND);
         outputStream.write((data + "\n").getBytes());
