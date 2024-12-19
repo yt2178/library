@@ -516,19 +516,28 @@ public class MainActivity extends AppCompatActivity {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
+                    // חילוץ המסכתות מתוך השורה
                     String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
                     String[] masechetArray = masechetData.split(",");
 
-                    // יצירת רשימה חדשה עם המסכתות לאחר הסרת המסכת שנבחרה
+                    // יצירת רשימה חדשה של מסכתות תוך התחשבות במסכת להסרה
                     List<String> newMasechetList = new ArrayList<>();
                     for (String masechet : masechetArray) {
-                        if (!masechet.trim().equals(masechetToRemove)) {
-                            newMasechetList.add(masechet.trim());
+                        masechet = masechet.trim();
+                        if (!masechet.equals(masechetToRemove) && !masechet.isEmpty()) {
+                            newMasechetList.add(masechet); // הוספה אם זה לא המסכת להסרה
                         }
                     }
 
+                    // בניית מחרוזת מעודכנת
+                    String updatedMasechetData = String.join(", ", newMasechetList);
+
+                    // הוספת פסיק בסוף אם הרשימה אינה ריקה
+                    if (!updatedMasechetData.isEmpty()) {
+                        updatedMasechetData += ",";
+                    }
+
                     // עדכון השורה בקובץ
-                    String updatedMasechetData = String.join(",", newMasechetList);
                     lines.set(i, "מסכתות שנבחרו: " + updatedMasechetData);
 
                     // כתיבת הנתונים המעודכנים לקובץ
