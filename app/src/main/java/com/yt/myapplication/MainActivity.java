@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
+    private static final String TOTAL_USER_DATA = "user_data.shinantam";
     // הגדרה של קבוע
     private static final String USERNAME_PREFIX = "שם משתמש: ";
     private static final int REQUEST_CODE = 1;
@@ -64,59 +64,38 @@ public class MainActivity extends AppCompatActivity {
         });
         checkIfUserNameExists();
         updatePointsDisplay();
-
+        this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
+        this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         // אתחול ה-ListView והרשימה
         selectedmasechetListView = findViewById(R.id.masechetListView);
         selectedmasechetListView.setFocusable(true);
         selectedmasechetListView.setFocusableInTouchMode(true);
         selectedmasechetListView.requestFocus();
-
         selectedMasechetList = new ArrayList<>();
-
         m_fileManager = new FileManager(this);
-
-        isDialogOpen = false;
+        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכל להפתח כרגיל
 
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
-
+        //לחיצה ארוכה על מסכת מהרשימה תפעיל פונקציה
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                String masechetToRemove = selectedMasechetList.get(position); // המסכת שנבחרה
-                showRemoveMasechetDialog(masechetToRemove, position); // הצגת דיאלוג לאישור
+                String masechetToRemove = selectedMasechetList.get(position); // המסכת שנבחרה נשמרת במשתנה
+                showRemoveMasechetDialog(masechetToRemove, position); // שליחת המסכת לפונקציה והפעלת הפונקציה
                 return true; // מנע את פעולתו הרגילה של הלחיצה
             }
         });
-
-        this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
-        this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
         this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
         try {
-        File file = new File(getFilesDir(), TOTAL_USER_DATA_NAME);
-        if (!file.exists()) {
-            // אם הקובץ לא קיים, יצור אותו עם נתוני ברירת מחדל
-            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו: 0", false);
-            Toast.makeText(this, "כניסה ראשונה, ברוכים הבאים!", Toast.LENGTH_SHORT).show();
-            return; // צא מהפונקציה כי אין צורך להמשיך
-        }
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
-            if (lines.isEmpty()) {//אם הרשימה ריקה
-                lines.add(USERNAME_PREFIX + "בחור יקר");
-                lines.add("דפים שנלמדו: " + m_pagesLearned);
-                lines.add("דפים שנשארו: "+ m_pagesRemaining);
-                lines.add("מסכתות שנבחרו: ");
-                this.m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, "דפים שנלמדו: 0", false);
-                Toast.makeText(this, "!כניסה ראשונה, ברוכים הבאים", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             for (String line : lines) {
                 // קריאת המסכתות שנבחרו מהקובץ
                 loadSelectedMasechetFromFile();
                 if (line.startsWith("דפים שנלמדו: ")) {
-                    // חותך את "דפים שנלמדו:" בלי לציין מספר קבוע ושומר אות במשתנה
+                    // חותך את "דפים שנלמדו:"  ושומר אותו במשתנה
                     String learnedPages = line.substring("דפים שנלמדו: ".length());
                     this.m_pagesLearned = Integer.parseInt(learnedPages);
                     break;
@@ -142,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         isDialogOpen = false;
         try {
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             if (lines.isEmpty()) {
                 lines.add(USERNAME_PREFIX + "בחור יקר");
                 lines.add("דפים שנלמדו: " + "0");
@@ -162,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 lines.add("דפים שנשארו: "+ m_pagesRemaining);
                 }
 
-            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
         } catch (IOException e) {
             Toast.makeText(this, "לא ניתן לשמור את נתוני המשתמש!", Toast.LENGTH_SHORT).show();
         }
@@ -170,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     private void checkIfUserNameExists() {
         try {
             this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);//קריאת הקובץ
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
              for (String line : lines) {
                 if (line.startsWith(USERNAME_PREFIX)) {
                     String userName = line.substring(USERNAME_PREFIX.length()).trim(); // חתוך את "שם משתמש: " בלי לציין מספר קבוע,,והסר רווחים מיותרים
@@ -191,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             // ניקוי הרשימה לפני הטעינה
             selectedMasechetList.clear();
 
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
 
             for (String line : lines) {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
@@ -224,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText input = new EditText(this);//יצירת שדה קלט של טקסט
         builder.setView(input);//הכנסת  שדה הקלט לדיאלוג
         try {//קריאה לשם המשתמש הקיים והכנסתו כשקוף לשדה הקלט
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             String UserNameDefault = "בחור יקר"; // ברירת מחדל
                 for (String line : lines) {
                     if (line.startsWith(USERNAME_PREFIX)) {
@@ -237,13 +216,12 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "אירעה שגיאה בקריאת שם המשתמש הקודם", Toast.LENGTH_SHORT).show();
         }
         builder.setPositiveButton("אישור", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String userName = input.getText().toString();//לקיחת הטקסט שהוכנס והפיכתו למשתנה
                 try {
                     m_fileManager = new FileManager(MainActivity.this); // יצירת אובייקט לניהול קבציםיצירת אובייקט לניהול קבצים
-                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);//קריאת הקובץ
+                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
                     if (userName.isEmpty()) {
                         userName = "בחור יקר";  // אם לא הוזן שם, הגדר המשתנה כברירת מחדל
                     }
@@ -256,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
                             break;  // יציאה מהלולאה לאחר עדכון
                         }
                     }
-                m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME,String.join("\n",lines),false);
+                m_fileManager.writeInternalFile(TOTAL_USER_DATA,String.join("\n",lines),false);
                         if (userName.equals("בחור יקר")) {
                             Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
                         }else {
@@ -272,28 +250,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME); // קריאת הקובץ
-                String userName = "בחור יקר";  // אם נלחץ על ביטול, הגדר את השם כ"בחור יקר"
+                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA); // קריאת הקובץ
+                String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
+                   //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
                     for (int i = 0; i < lines.size(); i++) {
                         String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
                         if (line.startsWith(USERNAME_PREFIX)) {
-                            // אם השורה מתחילה ב-"שם משתמש:", עדכון השם בקובץ
-                            String currentUserName = line.substring(USERNAME_PREFIX.length()).trim(); // חותך את השם אחרי "שם משתמש:"
-                            if (!currentUserName.isEmpty()) {
-                                // אם יש שם משתמש (לא ריק), נשאיר את השם הקיים
-                                userName = currentUserName;
+                            // אם השורה מתחילה ב-"שם משתמש:", חותך את השם אחרי "שם משתמש:" ושומר אותו במשתנה
+                            String currentUserName = line.substring(USERNAME_PREFIX.length()).trim(); //
+                            if (!currentUserName.isEmpty()) {//אם המשתנה לא ריק
+                                userName = currentUserName;//מגדיר את המשתנה בשם שנחתך
+                                Toast.makeText(MainActivity.this, "שם המשתמש נשאר כפי שהיה.", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
                             }
                             break;  // יציאה מהלולאה אחרי שמצאנו את השם
                         }
                     }
-                    // אם לא נמצא שם משתמש, נשאיר את השם כ"בחור יקר" כברירת מחדל
-                    if (userName.equals("בחור יקר")) {
-                    Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, "שם המשתמש נשאר כפי שהיה.", Toast.LENGTH_SHORT).show();
-                    }
-                    // כתיבה לקובץ עם שם המשתמש הנוכחי (ללא שינוי אם כבר היה שם משתמש)
-                    m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+                    //איחוד כל הורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                     hideKeyboard(input); // הסתרת המקלדת
 
                 } catch (IOException e) {
@@ -305,20 +280,30 @@ public class MainActivity extends AppCompatActivity {
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                String userName = "בחור יקר";  // הגדרת שם ברירת מחדל במקרה של ביטול הדיאלוג
                 try {
-                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);//קורא את הקובץ לרשימה שנשמרת במשתנה
-                    if (lines.isEmpty()) {//אם  כל השורות ריקות
-                        lines.add(USERNAME_PREFIX + userName); // שורה ראשונה: שם המשתמש
-                    }else {
-                        // אם השורות לא ריקות, אנחנו לא רוצים לשנות את השם אם יש שם קודם.
-                        if (lines.get(0).startsWith(USERNAME_PREFIX)) {
-                            return;  // אם השם כבר קיים בשורה הראשונה, אל תשנה אותו
+                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA); // קריאת הקובץ
+                    String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
+                    //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
+                    for (int i = 0; i < lines.size(); i++) {
+                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                        if (line.startsWith(USERNAME_PREFIX)) {
+                            // אם השורה מתחילה ב-"שם משתמש:", חותך את השם אחרי "שם משתמש:" ושומר אותו במשתנה
+                            String currentUserName = line.substring(USERNAME_PREFIX.length()).trim(); //
+                            if (!currentUserName.isEmpty()) {//אם המשתנה לא ריק
+                                userName = currentUserName;//מגדיר את המשתנה בשם שנחתך
+                                Toast.makeText(MainActivity.this, "שם המשתמש נשאר כפי שהיה.", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
+                            }
+                            break;  // יציאה מהלולאה אחרי שמצאנו את השם
                         }
                     }
-                        lines.set(0, USERNAME_PREFIX + userName); // הגדרת שם ברירת מחדל בשורה הראשונה
+                    //איחוד כל הורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    hideKeyboard(input); // הסתרת המקלדת
+
                 } catch (IOException e) {
-                    Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל כשבוצעה יציאה מהדיאלוג", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -326,25 +311,33 @@ public class MainActivity extends AppCompatActivity {
         builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                String userName = "בחור יקר";  // הגדרת שם ברירת מחדל במקרה של ביטול הדיאלוג
                 try {
-                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
-                    if (lines.isEmpty()) {
-                        lines.add(USERNAME_PREFIX + userName); // אם כל השורות ריקות
-                    } else {
-                        // אם השורות לא ריקות, אנחנו לא רוצים לשנות את השם אם יש שם קודם.
-                        if (lines.get(0).startsWith(USERNAME_PREFIX)) {
-                            return;  // אם השם כבר קיים בשורה הראשונה, אל תשנה אותו
+                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA); // קריאת הקובץ
+                    String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
+                    //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
+                    for (int i = 0; i < lines.size(); i++) {
+                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                        if (line.startsWith(USERNAME_PREFIX)) {
+                            // אם השורה מתחילה ב-"שם משתמש:", חותך את השם אחרי "שם משתמש:" ושומר אותו במשתנה
+                            String currentUserName = line.substring(USERNAME_PREFIX.length()).trim(); //
+                            if (!currentUserName.isEmpty()) {//אם המשתנה לא ריק
+                                userName = currentUserName;//מגדיר את המשתנה בשם שנחתך
+                                Toast.makeText(MainActivity.this, "שם המשתמש נשאר כפי שהיה.", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
+                            }
+                            break;  // יציאה מהלולאה אחרי שמצאנו את השם
                         }
-                        lines.set(0, USERNAME_PREFIX + userName); // הגדרת שם ברירת מחדל בשורה הראשונה
                     }
-                    m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+                    //איחוד כל הורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    hideKeyboard(input); // הסתרת המקלדת
+
                 } catch (IOException e) {
-                    Toast.makeText(MainActivity.this, "אירעה שגיאה בהגדרת שם משתמש ברירת מחדל כשבוצעה יציאה מהדיאלוג", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
         final AlertDialog dialog = builder.create();
         // במהלך יצירת הדיאלוג, נסמן אותו כפתוח
         isDialogOpen = true;
@@ -354,12 +347,12 @@ public class MainActivity extends AppCompatActivity {
                 if (keyCode == KeyEvent.KEYCODE_MENU) {
                     // לחיצה על כפתור ה-menu תבצע את פעולה של כפתור ה"אישור"
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
-                    return true;  // מונע את הפעולה הרגילה של התפריט
+                    return true;  // מונע את הפעולה הרגילה של כפתור התפריט
                 }
-                return false;  // אם זה לא כפתור Menu, תחזור להתנהגות הרגילה
+                return false;// אם זה לא כפתור Menu, תחזור להתנהגות הרגילה
             }
         });
-        // הוספת מאזין שיתבצע כאשר הדיאלוג נסגר
+        // הוספת טיימר שמנטרל את כפתור התפריט לחצי שנייה כאשר הדיאלוג נסגר
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -371,11 +364,9 @@ public class MainActivity extends AppCompatActivity {
                 }, 500); // 1000 מילישניות = 1 שניות
             }
         });
-
-
-        dialog.show();
         // הבאת המוקד (פוקוס) לתוך ה-EditText
         input.requestFocus();
+        dialog.show();
         showKeyboard(input);
     }
     private void openSetTargetDialog(){
@@ -504,7 +495,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void removeMasechetFromFile(String masechetToRemove) {
         try {
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
                     // חילוץ המסכתות מתוך השורה
@@ -532,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
                     lines.set(i, "מסכתות שנבחרו: " + updatedMasechetData);
 
                     // כתיבת הנתונים המעודכנים לקובץ
-                    m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                     break;
                 }
             }
@@ -544,10 +535,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_MENU && isDialogOpen) {
-            // מונעים את פתיחת התפריט אם הדיאלוג פתוח
+            //אם הוא מקבל true מה שאומר "האירוע טופל" אין צורך לעשות את מה שזה עושה בד"כ (שזה פתיחת התפריט)
             return true;  // חוסם את ההתנהגות הרגילה של כפתור ה-Menu
         }
-        return super.dispatchKeyEvent(event);
+        return super.dispatchKeyEvent(event); //עושה את הפעולות שבדר"כ הוא עושה (שזה פתיחת התפריט)
     }
     public void onClickAddPointButton(View view) {
         if (TOTAL_PAGES.equals("0")) {
