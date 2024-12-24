@@ -24,6 +24,7 @@ public class Welcome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //הצגה על כל המסך
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_welcome);
         textViewUserName = findViewById(R.id.textViewUserName); // קבלת גישה לתיבת הטקסט
