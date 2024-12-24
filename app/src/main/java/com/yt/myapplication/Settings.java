@@ -164,4 +164,5 @@ public class Settings extends AppCompatActivity {
             Toast.makeText(this, "שגיאה בשחזור: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
 }
