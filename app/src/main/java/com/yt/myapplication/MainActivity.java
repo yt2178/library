@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 if (line.startsWith("דפים שנלמדו: ")) {
                     // חותך את "דפים שנלמדו:"  ושומר אותו במשתנה
                     String learnedPages = line.substring("דפים שנלמדו: ".length());
+                    // ממיר את learnedPages למספר ושומר אותו במשתנה m_pagesLearned
                     this.m_pagesLearned = Integer.parseInt(learnedPages);
                     break;
                 }
