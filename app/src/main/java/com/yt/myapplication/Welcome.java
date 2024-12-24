@@ -68,7 +68,8 @@ public class Welcome extends AppCompatActivity {
                 }
             }
         }catch (IOException e) {
-            Toast.makeText(Welcome.this, "שגיאה בגישה לקובץ נתוני המשתמש", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Welcome.this, "לא ניתן לשמור נתונים", Toast.LENGTH_SHORT).show();
+            // ליצור בעתיד פתיחת התמיכה במקרה שלא מצליח ליצור את הקובץ
         }
     }
 }
