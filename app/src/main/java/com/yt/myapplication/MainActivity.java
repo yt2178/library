@@ -64,21 +64,20 @@ public class MainActivity extends AppCompatActivity {
         });
         checkIfUserNameExists();
         updatePointsDisplay();
-        this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);
-        this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);
-        // אתחול ה-ListView והרשימה
-        selectedmasechetListView = findViewById(R.id.masechetListView);
-        selectedmasechetListView.setFocusable(true);
-        selectedmasechetListView.setFocusableInTouchMode(true);
-        selectedmasechetListView.requestFocus();
+        this.textViewNumberPagesLearned = (TextView) findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
+        this.textViewNumberPagesRemaining = (TextView) findViewById(R.id.textViewNumberPagesRemaining);//מציאת ה-ID של דפים שנשארו
+        selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
+        selectedmasechetListView.setFocusable(true);//פוקוס
+        selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
+        selectedmasechetListView.requestFocus();//פוקוס
         selectedMasechetList = new ArrayList<>();
         m_fileManager = new FileManager(this);
-        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכל להפתח כרגיל
+        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
-        //לחיצה רגילה על מסכת מהרשימה תפעיל פונקציה - בעתיד
+        //********לחיצה רגילה על מסכת מהרשימה תפעיל פונקציה - בעתיד*****
 
         //לחיצה ארוכה על מסכת מהרשימה תפעיל פונקציה
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -120,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {//יציאה ממצב פעיל ועובד ברקע
         super.onPause();
-        isDialogOpen = false;
+        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             if (lines.isEmpty()) {
@@ -147,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "לא ניתן לשמור את נתוני המשתמש!", Toast.LENGTH_SHORT).show();
         }
     }
+    //נבדק
     private void checkIfUserNameExists() {
         try {
             this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
@@ -164,40 +164,7 @@ public class MainActivity extends AppCompatActivity {
             askUserName();
         }
     }
-
-    // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
-    private void loadSelectedMasechetFromFile() {
-        try {
-            // ניקוי הרשימה לפני הטעינה
-            selectedMasechetList.clear();
-
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
-
-            for (String line : lines) {
-                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
-                if (line.startsWith("מסכתות שנבחרו:")) {
-                   // חיתוך המידע ללא רווח עד סוף השורה אחרי "מסכתות שנבחרו:"והפיכתו למשתנה שמכיל את כל רשימת המסכתות
-                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-
-                    if (masechetData.endsWith(",")) { // אם יש פסיק בסוף, נוודא שאין אותו
-                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
-                    }
-
-                    // חיתוך המידע לפי פסיקים
-                    String[] masechetArray = masechetData.split(",");
-
-                    // הוספת כל המסכתות לרשימה
-                    for (String masechet : masechetArray) {
-                        selectedMasechetList.add(masechet.trim());
-                    }
-                    break; // מצאנו את השורה, אין צורך להמשיך לחפש
-                }
-            }
-
-        } catch (IOException e) {
-            Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
-        }
-    }
+    //נבדק
     private void askUserName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("הזן את שמך");
@@ -221,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String userName = input.getText().toString();//לקיחת הטקסט שהוכנס והפיכתו למשתנה
                 try {
-                    m_fileManager = new FileManager(MainActivity.this); // יצירת אובייקט לניהול קבציםיצירת אובייקט לניהול קבצים
+                    m_fileManager = new FileManager(MainActivity.this); //יצירת אובייקט לניהול קבצים
                     List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
                     if (userName.isEmpty()) {
                         userName = "בחור יקר";  // אם לא הוזן שם, הגדר המשתנה כברירת מחדל
@@ -235,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                             break;  // יציאה מהלולאה לאחר עדכון
                         }
                     }
+                    //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
                 m_fileManager.writeInternalFile(TOTAL_USER_DATA,String.join("\n",lines),false);
                         if (userName.equals("בחור יקר")) {
                             Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
@@ -268,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                             break;  // יציאה מהלולאה אחרי שמצאנו את השם
                         }
                     }
-                    //איחוד כל הורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
+                    //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                     hideKeyboard(input); // הסתרת המקלדת
 
@@ -340,8 +308,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final AlertDialog dialog = builder.create();
-        // במהלך יצירת הדיאלוג, נסמן אותו כפתוח
-        isDialogOpen = true;
+        isDialogOpen = true;//הדיאלוג מוגדר כפתוח והתפריט לא יכול להפתח
         dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent event) {
@@ -360,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        isDialogOpen = false;
+                        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
                     }
                 }, 500); // 1000 מילישניות = 1 שניות
             }
@@ -369,6 +336,40 @@ public class MainActivity extends AppCompatActivity {
         input.requestFocus();
         dialog.show();
         showKeyboard(input);
+    }
+
+    // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
+    private void loadSelectedMasechetFromFile() {
+        try {
+            // ניקוי הרשימה לפני הטעינה
+            selectedMasechetList.clear();
+
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+
+            for (String line : lines) {
+                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    // חיתוך המידע ללא רווח עד סוף השורה אחרי "מסכתות שנבחרו:"והפיכתו למשתנה שמכיל את כל רשימת המסכתות
+                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
+
+                    if (masechetData.endsWith(",")) { // אם יש פסיק בסוף, נוודא שאין אותו
+                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
+                    }
+
+                    // חיתוך המידע לפי פסיקים
+                    String[] masechetArray = masechetData.split(",");
+
+                    // הוספת כל המסכתות לרשימה
+                    for (String masechet : masechetArray) {
+                        selectedMasechetList.add(masechet.trim());
+                    }
+                    break; // מצאנו את השורה, אין צורך להמשיך לחפש
+                }
+            }
+
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
+        }
     }
     private void openSetTargetDialog(){
         // יצירת דיאלוג
@@ -403,13 +404,12 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                isDialogOpen = false;
+                isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
                 hideKeyboard(input);
             }});
 
         final AlertDialog dialog = builder.create();
-        // במהלך יצירת הדיאלוג, נסמן אותו כפתוח
-        isDialogOpen = true;
+        isDialogOpen = true;//הדיאלוג מוגדר כפתוח והתפריט לא יכול להפתח
         dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
             public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent event) {
@@ -430,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        isDialogOpen = false;
+                        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
                     }
                 }, 500); // 1000 מילישניות = 1 שניות
             }
