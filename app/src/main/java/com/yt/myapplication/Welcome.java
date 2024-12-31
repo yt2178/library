@@ -18,7 +18,7 @@ import java.util.List;
 
 public class Welcome extends AppCompatActivity {
     private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
-    private static final String USERNAME_PREFIX = "שם משתמש: ";
+    private static final String USERNAME_PREFIX = "שם משתמש:";
     // הצהרת משתנה textViewUserName
     private TextView textViewUserName;
     @Override
