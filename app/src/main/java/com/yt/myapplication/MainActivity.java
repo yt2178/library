@@ -69,20 +69,28 @@ public class MainActivity extends AppCompatActivity {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
             // לולאת חיפוש שם המשתמש בקובץ
             for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנלמדו:")) {//אם השורה מתחילה ב-"דפים שנלמדו:"
                         //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
                         String PagesLearned = line.substring("דפים שנלמדו:".length()).trim();
+                    if (!PagesLearned.isEmpty()) { // בדיקה אם המחרוזת אינה ריקה
                         m_pagesLearned = Integer.parseInt(PagesLearned);
+                    } else {
+                        m_pagesLearned = 0; // ערך ברירת מחדל במקרה של מחרוזת ריקה
+                    }
                     break;  // יציאה מהלולאה לאחר עדכון
                 }
             }
             for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנשארו:")) {//אם השורה מתחילה ב-"דפים שנשארו:"
                     //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
                     String PagesRemaining = line.substring("דפים שנשארו:".length()).trim();
-                    m_pagesRemaining = Integer.parseInt(PagesRemaining);
+                    if (!PagesRemaining.isEmpty()) { // בדיקה אם המחרוזת אינה ריקה
+                        m_pagesRemaining = Integer.parseInt(PagesRemaining);
+                    } else {
+                        m_pagesRemaining = 0; // ערך ברירת מחדל במקרה של מחרוזת ריקה
+                    }
                     break;  // יציאה מהלולאה לאחר עדכון
                 }
             }
@@ -128,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
         updateDafDisplay();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
     }
-    //נבדק
     private void checkIfUserNameExists() {
         try {
             this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
@@ -145,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {//אם הקובץ לא נמצא
             askUserName();
         }
-    }
+    }//נבדק
     //נבדק
     private void askUserName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);//בניית הדיאלוג
@@ -177,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // לולאת חיפוש שם המשתמש בקובץ
                     for (int i = 0; i < lines.size(); i++) {
-                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                         if (line.startsWith(USERNAME_PREFIX)) {
                             // אם השורה מתחילה ב-"שם משתמש:", עדכון השם בקובץ
                             lines.set(i, USERNAME_PREFIX + userName);  // עדכון השם בַּשורה המתאימה
@@ -205,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                 String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
                    //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
                     for (int i = 0; i < lines.size(); i++) {
-                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                         if (line.startsWith(USERNAME_PREFIX)) {
                             // אם השורה מתחילה ב-"שם משתמש:", חותך את השם אחרי "שם משתמש:" ושומר אותו במשתנה
                             String currentUserName = line.substring(USERNAME_PREFIX.length()).trim(); //
@@ -236,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                     String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
                     //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
                     for (int i = 0; i < lines.size(); i++) {
-                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                         if (line.startsWith(USERNAME_PREFIX)) {
                             // אם השורה מתחילה ב-"שם משתמש:", חותך את השם אחרי "שם משתמש:" ושומר אותו במשתנה
                             String currentUserName = line.substring(USERNAME_PREFIX.length()).trim(); //
@@ -267,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                     String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
                     //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
                     for (int i = 0; i < lines.size(); i++) {
-                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                        String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                         if (line.startsWith(USERNAME_PREFIX)) {
                             // אם השורה מתחילה ב-"שם משתמש:", חותך את השם אחרי "שם משתמש:" ושומר אותו במשתנה
                             String currentUserName = line.substring(USERNAME_PREFIX.length()).trim(); //
@@ -319,7 +326,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         showKeyboard(input);
     }
-    //נבדק
     private void openSetTargetDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);//בניית הדיאלוג
         builder.setTitle("אנא הגדר יעד דפים");//הגדרת כותרת לדיאלוג
@@ -342,8 +348,8 @@ public class MainActivity extends AppCompatActivity {
                         m_pagesRemaining = Integer.parseInt(target);//המרת המשתנה הסטרינגי למשתנה המספרי
                         m_pagesRemaining -= m_pagesLearned;//הפחתת הדפים שנלמדו מהדפים שנותרו
                         Toast.makeText(MainActivity.this, "היעד הוגדר בהצלחה!", Toast.LENGTH_LONG).show();
-                        updateDafDisplay();// עדכון התצוגה והקובץ לאחר עדכון היעד
-                        updateDafInTheFile();
+                        updateDafDisplay();//עדכון התצוגה לאחר עדכון היעד
+                        updateDafInTheFile();//עדכון הקובץ לאחר עדכון היעד
                     } catch (NumberFormatException e) {
                         Toast.makeText(MainActivity.this, "אנא הזן מספר תקין", Toast.LENGTH_SHORT).show();
                     }
@@ -352,13 +358,11 @@ public class MainActivity extends AppCompatActivity {
         });
         // הוספת כפתור Cancel
         builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
                 hideKeyboard(input);
             }});
-
         final AlertDialog dialog = builder.create();//הדיאלוג נוצר על פי ההגדרות שבוצעו עד כה.
         isDialogOpen = true;//הדיאלוג מוגדר כפתוח והתפריט לא יכול להפתח
         dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -381,20 +385,20 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
                     }
-                }, 500); // 1000 מילישניות = 1 שניות
+                }, 500); // 500 מילישניות = 0.5 שניות
             }
         });
         dialog.show();// הצגת הדיאלוג
         input.requestFocus();// הבאת המוקד (פוקוס) לתוך ה-EditText
         showKeyboard(input);//הצגת המקלדת
-    }
+    }//נבדק
     private void updateDafInTheFile (){
         try {
             m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
             // לולאת חיפוש שם המשתמש בקובץ
             for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנלמדו:")) {
                     // אם השורה מתחילה ב-"שם משתמש:", עדכון השם בקובץ
                     lines.set(i, "דפים שנלמדו:" + m_pagesLearned);  // עדכון השם בַּשורה המתאימה
@@ -402,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
+                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנשארו:")) {
                     // אם השורה מתחילה ב-"שם משתמש:", עדכון השם בקובץ
                     lines.set(i, "דפים שנשארו:" + m_pagesRemaining);  // עדכון השם בַּשורה המתאימה
@@ -414,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
+    }//נבדק
     @SuppressLint("SetTextI18n")
     private void updateDafDisplay() {
         // עדכון התצוגה לאחר שמירת הנתונים בקובץ
@@ -424,27 +428,22 @@ public class MainActivity extends AppCompatActivity {
         } else {
             this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + this.m_pagesRemaining);
         }
-    }
+    }//נבדק
     private void loadSelectedMasechetFromFile() { // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
         try {
             // ניקוי הרשימה לפני הטעינה
             selectedMasechetList.clear();
-
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
-
             for (String line : lines) {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // חיתוך המידע ללא רווח עד סוף השורה אחרי "מסכתות שנבחרו:"והפיכתו למשתנה שמכיל את כל רשימת המסכתות
                     String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-
                     if (masechetData.endsWith(",")) { // אם יש פסיק בסוף, נוודא שאין אותו
                         masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
                     }
-
                     // חיתוך המידע לפי פסיקים
                     String[] masechetArray = masechetData.split(",");
-
                     // הוספת כל המסכתות לרשימה
                     for (String masechet : masechetArray) {
                         selectedMasechetList.add(masechet.trim());
@@ -452,7 +451,6 @@ public class MainActivity extends AppCompatActivity {
                     break; // מצאנו את השורה, אין צורך להמשיך לחפש
                 }
             }
-
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
         }
@@ -477,13 +475,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    //נבדק
     public void onClickAddPointButton(View view) {//לחיצה על כפתור הוספה
         if (!(this.m_pagesRemaining == 0)) { //כל עוד הדפים שנשארו הם לא 0
             this.m_pagesLearned++;//הוספת מספר לדפים שנלמדו
             this.m_pagesRemaining--;//הסרת מספר מהדפים שנותרו
-            updateDafDisplay();// עדכון התצוגה והקובץ לאחר עדכון היעד
-            updateDafInTheFile();
+            updateDafDisplay();// עדכון התצוגה לאחר עדכון היעד
+            updateDafInTheFile();//עדכון הקובץ לאחר עדכון היעד
             if (this.m_pagesRemaining == 0) {// בדיקה אם המשתמש השלים את כל הדפים
                 startActivity(new Intent(this,CongratulationsActivity.class));
             }
@@ -491,18 +488,17 @@ public class MainActivity extends AppCompatActivity {
             openSetTargetDialog();
             Toast.makeText(this, "כדאי להגדיר יעד ומטרה!", Toast.LENGTH_LONG).show();
         }
-    }
-    //נבדק
+    }//נבדק
     public void onClickRemovePointButton(View view) {//לחיצה על כפתור הסרה
         if (this.m_pagesLearned > 0) {//בדיקה שהדפים שנלמדו לא יורדים מתחת ל-0
             this.m_pagesRemaining++;//הוספת מספר לדפים שנותרו
             this.m_pagesLearned--;//הסרת מספר מהדפים שנלמדו
-            updateDafDisplay();// עדכון התצוגה והקובץ לאחר עדכון היעד
+            updateDafDisplay();//עדכון התצוגה לאחר עדכון היעד
+            updateDafInTheFile();//עדכון הקובץ לאחר עדכון היעד
             return;
         }
         Toast.makeText(this, "לא ניתן לרדת מתחת ל-0 דף!", Toast.LENGTH_SHORT).show();
-    }
-    //נבדק
+    }//נבדק
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_select_maschet) {
             Intent intent = new Intent(this, Select_Masechet.class);
@@ -521,13 +517,11 @@ public class MainActivity extends AppCompatActivity {
             openSetTargetDialog();
         }
         return true;
-    }
-    //נבדק
+    } //נבדק
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
-    }
-    //נבדק
+    }//נבדק
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_MENU && isDialogOpen) {
@@ -535,7 +529,7 @@ public class MainActivity extends AppCompatActivity {
             return true;  // חוסם את ההתנהגות הרגילה של כפתור ה-Menu
         }
         return super.dispatchKeyEvent(event); //עושה את הפעולות שבדר"כ הוא עושה (שזה פתיחת התפריט)
-    }
+    }//נבדק
     private void showRemoveMasechetDialog(final String masechetToRemove, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("האם אתה בטוח שברצונך להסיר את המסכת: " + masechetToRemove + "?")
