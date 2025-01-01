@@ -84,7 +84,7 @@ public class Select_Masechet extends AppCompatActivity {
         masechetList.add("תמורה");
         masechetList.add("כריתות");
         masechetList.add("מעילה");
-        masechetList.add("קינים");
+        masechetList.add("קנים");
         masechetList.add("תמיד");
         masechetList.add("מידות");
         masechetList.add("נידה");
