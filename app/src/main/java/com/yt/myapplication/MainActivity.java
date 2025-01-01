@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        // יצירת אובייקט FileManager
-        m_fileManager = new FileManager(this);
         this.textViewNumberPagesLearned = findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
         this.textViewNumberPagesRemaining = findViewById(R.id.textViewNumberPagesRemaining);//מציאת ה-ID של דפים שנשארו
+        // יצירת אובייקט FileManager
+        m_fileManager = new FileManager(this);
         // קריאת הנתונים מהקובץ לפני כל שימוש במשתנים
         try {
             m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
@@ -70,17 +70,19 @@ public class MainActivity extends AppCompatActivity {
             // לולאת חיפוש שם המשתמש בקובץ
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
-                if (line.startsWith("דפים שנלמדו:")) {
-                    // אם השורה מתחילה ב-"שם משתמש:", עדכון השם בקובץ
-                    lines.set(i, "דפים שנלמדו:" + m_pagesLearned);  // עדכון השם בַּשורה המתאימה
+                if (line.startsWith("דפים שנלמדו:")) {//אם השורה מתחילה ב-"דפים שנלמדו:"
+                        //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
+                        String PagesLearned = line.substring("דפים שנלמדו:".length()).trim();
+                        m_pagesLearned = Integer.parseInt(PagesLearned);
                     break;  // יציאה מהלולאה לאחר עדכון
                 }
             }
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה מספרי
-                if (line.startsWith("דפים שנשארו:")) {
-                    // אם השורה מתחילה ב-"שם משתמש:", עדכון השם בקובץ
-                    lines.set(i, "דפים שנשארו:" + m_pagesRemaining);  // עדכון השם בַּשורה המתאימה
+                if (line.startsWith("דפים שנשארו:")) {//אם השורה מתחילה ב-"דפים שנשארו:"
+                    //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
+                    String PagesRemaining = line.substring("דפים שנשארו:".length()).trim();
+                    m_pagesRemaining = Integer.parseInt(PagesRemaining);
                     break;  // יציאה מהלולאה לאחר עדכון
                 }
             }
@@ -89,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         }
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
         updateDafDisplay();//עדכון התצוגה
-        updateDafInTheFile();
         selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
         selectedmasechetListView.setFocusable(true);//פוקוס
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
@@ -125,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {//יציאה ממצב פעיל ועובד ברקע
         super.onPause();
         updateDafDisplay();
-        updateDafInTheFile();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
     }
     //נבדק
@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
                             break;  // יציאה מהלולאה אחרי שמצאנו את השם
                         }
                     }
-                    //איחוד כל הורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
+                    //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                     hideKeyboard(input); // הסתרת המקלדת
 
