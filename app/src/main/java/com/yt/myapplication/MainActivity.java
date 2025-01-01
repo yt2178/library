@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-
+import android.widget.Spinner;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isDialogOpen = false;
     private ListView selectedmasechetListView;
     private List<String> selectedMasechetList; // הוספנו את הרשימה כאן
-
+    private Spinner spinner;
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -61,8 +61,9 @@ public class MainActivity extends AppCompatActivity {
         });
         this.textViewNumberPagesLearned = findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
         this.textViewNumberPagesRemaining = findViewById(R.id.textViewNumberPagesRemaining);//מציאת ה-ID של דפים שנשארו
-        // יצירת אובייקט FileManager
-        m_fileManager = new FileManager(this);
+        selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
+        spinner = findViewById(R.id.spinner);
+        m_fileManager = new FileManager(this);// יצירת אובייקט FileManager
         // קריאת הנתונים מהקובץ לפני כל שימוש במשתנים
         try {
             m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
@@ -99,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         }
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
         updateDafDisplay();//עדכון התצוגה
-        selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
         selectedmasechetListView.setFocusable(true);//פוקוס
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
         selectedmasechetListView.requestFocus();//פוקוס
@@ -110,6 +110,54 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.setAdapter(adapter);
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
         //********לחיצה רגילה על מסכת מהרשימה תפעיל פונקציה - בעתיד*****
+        selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // מציאת הספינר
+                final Spinner spinner = findViewById(R.id.spinner);
+
+                // קבלת מיקום ה-View של הפריט שנבחר
+                int[] location = new int[2];
+                view.getLocationOnScreen(location); // מיקום על המסך של הפריט
+
+                // המיקום שבו יופיע הספינר, מתחת לפריט שנבחר
+                int spinnerTop = location[1] + view.getHeight(); // הוספת גובה הפריט
+
+                // עדכון המיקום של הספינר על המסך
+                spinner.setVisibility(View.VISIBLE); // הצגת הספינר
+
+                // עדכון המיקום על המסך - במיקום דינמי מתחת לפריט
+                spinner.setY(spinnerTop); // הצגת הספינר מתחת לפריט שנבחר
+
+                // יצירת רשימה לשם האפשרויות בספינר
+                String[] options = {"א", "ב", "ג", "ד", "ה"};
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, options);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+
+                // הוספת מאזין לבחירה בספינר
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
+                        // פעולה על פי הבחירה בספינר
+                        String selectedItem = (String) parentView.getItemAtPosition(position);
+                        Toast.makeText(MainActivity.this, "בחרת: " + selectedItem, Toast.LENGTH_SHORT).show();
+                        spinner.performClick();
+                        // סגירת הספינר לאחר בחירה
+                        spinner.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parentView) {
+                        // לא עושים כלום במקרה שאין בחירה
+                    }
+                });
+            }
+        });
+
+
+
+
 
         //לחיצה ארוכה על מסכת מהרשימה תפעיל פונקציה
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -153,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
             askUserName();
         }
     }//נבדק
-    //נבדק
     private void askUserName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);//בניית הדיאלוג
         builder.setTitle("הזן את שמך");//הגדרת כותרת לדיאלוג
@@ -325,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
         input.requestFocus();
         dialog.show();
         showKeyboard(input);
-    }
+    }//לא נבדק
     private void openSetTargetDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);//בניית הדיאלוג
         builder.setTitle("אנא הגדר יעד דפים");//הגדרת כותרת לדיאלוג
