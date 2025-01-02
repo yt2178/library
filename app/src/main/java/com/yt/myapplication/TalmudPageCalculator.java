@@ -2,6 +2,9 @@ package com.yt.myapplication;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TalmudPageCalculator {
     private static final String TAG = "TalmudPageCalculator";
 
@@ -94,5 +97,19 @@ public class TalmudPageCalculator {
             }
         }
         return -1; // Page not found
+    }
+    public List<String> calculatePages(int totalPages) {
+        List<String> pagesList = new ArrayList<>();
+        int pagesToGenerate = totalPages;
+
+        for (int i = 0; i < totalPages / 2; i++) {
+            String letter = HEBREW_LETTERS[i];
+            // Add page A (with one dot)
+            pagesList.add(letter + ".");
+            // Add page B (with two dots)
+            pagesList.add(letter + ":");
+        }
+
+        return pagesList;
     }
 }

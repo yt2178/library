@@ -74,6 +74,10 @@
             android:layout_height="wrap_content"
             android:dividerHeight="0.3dp">
         </ListView>
+        <ListView
+            android:id="@+id/pageListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 

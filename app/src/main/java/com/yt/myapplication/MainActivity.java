@@ -114,6 +114,25 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
         //********לחיצה רגילה על מסכת מהרשימה תפתח את מספר הדפים שלה - בעתיד*****
 
+//        selectedmasechetListView.setOnItemClickListener((parent, view, position, id) -> {
+//            String selectedMasechet = selectedMasechetList.get(position);
+//
+//            // קבלת מספר הדפים של המסכת
+//            MasechetData masechetData = new MasechetData();
+//            int totalPages = masechetData.getPages(selectedMasechet);
+//
+//            if (totalPages > 0) {
+//                // חישוב הדפים (א' ב')
+//                TalmudPageCalculator calculator = new TalmudPageCalculator();
+//                List<String> pages = calculator.calculatePages(totalPages);
+//
+//                // הצגת הדפים
+//                showPages(pages);
+//            } else {
+//                Toast.makeText(MainActivity.this, "לא נמצאו דפים עבור מסכת זו", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+
         //לחיצה ארוכה על מסכת מהרשימה תפעיל פונקציה
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -125,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
         });
         loadSelectedMasechetFromFile(); // קריאת המסכתות שנבחרו מהקובץ
     }
+
     @Override
     protected void onResume() {//חזרה למצב פעיל לאקטיביטי
         super.onResume();
@@ -138,6 +158,12 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         updateDafDisplay();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
+    }
+    private void showPages(List<String> pages) {
+        // הצגת הדפים ברשימה חדשה או בעדכון רשימה קיימת
+        ListView pagesListView = findViewById(R.id.pagesListView); // יצירת ListView להציג את הדפים
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pages);
+        pagesListView.setAdapter(adapter);
     }
     private void checkIfUserNameExists() {
         try {
