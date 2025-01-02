@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.Gravity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -109,55 +112,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
-        //********לחיצה רגילה על מסכת מהרשימה תפעיל פונקציה - בעתיד*****
-        selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // מציאת הספינר
-                final Spinner spinner = findViewById(R.id.spinner);
-
-                // קבלת מיקום ה-View של הפריט שנבחר
-                int[] location = new int[2];
-                view.getLocationOnScreen(location); // מיקום על המסך של הפריט
-
-                // המיקום שבו יופיע הספינר, מתחת לפריט שנבחר
-                int spinnerTop = location[1] + view.getHeight(); // הוספת גובה הפריט
-
-                // עדכון המיקום של הספינר על המסך
-                spinner.setVisibility(View.VISIBLE); // הצגת הספינר
-
-                // עדכון המיקום על המסך - במיקום דינמי מתחת לפריט
-                spinner.setY(spinnerTop); // הצגת הספינר מתחת לפריט שנבחר
-
-                // יצירת רשימה לשם האפשרויות בספינר
-                String[] options = {"א", "ב", "ג", "ד", "ה"};
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_spinner_item, options);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
-
-                // הוספת מאזין לבחירה בספינר
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
-                        // פעולה על פי הבחירה בספינר
-                        String selectedItem = (String) parentView.getItemAtPosition(position);
-                        Toast.makeText(MainActivity.this, "בחרת: " + selectedItem, Toast.LENGTH_SHORT).show();
-                        spinner.performClick();
-                        // סגירת הספינר לאחר בחירה
-                        spinner.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parentView) {
-                        // לא עושים כלום במקרה שאין בחירה
-                    }
-                });
-            }
-        });
-
-
-
-
+        //********לחיצה רגילה על מסכת מהרשימה תפתח את מספר הדפים שלה - בעתיד*****
 
         //לחיצה ארוכה על מסכת מהרשימה תפעיל פונקציה
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
