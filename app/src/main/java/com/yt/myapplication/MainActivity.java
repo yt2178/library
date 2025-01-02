@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isDialogOpen = false;
     private ListView selectedmasechetListView;
     private List<String> selectedMasechetList; // הוספנו את הרשימה כאן
-    private Spinner spinner;
+    private TalmudPageCalculator pageCalculator;
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -65,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
         this.textViewNumberPagesLearned = findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
         this.textViewNumberPagesRemaining = findViewById(R.id.textViewNumberPagesRemaining);//מציאת ה-ID של דפים שנשארו
         selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
-        spinner = findViewById(R.id.spinner);
+        selectedMasechetList = new ArrayList<>();
+
+        pageCalculator = new TalmudPageCalculator();
+
         m_fileManager = new FileManager(this);// יצירת אובייקט FileManager
         // קריאת הנתונים מהקובץ לפני כל שימוש במשתנים
         try {
@@ -106,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.setFocusable(true);//פוקוס
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
         selectedmasechetListView.requestFocus();//פוקוס
-        selectedMasechetList = new ArrayList<>();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
@@ -114,24 +116,22 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
         //********לחיצה רגילה על מסכת מהרשימה תפתח את מספר הדפים שלה - בעתיד*****
 
-//        selectedmasechetListView.setOnItemClickListener((parent, view, position, id) -> {
-//            String selectedMasechet = selectedMasechetList.get(position);
-//
-//            // קבלת מספר הדפים של המסכת
-//            MasechetData masechetData = new MasechetData();
-//            int totalPages = masechetData.getPages(selectedMasechet);
-//
-//            if (totalPages > 0) {
-//                // חישוב הדפים (א' ב')
-//                TalmudPageCalculator calculator = new TalmudPageCalculator();
-//                List<String> pages = calculator.calculatePages(totalPages);
-//
-//                // הצגת הדפים
-//                showPages(pages);
-//            } else {
-//                Toast.makeText(MainActivity.this, "לא נמצאו דפים עבור מסכת זו", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedMasechet = selectedMasechetList.get(position);
+                // חישוב מספר הדפים של המסכת
+                int totalPages = new MasechetData().getPages(selectedMasechet);
+                if (totalPages > 0) {
+                    // חישוב הדפים בעזרת TalmudPageCalculator
+                    List<String> pages = pageCalculator.calculatePages(totalPages);
+                    // הצגת הדפים בתצוגה נוספת או בחלון חדש
+                    showPages(pages);
+                } else {
+                    Toast.makeText(MainActivity.this, "מסכת לא נמצאה", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         //לחיצה ארוכה על מסכת מהרשימה תפעיל פונקציה
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -160,10 +160,13 @@ public class MainActivity extends AppCompatActivity {
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
     }
     private void showPages(List<String> pages) {
-        // הצגת הדפים ברשימה חדשה או בעדכון רשימה קיימת
-        ListView pagesListView = findViewById(R.id.pagesListView); // יצירת ListView להציג את הדפים
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pages);
-        pagesListView.setAdapter(adapter);
+        // הצגת הדפים בתצוגה חדשה (אפשר להוסיף RecyclerView או ListView נוסף לצורך כך)
+        // לדוגמה, הצגת הדפים ב-Toast, או יצירת תצוגה אחרת
+        StringBuilder pagesString = new StringBuilder();
+        for (String page : pages) {
+            pagesString.append(page).append("\n");
+        }
+        Toast.makeText(this, pagesString.toString(), Toast.LENGTH_LONG).show();
     }
     private void checkIfUserNameExists() {
         try {
