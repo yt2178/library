@@ -12,9 +12,9 @@ public class MasechetData {
         MASECHET_PAGES.put("ברכות", 1);
         MASECHET_PAGES.put("שבת", 2);
         MASECHET_PAGES.put("עירובין", 3);
-        MASECHET_PAGES.put("פסחים", 121);
-        MASECHET_PAGES.put("שקלים", 22);
-        MASECHET_PAGES.put("יומא", 88);
+        MASECHET_PAGES.put("פסחים", 4);
+        MASECHET_PAGES.put("שקלים", 5);
+        MASECHET_PAGES.put("יומא", 6);
         MASECHET_PAGES.put("סוכה", 56);
         MASECHET_PAGES.put("ביצה", 40);
         MASECHET_PAGES.put("ראש השנה", 35);

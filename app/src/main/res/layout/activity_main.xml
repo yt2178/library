@@ -69,15 +69,21 @@
 
         <ListView
             android:id="@+id/masechetListView"
-            android:divider="@android:color/darker_gray"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:dividerHeight="0.3dp">
+            android:background="#40B34E2C"
+            android:divider="#984929"
+            android:dividerHeight="0.2dp">
+
         </ListView>
         <ListView
-            android:id="@+id/pageListView"
+            android:id="@+id/pagesListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:dividerHeight="0.2dp"
+            android:divider="#984929"
+            android:background="#40B34E2C"/>
 
     </LinearLayout>
 
@@ -134,19 +140,5 @@
             android:textSize="24sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
-    <TextView
-        android:id="@+id/pagesTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:visibility="gone"/>
-
-    <ListView
-        android:id="@+id/pagesListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -43,7 +43,7 @@ public class Select_Masechet extends AppCompatActivity {
         masechetListView.setFocusable(true);
         masechetListView.setFocusableInTouchMode(true);
         masechetListView.requestFocus();
-
+        //קבלת רשימת המסכתות מפונקציה
         masechetList = MasechetData.getMasechetList();
         // יצירת רשימה (ריקה בינתיים) של המסכתות שנבחרו
         selectedMasechetList = new ArrayList<>();

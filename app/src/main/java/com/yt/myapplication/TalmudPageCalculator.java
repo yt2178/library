@@ -99,19 +99,23 @@ public class TalmudPageCalculator {
         return -1; // Page not found
     }
     public List<String> calculatePages(int totalPages) {
-        List<String> pagesList = new ArrayList<>();//יצירת רשימה ריקה
-        //לולאה שעוברת על חצי ממספר הדפים הכולל
-        for (int i = 0; i < totalPages / 2; i++) {
-            //שליפת אות עברית ממערך HEBREW_LETTERS לפי האינדקס i
-            String letter = HEBREW_LETTERS[i];
-            // Add page A (with one dot)
-            pagesList.add(letter + ".");
-            // Add page B (with two dots)
-            pagesList.add(letter + ":");
+        List<String> pagesList = new ArrayList<>();
+
+        for (int i = 0; i < totalPages; i++) {
+            // חשב את האות העברית המתאימה
+            String letter = HEBREW_LETTERS[i / 2];
+
+            // הוסף עמוד א' או עמוד ב' לפי המספר
+            if (i % 2 == 0) {
+                pagesList.add(letter + ".");
+            } else {
+                pagesList.add(letter + ":");
+            }
         }
 
         return pagesList;
     }
+
 
     public static String getHebrewDafFormat(int pageNumber) {
         if (pageNumber <= 0) {

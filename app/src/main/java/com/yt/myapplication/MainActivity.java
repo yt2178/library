@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         selectedMasechetList = new ArrayList<>();
 
         pageCalculator = new TalmudPageCalculator();//יצירת אובייקט של המחלקה
-        loadPagesDataFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
+        updateDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
         updateDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
         selectedmasechetListView.setFocusable(true);//פוקוס
@@ -79,8 +79,6 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
-        //********לחיצה רגילה על מסכת מהרשימה תפתח את מספר הדפים שלה - בעתיד*****
-
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -109,12 +107,14 @@ public class MainActivity extends AppCompatActivity {
                 return true; // מנע את פעולתו הרגילה של הלחיצה
             }
         });
-        loadSelectedMasechetFromFile(); // קריאת המסכתות שנבחרו מהקובץ
+        updateSelectedMasechetFromFile(); // קריאת המסכתות שנבחרו מהקובץ
     }
 
     @Override
     protected void onResume() {//חזרה למצב פעיל לאקטיביטי
         super.onResume();
+        updateDafDFromFile();
+        updateDafDisplay();
         // הגדרת פוקוס על ה-ListView
         selectedmasechetListView.requestFocus();
         selectedmasechetListView.setFocusable(true);
@@ -126,25 +126,20 @@ public class MainActivity extends AppCompatActivity {
         updateDafDisplay();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
     }
-    private void showPages(List<String> pages) {
+    private void showPages(List<String> pages){
             // יצירת ListView חדש לדפים
             ListView pagesListView = findViewById(R.id.pagesListView);
-            TextView pagesTitle = findViewById(R.id.pagesTitle);
-
             // הצגת הרשימה והסתרת רשימת המסכתות
             pagesListView.setVisibility(View.VISIBLE);
             selectedmasechetListView.setVisibility(View.GONE);
-
             // התאמת הרשימה לתצוגה
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, pages);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pages);
             pagesListView.setAdapter(adapter);
-
             // הגדרת מאזין ללחיצות על פריטים ברשימה
             pagesListView.setOnItemClickListener((parent, view, position, id) -> {
                 String selectedPage = pages.get(position);
                 // כאן תוכל להוסיף את הלוגיקה שתרצה שתקרה בלחיצה על דף
-                Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
             });
 
 //        // הצגת הדפים בתצוגה חדשה (אפשר להוסיף RecyclerView או ListView נוסף לצורך כך)
@@ -158,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 //        Toast.makeText(this, pagesString.toString(), Toast.LENGTH_LONG).show();
     }
     @Override
-    public void onBackPressed() {
+    public void onBackPressed(){
         // אם רשימת הדפים מוצגת, נחזור לרשימת המסכתות
         ListView pagesListView = findViewById(R.id.pagesListView);
         if (pagesListView.getVisibility() == View.VISIBLE) {
@@ -168,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-    private void checkIfUserNameExists() {
+    private void checkIfUserNameExists(){
         try {
             this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
@@ -185,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             askUserName();
         }
     }//נבדק
-    private void askUserName() {
+    private void askUserName(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);//בניית הדיאלוג
         builder.setTitle("הזן את שמך");//הגדרת כותרת לדיאלוג
         final EditText input = new EditText(this);//יצירת שדה קלט של טקסט
@@ -451,7 +446,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }//נבדק
     @SuppressLint("SetTextI18n")
-    private void updateDafDisplay() {
+    private void updateDafDisplay(){
         //עדכון התצוגה לאחר שמירת הנתונים בקובץ
         this.textViewNumberPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
         if (m_pagesRemaining == 0) {
@@ -460,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
             this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + this.m_pagesRemaining);
         }
     }//נבדק
-    private void loadPagesDataFromFile(){
+    private void updateDafDFromFile(){
         m_fileManager = new FileManager(this);// יצירת אובייקט FileManager
         // קריאת הנתונים מהקובץ ושמירתם במשתנים
         try {
@@ -496,9 +491,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה! לא הצליח להפוך את הקובץ לרשימה!", Toast.LENGTH_SHORT).show();
         }
-
-    }
-    private void loadSelectedMasechetFromFile() { // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
+    }//נבדק
+    private void updateSelectedMasechetFromFile() { // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
         try {
             // ניקוי הרשימה לפני הטעינה
             selectedMasechetList.clear();
