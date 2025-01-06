@@ -67,45 +67,10 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
         selectedMasechetList = new ArrayList<>();
 
-        pageCalculator = new TalmudPageCalculator();
-
-        m_fileManager = new FileManager(this);// יצירת אובייקט FileManager
-        // קריאת הנתונים מהקובץ לפני כל שימוש במשתנים
-        try {
-            m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
-            // לולאת חיפוש שם המשתמש בקובץ
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
-                if (line.startsWith("דפים שנלמדו:")) {//אם השורה מתחילה ב-"דפים שנלמדו:"
-                        //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
-                        String PagesLearned = line.substring("דפים שנלמדו:".length()).trim();
-                    if (!PagesLearned.isEmpty()) { // בדיקה אם המחרוזת אינה ריקה
-                        m_pagesLearned = Integer.parseInt(PagesLearned);
-                    } else {
-                        m_pagesLearned = 0; // ערך ברירת מחדל במקרה של מחרוזת ריקה
-                    }
-                    break;  // יציאה מהלולאה לאחר עדכון
-                }
-            }
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
-                if (line.startsWith("דפים שנשארו:")) {//אם השורה מתחילה ב-"דפים שנשארו:"
-                    //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
-                    String PagesRemaining = line.substring("דפים שנשארו:".length()).trim();
-                    if (!PagesRemaining.isEmpty()) { // בדיקה אם המחרוזת אינה ריקה
-                        m_pagesRemaining = Integer.parseInt(PagesRemaining);
-                    } else {
-                        m_pagesRemaining = 0; // ערך ברירת מחדל במקרה של מחרוזת ריקה
-                    }
-                    break;  // יציאה מהלולאה לאחר עדכון
-                }
-            }
-        } catch (IOException e) {
-            Toast.makeText(this, "שגיאה! לא הצליח להפוך את הקובץ לרשימה!", Toast.LENGTH_SHORT).show();
-        }
+        pageCalculator = new TalmudPageCalculator();//יצירת אובייקט של המחלקה
+        loadPagesDataFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
-        updateDafDisplay();//עדכון התצוגה
+        updateDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
         selectedmasechetListView.setFocusable(true);//פוקוס
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
         selectedmasechetListView.requestFocus();//פוקוס
@@ -119,15 +84,17 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedMasechet = selectedMasechetList.get(position);
-                // חישוב מספר הדפים של המסכת
+                String selectedMasechet = selectedMasechetList.get(position);//שמירת שם המסכת שנבחרה למשתנה
+                //קבלת מספר הדפים מהפעילות MasechetData ושמירה למשתנה
                 int totalPages = new MasechetData().getPages(selectedMasechet);
-                if (totalPages > 0) {
+               if (totalPages > 0) {//כל עוד הדפים של המסכת יותר מ-0
                     // חישוב הדפים בעזרת TalmudPageCalculator
+                   //קריאה לפונקציה  calculatePages מתוך הפונקציה  TalmudPageCalculator
+                   //העברת מספר הדפים וקבלת תוצאה במשתנה pages של רשימה
                     List<String> pages = pageCalculator.calculatePages(totalPages);
                     // הצגת הדפים בתצוגה נוספת או בחלון חדש
                     showPages(pages);
-                } else {
+                } else {//טיפול במקרה שבו המסכת לא נמצאה או אין לה דפים
                     Toast.makeText(MainActivity.this, "מסכת לא נמצאה", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -160,13 +127,46 @@ public class MainActivity extends AppCompatActivity {
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
     }
     private void showPages(List<String> pages) {
-        // הצגת הדפים בתצוגה חדשה (אפשר להוסיף RecyclerView או ListView נוסף לצורך כך)
-        // לדוגמה, הצגת הדפים ב-Toast, או יצירת תצוגה אחרת
-        StringBuilder pagesString = new StringBuilder();
-        for (String page : pages) {
-            pagesString.append(page).append("\n");
+            // יצירת ListView חדש לדפים
+            ListView pagesListView = findViewById(R.id.pagesListView);
+            TextView pagesTitle = findViewById(R.id.pagesTitle);
+
+            // הצגת הרשימה והסתרת רשימת המסכתות
+            pagesListView.setVisibility(View.VISIBLE);
+            selectedmasechetListView.setVisibility(View.GONE);
+
+            // התאמת הרשימה לתצוגה
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_list_item_1, pages);
+            pagesListView.setAdapter(adapter);
+
+            // הגדרת מאזין ללחיצות על פריטים ברשימה
+            pagesListView.setOnItemClickListener((parent, view, position, id) -> {
+                String selectedPage = pages.get(position);
+                // כאן תוכל להוסיף את הלוגיקה שתרצה שתקרה בלחיצה על דף
+                Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
+            });
+
+//        // הצגת הדפים בתצוגה חדשה (אפשר להוסיף RecyclerView או ListView נוסף לצורך כך)
+//        // לדוגמה, הצגת הדפים ב-Toast, או יצירת תצוגה אחרת
+//       //יצירת אובייקט שיאפשר בניית מחרוזת (String) שמכילה את כל הדפים ברשימה
+//        StringBuilder pagesString = new StringBuilder();
+//       //מעבר על כל הדפים ברשימה pages, הוספת כל דף למחרוזת (עם ירידת שורה אחרי כל דף)
+//        for (String page : pages) {
+//            pagesString.append(page).append("\n");
+//        }
+//        Toast.makeText(this, pagesString.toString(), Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public void onBackPressed() {
+        // אם רשימת הדפים מוצגת, נחזור לרשימת המסכתות
+        ListView pagesListView = findViewById(R.id.pagesListView);
+        if (pagesListView.getVisibility() == View.VISIBLE) {
+            pagesListView.setVisibility(View.GONE);
+            selectedmasechetListView.setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
         }
-        Toast.makeText(this, pagesString.toString(), Toast.LENGTH_LONG).show();
     }
     private void checkIfUserNameExists() {
         try {
@@ -452,7 +452,7 @@ public class MainActivity extends AppCompatActivity {
     }//נבדק
     @SuppressLint("SetTextI18n")
     private void updateDafDisplay() {
-        // עדכון התצוגה לאחר שמירת הנתונים בקובץ
+        //עדכון התצוגה לאחר שמירת הנתונים בקובץ
         this.textViewNumberPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
         if (m_pagesRemaining == 0) {
             this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: לא הוגדר");
@@ -460,6 +460,44 @@ public class MainActivity extends AppCompatActivity {
             this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + this.m_pagesRemaining);
         }
     }//נבדק
+    private void loadPagesDataFromFile(){
+        m_fileManager = new FileManager(this);// יצירת אובייקט FileManager
+        // קריאת הנתונים מהקובץ ושמירתם במשתנים
+        try {
+            m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
+            // לולאת חיפוש שם המשתמש בקובץ
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
+                if (line.startsWith("דפים שנלמדו:")) {//אם השורה מתחילה ב-"דפים שנלמדו:"
+                    //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
+                    String PagesLearned = line.substring("דפים שנלמדו:".length()).trim();
+                    if (!PagesLearned.isEmpty()) { // בדיקה אם המחרוזת אינה ריקה
+                        m_pagesLearned = Integer.parseInt(PagesLearned);
+                    } else {
+                        m_pagesLearned = 0; // ערך ברירת מחדל במקרה של מחרוזת ריקה
+                    }
+                    break;  // יציאה מהלולאה לאחר עדכון
+                }
+            }
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
+                if (line.startsWith("דפים שנשארו:")) {//אם השורה מתחילה ב-"דפים שנשארו:"
+                    //חותך את הדפים שנלמדו מהשורה ומסיר רווחים בהתחלה ובסוף ולוקח זאת למשתנה
+                    String PagesRemaining = line.substring("דפים שנשארו:".length()).trim();
+                    if (!PagesRemaining.isEmpty()) { // בדיקה אם המחרוזת אינה ריקה
+                        m_pagesRemaining = Integer.parseInt(PagesRemaining);
+                    } else {
+                        m_pagesRemaining = 0; // ערך ברירת מחדל במקרה של מחרוזת ריקה
+                    }
+                    break;  // יציאה מהלולאה לאחר עדכון
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה! לא הצליח להפוך את הקובץ לרשימה!", Toast.LENGTH_SHORT).show();
+        }
+
+    }
     private void loadSelectedMasechetFromFile() { // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
         try {
             // ניקוי הרשימה לפני הטעינה

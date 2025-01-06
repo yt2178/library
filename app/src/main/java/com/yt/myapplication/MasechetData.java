@@ -1,61 +1,73 @@
 package com.yt.myapplication;
-import java.util.HashMap;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MasechetData {
-    private HashMap<String, Integer> masechetMap;
+    private static final Map<String, Integer> MASECHET_PAGES = new LinkedHashMap<>();
 
-    // אתחול המידע על המסכתות
-    public MasechetData() {
-        masechetMap = new HashMap<>();
-        masechetMap.put("ברכות", 3);
-        masechetMap.put("שבת", 156);
-        masechetMap.put("עירובין", 105);
-        masechetMap.put("פסחים", 121);
-        masechetMap.put("שקלים", 22);
-        masechetMap.put("יומא", 88);
-        masechetMap.put("סוכה", 56);
-        masechetMap.put("ביצה", 40);
-        masechetMap.put("ראש השנה", 34);
-        masechetMap.put("תענית", 31);
-        masechetMap.put("מגילה", 32);
-        masechetMap.put("מועד קטן", 29);
-        masechetMap.put("חגיגה", 27);
-        masechetMap.put("יבמות", 120);
-        masechetMap.put("כתובות", 112);
-        masechetMap.put("נדרים", 50);
-        masechetMap.put("נזיר", 51);
-        masechetMap.put("סוטה", 47);
-        masechetMap.put("גיטין", 90);
-        masechetMap.put("קידושין", 72);
-        masechetMap.put("בבא קמא", 10);
-        masechetMap.put("בבא מציעא", 10);
-        masechetMap.put("בבא בתרא", 10);
-        masechetMap.put("סנהדרין", 11);
-        masechetMap.put("מכות", 9);
-        masechetMap.put("שבועות", 4);
-        masechetMap.put("עבודה זרה", 4);
-        masechetMap.put("הוריות", 3);
-        masechetMap.put("זבחים", 14);
-        masechetMap.put("מנחות", 13);
-        masechetMap.put("חולין", 14);
-        masechetMap.put("בכורות", 9);
-        masechetMap.put("ערכין", 9);
-        masechetMap.put("תמורה", 7);
-        masechetMap.put("כריתות", 6);
-        masechetMap.put("מעילה", 6);
-        masechetMap.put("קנים", 5);
-        masechetMap.put("תמיד", 7);
-        masechetMap.put("מידות", 5);
-        masechetMap.put("נידה", 12);
+    static {
+        MASECHET_PAGES.put("ברכות", 1);
+        MASECHET_PAGES.put("שבת", 2);
+        MASECHET_PAGES.put("עירובין", 3);
+        MASECHET_PAGES.put("פסחים", 121);
+        MASECHET_PAGES.put("שקלים", 22);
+        MASECHET_PAGES.put("יומא", 88);
+        MASECHET_PAGES.put("סוכה", 56);
+        MASECHET_PAGES.put("ביצה", 40);
+        MASECHET_PAGES.put("ראש השנה", 35);
+        MASECHET_PAGES.put("תענית", 31);
+        MASECHET_PAGES.put("מגילה", 32);
+        MASECHET_PAGES.put("מועד קטן", 29);
+        MASECHET_PAGES.put("חגיגה", 27);
+        MASECHET_PAGES.put("יבמות", 122);
+        MASECHET_PAGES.put("כתובות", 112);
+        MASECHET_PAGES.put("נדרים", 91);
+        MASECHET_PAGES.put("נזיר", 66);
+        MASECHET_PAGES.put("סוטה", 49);
+        MASECHET_PAGES.put("גיטין", 90);
+        MASECHET_PAGES.put("קידושין", 82);
+        MASECHET_PAGES.put("בבא קמא", 119);
+        MASECHET_PAGES.put("בבא מציעא", 119);
+        MASECHET_PAGES.put("בבא בתרא", 176);
+        MASECHET_PAGES.put("סנהדרין", 113);
+        MASECHET_PAGES.put("מכות", 24);
+        MASECHET_PAGES.put("שבועות", 49);
+        MASECHET_PAGES.put("עבודה זרה", 76);
+        MASECHET_PAGES.put("הוריות", 14);
+        MASECHET_PAGES.put("זבחים", 120);
+        MASECHET_PAGES.put("מנחות", 110);
+        MASECHET_PAGES.put("חולין", 142);
+        MASECHET_PAGES.put("בכורות", 61);
+        MASECHET_PAGES.put("ערכין", 34);
+        MASECHET_PAGES.put("תמורה", 34);
+        MASECHET_PAGES.put("כריתות", 28);
+        MASECHET_PAGES.put("מעילה", 22);
+        MASECHET_PAGES.put("קנים", 4);
+        MASECHET_PAGES.put("תמיד", 10);
+        MASECHET_PAGES.put("מידות", 4);
+        MASECHET_PAGES.put("נידה", 73);
     }
 
-    // להחזיר את ה-HashMap של המסכתות
-    public HashMap<String, Integer> getMasechetMap() {
-        return masechetMap;
+    public static Map<String, Integer> getMasechetPages() {
+        return MASECHET_PAGES;
     }
 
-    // לקבל את מספר הדפים של מסכת נתונה
-    public Integer getPages(String masechet) {
-        return masechetMap.get(masechet);
+    public static int getPages(String masechetName) {
+        return MASECHET_PAGES.getOrDefault(masechetName, 0);
+    }
+
+    public static List<String> getMasechetList() {
+        return new ArrayList<>(MASECHET_PAGES.keySet());
+    }
+
+    public static int getTotalPages() {
+        int total = 0;
+        for (int pages : MASECHET_PAGES.values()) {
+            total += pages;
+        }
+        return total;
     }
 }

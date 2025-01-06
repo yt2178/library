@@ -99,10 +99,10 @@ public class TalmudPageCalculator {
         return -1; // Page not found
     }
     public List<String> calculatePages(int totalPages) {
-        List<String> pagesList = new ArrayList<>();
-        int pagesToGenerate = totalPages;
-
+        List<String> pagesList = new ArrayList<>();//יצירת רשימה ריקה
+        //לולאה שעוברת על חצי ממספר הדפים הכולל
         for (int i = 0; i < totalPages / 2; i++) {
+            //שליפת אות עברית ממערך HEBREW_LETTERS לפי האינדקס i
             String letter = HEBREW_LETTERS[i];
             // Add page A (with one dot)
             pagesList.add(letter + ".");
@@ -111,5 +111,26 @@ public class TalmudPageCalculator {
         }
 
         return pagesList;
+    }
+
+    public static String getHebrewDafFormat(int pageNumber) {
+        if (pageNumber <= 0) {
+            return "";
+        }
+
+        // אם יש רק דף אחד
+        if (pageNumber == 1) {
+            return "ב.";
+        }
+
+        // מחשב את האות העברית המתאימה
+        int letterIndex = (pageNumber - 1) / 2;
+        boolean isPageB = (pageNumber % 2) == 0;
+
+        if (letterIndex < HEBREW_LETTERS.length) {
+            return HEBREW_LETTERS[letterIndex] + (isPageB ? ":" : ".");
+        }
+
+        return "";
     }
 }

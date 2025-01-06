@@ -1,11 +1,9 @@
 package com.yt.myapplication;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,7 +19,7 @@ import java.util.Objects;
 public class Select_Masechet extends AppCompatActivity {
     private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
     private ListView masechetListView;//משתנה מסוג ListView שמייצג את המסכתות שמוצגת למשתמש.
-    private ArrayList<String> masechetList;//רשימה (ArrayList) שמכילה את כל המסכתות שמוצגות למשתמש.
+    private List<String> masechetList;//רשימה (ArrayList) שמכילה את כל המסכתות שמוצגות למשתמש.
     private ArrayList<String> selectedMasechetList; // רשימה של המסכתות שנבחרו
     private CustomAdapterListMasechet adapter;// המתאם שלנו
 
@@ -46,50 +44,8 @@ public class Select_Masechet extends AppCompatActivity {
         masechetListView.setFocusableInTouchMode(true);
         masechetListView.requestFocus();
 
-        // יצירת רשימת המסכתות
-        masechetList = new ArrayList<>();
-        masechetList.add("ברכות");
-        masechetList.add("שבת");
-        masechetList.add("עירובין");
-        masechetList.add("פסחים");
-        masechetList.add("שקלים");
-        masechetList.add("יומא");
-        masechetList.add("סוכה");
-        masechetList.add("ביצה");
-        masechetList.add("ראש השנה");
-        masechetList.add("תענית");
-        masechetList.add("מגילה");
-        masechetList.add("מועד קטן");
-        masechetList.add("חגיגה");
-        masechetList.add("יבמות");
-        masechetList.add("כתובות");
-        masechetList.add("נדרים");
-        masechetList.add("נזיר");
-        masechetList.add("סוטה");
-        masechetList.add("גיטין");
-        masechetList.add("קידושין");
-        masechetList.add("בבא קמא");
-        masechetList.add("בבא מציעא");
-        masechetList.add("בבא בתרא");
-        masechetList.add("סנהדרין");
-        masechetList.add("מכות");
-        masechetList.add("שבועות");
-        masechetList.add("עבודה זרה");
-        masechetList.add("הוריות");
-        masechetList.add("זבחים");
-        masechetList.add("מנחות");
-        masechetList.add("חולין");
-        masechetList.add("בכורות");
-        masechetList.add("ערכין");
-        masechetList.add("תמורה");
-        masechetList.add("כריתות");
-        masechetList.add("מעילה");
-        masechetList.add("קנים");
-        masechetList.add("תמיד");
-        masechetList.add("מידות");
-        masechetList.add("נידה");
-
-        // יצירת רשימה של המסכתות שנבחרו
+        masechetList = MasechetData.getMasechetList();
+        // יצירת רשימה (ריקה בינתיים) של המסכתות שנבחרו
         selectedMasechetList = new ArrayList<>();
         // קריאת המסכתות שנבחרו מתוך הקובץ
         loadSelectedMasechetFromFile();
