@@ -30,7 +30,7 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
         // בדיקה אם המסכת נבחרה
         if (selectedMasechetList.contains(masechet)) {
             // אם המסכת נבחרה, נצבע אותה בצבע אחר
-            view.setBackgroundColor(context.getResources().getColor(R.color.brown));
+            view.setBackgroundColor(context.getResources().getColor(R.color.third_brown));
         } else {
             // אם לא נבחרה, היא תהיה בצבע ברירת המחדל
             view.setBackgroundColor(context.getResources().getColor(R.color.transparent));

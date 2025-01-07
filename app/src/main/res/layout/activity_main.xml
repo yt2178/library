@@ -27,7 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:background="#7CB34E2C"
+        android:background="@color/semi_brown"
         android:text="נלמדו"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -44,7 +44,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="#7CB34E2C"
+        android:background="@color/semi_brown"
         android:text="נשאר"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
@@ -71,19 +71,27 @@
             android:id="@+id/masechetListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#40B34E2C"
+            android:background="@color/quarter_brown"
             android:divider="#984929"
-            android:dividerHeight="0.2dp">
+            android:dividerHeight="0.2dp"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:fastScrollAlwaysVisible="true"
+            android:theme="@style/CustomListViewTheme">
 
         </ListView>
         <ListView
             android:id="@+id/pagesListView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            android:dividerHeight="0.2dp"
+            android:layout_height="wrap_content"
+            android:background="@color/quarter_brown"
             android:divider="#984929"
-            android:background="#40B34E2C"/>
+            android:dividerHeight="0.2dp"
+            android:visibility="gone"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:fastScrollAlwaysVisible="true"
+            android:theme="@style/CustomListViewTheme"/>
 
     </LinearLayout>
 

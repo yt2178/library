@@ -3,7 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
-    <color name="semitransparent">#49FFFFFF</color>
+    <color name="semi_transparent">#49FFFFFF</color>
     <color name="brown">#4CB34E2C</color>
-    7CB34E2C
+    <color name="semi_brown">#80B44B32</color>
+    <color name="third_brown">#54B44B32</color>
+    <color name="quarter_brown">#40B44B32</color>
 </resources>

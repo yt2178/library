@@ -9,14 +9,14 @@ public class MasechetData {
     private static final Map<String, Integer> MASECHET_PAGES = new LinkedHashMap<>();
 
     static {
-        MASECHET_PAGES.put("ברכות", 1);
-        MASECHET_PAGES.put("שבת", 2);
-        MASECHET_PAGES.put("עירובין", 3);
+        MASECHET_PAGES.put("ברכות", 125);
+        MASECHET_PAGES.put("שבת", 337);
+        MASECHET_PAGES.put("עירובין", 218);
         MASECHET_PAGES.put("פסחים", 4);
         MASECHET_PAGES.put("שקלים", 5);
         MASECHET_PAGES.put("יומא", 6);
         MASECHET_PAGES.put("סוכה", 56);
-        MASECHET_PAGES.put("ביצה", 40);
+        MASECHET_PAGES.put("ביצה", 82);
         MASECHET_PAGES.put("ראש השנה", 35);
         MASECHET_PAGES.put("תענית", 31);
         MASECHET_PAGES.put("מגילה", 32);
