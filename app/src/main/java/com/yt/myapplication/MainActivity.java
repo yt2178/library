@@ -595,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
     }//נבדק
     private void showRemoveMasechetDialog(final String masechetToRemove, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("האם אתה בטוח שברצונך להסיר את המסכת: " + masechetToRemove + "?")
+        builder.setMessage("האם אתה בטוח שברצונך להסיר את מסכת: " + masechetToRemove + "?")
                 .setCancelable(false)
                 .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                     @Override
@@ -609,6 +609,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // עדכון הקובץ על מנת להסיר את המסכת
                         removeMasechetFromFile(masechetToRemove);
+                        Toast.makeText(MainActivity.this,   "מסכת"+ masechetToRemove +"הוסרה!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("לא", new DialogInterface.OnClickListener() {

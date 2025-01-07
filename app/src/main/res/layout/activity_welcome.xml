@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="272dp"
-        android:text="ברוך הבא, ..."
+        android:text="ברוכים הבאים!"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="34sp"

@@ -75,7 +75,7 @@
             android:layout_height="wrap_content"
             android:text="שחזור נתונים"
             android:textSize="18sp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/rounded_listview"
             android:textColor="#FFFFFF"/>
 
     </LinearLayout>
