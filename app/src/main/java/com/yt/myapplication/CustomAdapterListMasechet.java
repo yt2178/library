@@ -37,11 +37,11 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
         String lastPage = pageCalculator.getHebrewDafFormat(totalPages);
 
         // הצגת שם המסכת והדף האחרון
-        masechetName.setText(currentMasechet + " - דף אחרון: " + lastPage);
+        masechetName.setText(currentMasechet + " - מספר הדפים: " + lastPage);
 
         // סימון מסכתות שכבר נבחרו
         if (selectedMasechetList.contains(currentMasechet)) {
-            rowView.setBackgroundResource(android.R.color.darker_gray);
+            rowView.setBackgroundResource(R.color.third_brown);
         }
 
         return rowView;
