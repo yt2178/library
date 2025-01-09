@@ -1,41 +1,49 @@
 package com.yt.myapplication;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import java.util.List;
 
 public class CustomAdapterListMasechet extends ArrayAdapter<String> {
     private final Context context;
-    private final List<String> values;
-    private final List<String> selectedMasechetList; // רשימה של המסכתות שנבחרו
+    private final List<String> masechetList;
+    private final List<String> selectedMasechetList;
+    private final TalmudPageCalculator pageCalculator;
 
-    public CustomAdapterListMasechet(Context context, List<String> values, List<String> selectedMasechetList) {
-        super(context, android.R.layout.simple_list_item_1, values);
+    public CustomAdapterListMasechet(Context context, List<String> masechetList, List<String> selectedMasechetList) {
+        super(context, R.layout.masechet_item, masechetList);
         this.context = context;
-        this.values = values;
+        this.masechetList = masechetList;
         this.selectedMasechetList = selectedMasechetList;
+        this.pageCalculator = new TalmudPageCalculator();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // קבלת ה-View לכל פריט ברשימה
-        View view = super.getView(position, convertView, parent);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView = inflater.inflate(R.layout.masechet_item, parent, false);
 
-        // קבלת המסכת שנמצאת במיקום הנוכחי
-        String masechet = values.get(position);
+        TextView masechetName = rowView.findViewById(R.id.masechetName);
+        String currentMasechet = masechetList.get(position);
 
-        // בדיקה אם המסכת נבחרה
-        if (selectedMasechetList.contains(masechet)) {
-            // אם המסכת נבחרה, נצבע אותה בצבע אחר
-            view.setBackgroundColor(context.getResources().getColor(R.color.third_brown));
-        } else {
-            // אם לא נבחרה, היא תהיה בצבע ברירת המחדל
-            view.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+        // קבלת מספר הדפים של המסכת
+        int totalPages = MasechetData.getPages(currentMasechet);
+        // חישוב הדף האחרון בפורמט עברי
+        String lastPage = pageCalculator.getHebrewDafFormat(totalPages);
+
+        // הצגת שם המסכת והדף האחרון
+        masechetName.setText(currentMasechet + " - דף אחרון: " + lastPage);
+
+        // סימון מסכתות שכבר נבחרו
+        if (selectedMasechetList.contains(currentMasechet)) {
+            rowView.setBackgroundResource(android.R.color.darker_gray);
         }
 
-        return view;
+        return rowView;
     }
 }

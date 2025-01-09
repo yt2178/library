@@ -3,18 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="?android:attr/selectableItemBackground">
-
-    <View
-        android:layout_width="4dp"
-        android:layout_height="match_parent"
-        android:background="#949494" />
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/masechet_text"
-        android:layout_width="wrap_content"
+        android:id="@+id/masechetName"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="Masechet Name"
-        android:textSize="20sp" />
+        android:textSize="18sp"
+        android:textDirection="rtl"
+        android:layoutDirection="rtl"
+        android:gravity="right"/>
+
 </LinearLayout>

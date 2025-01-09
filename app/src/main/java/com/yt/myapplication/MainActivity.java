@@ -85,13 +85,13 @@ public class MainActivity extends AppCompatActivity {
                 String selectedMasechet = selectedMasechetList.get(position);//שמירת שם המסכת שנבחרה למשתנה
                 //קבלת מספר הדפים מהפעילות MasechetData ושמירה למשתנה
                 int totalPages = new MasechetData().getPages(selectedMasechet);
-               if (totalPages > 0) {//כל עוד הדפים של המסכת יותר מ-0
+                if (totalPages > 0) {//כל עוד הדפים של המסכת יותר מ-0
                     // חישוב הדפים בעזרת TalmudPageCalculator
-                   //קריאה לפונקציה  calculatePages מתוך הפונקציה  TalmudPageCalculator
-                   //העברת מספר הדפים וקבלת תוצאה במשתנה pages של רשימה
+                    //קריאה לפונקציה  calculatePages מתוך הפונקציה  TalmudPageCalculator
+                    //העברת מספר הדפים וקבלת תוצאה במשתנה pages של רשימה
                     List<String> pages = pageCalculator.calculatePages(totalPages);
                     // הצגת הדפים בתצוגה נוספת או בחלון חדש
-                    showPages(pages);
+                    showPages(pages, selectedMasechet);
                 } else {//טיפול במקרה שבו המסכת לא נמצאה או אין לה דפים
                     Toast.makeText(MainActivity.this, "מסכת לא נמצאה", Toast.LENGTH_SHORT).show();
                 }
@@ -126,31 +126,110 @@ public class MainActivity extends AppCompatActivity {
         updateDafDisplay();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
     }
-    private void showPages(List<String> pages){
-            // יצירת ListView חדש לדפים
-            ListView pagesListView = findViewById(R.id.pagesListView);
-            // הצגת הרשימה והסתרת רשימת המסכתות
-            pagesListView.setVisibility(View.VISIBLE);
-            selectedmasechetListView.setVisibility(View.GONE);
-            // התאמת הרשימה לתצוגה
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pages);
-            pagesListView.setAdapter(adapter);
-            // הגדרת מאזין ללחיצות על פריטים ברשימה
-            pagesListView.setOnItemClickListener((parent, view, position, id) -> {
-                String selectedPage = pages.get(position);
-                // כאן תוכל להוסיף את הלוגיקה שתרצה שתקרה בלחיצה על דף
-              //  Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
-            });
+    private void showPages(List<String> pages, String masechetName) {
+        // יצירת ListView חדש לדפים
+        ListView pagesListView = findViewById(R.id.pagesListView);
+        // הצגת הרשימה והסתרת רשימת המסכתות
+        pagesListView.setVisibility(View.VISIBLE);
+        selectedmasechetListView.setVisibility(View.GONE);
 
-//        // הצגת הדפים בתצוגה חדשה (אפשר להוסיף RecyclerView או ListView נוסף לצורך כך)
-//        // לדוגמה, הצגת הדפים ב-Toast, או יצירת תצוגה אחרת
-//       //יצירת אובייקט שיאפשר בניית מחרוזת (String) שמכילה את כל הדפים ברשימה
-//        StringBuilder pagesString = new StringBuilder();
-//       //מעבר על כל הדפים ברשימה pages, הוספת כל דף למחרוזת (עם ירידת שורה אחרי כל דף)
-//        for (String page : pages) {
-//            pagesString.append(page).append("\n");
-//        }
-//        Toast.makeText(this, pagesString.toString(), Toast.LENGTH_LONG).show();
+        // התאמת הרשימה לתצוגה
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pages);
+        pagesListView.setAdapter(adapter);
+
+        // הגדרת מאזין ללחיצות על פריטים ברשימה
+        pagesListView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedPage = pages.get(position);
+            saveMasechetPageToFile(masechetName, selectedPage);
+            Toast.makeText(this, "נבחר דף " + selectedPage + " במסכת " + masechetName, Toast.LENGTH_SHORT).show();
+            // חזרה לרשימת המסכתות
+            pagesListView.setVisibility(View.GONE);
+            selectedmasechetListView.setVisibility(View.VISIBLE);
+            updateSelectedMasechetFromFile(); // עדכון הרשימה המוצגת
+        });
+    }
+
+    private void saveMasechetPageToFile(String masechetName, String selectedPage) {
+        try {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+            boolean foundMasechetLine = false;
+
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    foundMasechetLine = true;
+                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
+                    String[] masechetArray = masechetData.split(",");
+                    StringBuilder newLine = new StringBuilder("מסכתות שנבחרו:");
+
+                    boolean masechetFound = false;
+                    for (String masechet : masechetArray) {
+                        masechet = masechet.trim();
+                        if (!masechet.isEmpty()) {
+                            if (masechet.startsWith(masechetName)) {
+                                // עדכון המסכת הקיימת עם הדף החדש
+                                newLine.append(" ").append(masechetName).append(" - ").append(selectedPage).append(",");
+                                masechetFound = true;
+                            } else {
+                                // שמירה על המסכתות האחרות כפי שהן
+                                newLine.append(" ").append(masechet).append(",");
+                            }
+                        }
+                    }
+
+                    // אם המסכת לא נמצאה, נוסיף אותה
+                    if (!masechetFound) {
+                        newLine.append(" ").append(masechetName).append(" - ").append(selectedPage).append(",");
+                    }
+
+                    lines.set(i, newLine.toString().trim());
+                    break;
+                }
+            }
+
+            // אם לא מצאנו שורת מסכתות, נוסיף אחת חדשה
+            if (!foundMasechetLine) {
+                lines.add("מסכתות שנבחרו: " + masechetName + " - " + selectedPage + ",");
+            }
+
+            // שמירת השינויים בקובץ
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בשמירת הדף בקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateSelectedMasechetFromFile() {
+        try {
+            selectedMasechetList.clear();
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+            for (String line : lines) {
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
+                    String[] masechetArray = masechetData.split(",");
+                    for (String masechet : masechetArray) {
+                        masechet = masechet.trim();
+                        if (!masechet.isEmpty()) {
+                            // חילוץ רק שם המסכת (לפני הסימן -)
+                            String masechetName = masechet;
+                            if (masechet.contains("-")) {
+                                masechetName = masechet.substring(0, masechet.indexOf("-")).trim();
+                            }
+                            if (!masechetName.isEmpty() && !selectedMasechetList.contains(masechetName)) {
+                                selectedMasechetList.add(masechetName);
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            // עדכון התצוגה
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
+            selectedmasechetListView.setAdapter(adapter);
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
+        }
     }
     @Override
     public void onBackPressed(){
@@ -167,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             this.m_fileManager = new FileManager(this); // יצירת אובייקט לניהול קבצים
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
-             for (String line : lines) {
+            for (String line : lines) {
                 if (line.startsWith(USERNAME_PREFIX)) {
                     String userName = line.substring(USERNAME_PREFIX.length()).trim(); // חתוך את "שם משתמש: " בלי לציין מספר קבוע,,והסר רווחים מיותרים
                     Toast.makeText(this, "ברוך הבא  " + userName + "!", Toast.LENGTH_SHORT).show();
@@ -188,12 +267,12 @@ public class MainActivity extends AppCompatActivity {
         try {//קריאה לשם המשתמש הקיים והכנסתו כשקוף לשדה הקלט
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             String UserNameDefault = "בחור יקר"; // ברירת מחדל
-                for (String line : lines) {
-                    if (line.startsWith(USERNAME_PREFIX)) {
-                        UserNameDefault = line.substring(USERNAME_PREFIX.length());
-                        break;
-                    }
+            for (String line : lines) {
+                if (line.startsWith(USERNAME_PREFIX)) {
+                    UserNameDefault = line.substring(USERNAME_PREFIX.length());
+                    break;
                 }
+            }
             input.setHint(UserNameDefault); // הצגת שם המשתמש בשדה הקלט
         } catch (IOException e) {
             Toast.makeText(MainActivity.this, "אירעה שגיאה בקריאת שם המשתמש הקודם", Toast.LENGTH_SHORT).show();
@@ -218,25 +297,25 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
-                m_fileManager.writeInternalFile(TOTAL_USER_DATA,String.join("\n",lines),false);
-                        if (userName.equals("בחור יקר")) {
-                            Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
-                        }else {
-                            Toast.makeText(MainActivity.this, "שם המשתמש נשמר בהצלחה!", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (IOException e) {//במידה וקרתה שגיאה כתיבה לקובץ הקפץ הודעה
-                        Toast.makeText(MainActivity.this, "אירעה שגיאה בקריאת הקובץ!", Toast.LENGTH_SHORT).show();
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA,String.join("\n",lines),false);
+                    if (userName.equals("בחור יקר")) {
+                        Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(MainActivity.this, "שם המשתמש נשמר בהצלחה!", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {//במידה וקרתה שגיאה כתיבה לקובץ הקפץ הודעה
+                    Toast.makeText(MainActivity.this, "אירעה שגיאה בקריאת הקובץ!", Toast.LENGTH_SHORT).show();
                 }
                 hideKeyboard(input);
-                }
+            }
         });
         builder.setNegativeButton("ביטול", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
                     List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA); // קריאת הקובץ
-                String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
-                   //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
+                    String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
+                    //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
                     for (int i = 0; i < lines.size(); i++) {
                         String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                         if (line.startsWith(USERNAME_PREFIX)) {
@@ -492,32 +571,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "שגיאה! לא הצליח להפוך את הקובץ לרשימה!", Toast.LENGTH_SHORT).show();
         }
     }//נבדק
-    private void updateSelectedMasechetFromFile() { // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
-        try {
-            // ניקוי הרשימה לפני הטעינה
-            selectedMasechetList.clear();
-            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
-            for (String line : lines) {
-                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
-                if (line.startsWith("מסכתות שנבחרו:")) {
-                    // חיתוך המידע ללא רווח עד סוף השורה אחרי "מסכתות שנבחרו:"והפיכתו למשתנה שמכיל את כל רשימת המסכתות
-                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-                    if (masechetData.endsWith(",")) { // אם יש פסיק בסוף, נוודא שאין אותו
-                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
-                    }
-                    // חיתוך המידע לפי פסיקים
-                    String[] masechetArray = masechetData.split(",");
-                    // הוספת כל המסכתות לרשימה
-                    for (String masechet : masechetArray) {
-                        selectedMasechetList.add(masechet.trim());
-                    }
-                    break; // מצאנו את השורה, אין צורך להמשיך לחפש
-                }
-            }
-        } catch (IOException e) {
-            Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
-        }
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

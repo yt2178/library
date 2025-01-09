@@ -56,8 +56,13 @@ public class MasechetData {
     }
 
     public static int getPages(String masechetName) {
-        return MASECHET_PAGES.getOrDefault(masechetName, 0);
+        if (MASECHET_PAGES.containsKey(masechetName)) {
+            return MASECHET_PAGES.get(masechetName);
+        } else {
+            return 0;
+        }
     }
+
 
     public static List<String> getMasechetList() {
         return new ArrayList<>(MASECHET_PAGES.keySet());
