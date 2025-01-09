@@ -87,7 +87,7 @@ public class Select_Masechet extends AppCompatActivity {
             for (String line : lines) {
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
-                    String[] selectedMasechetArray = selectedMasechetLine.split(",");
+                    String[] selectedMasechetArray = selectedMasechetLine.split("|");
                     for (String selected : selectedMasechetArray) {
                         selectedMasechetList.add(selected.trim());
                     }
@@ -112,7 +112,7 @@ public class Select_Masechet extends AppCompatActivity {
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // אם המסכת נמצאת ברשימה, אל תוסיף אותה שוב
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
-                    String[] selectedMasechetArray = selectedMasechetLine.split(",");
+                    String[] selectedMasechetArray = selectedMasechetLine.split("|");
                     for (String selected : selectedMasechetArray) {
                         if (selected.trim().equals(masechet)) {
                             masechetAlreadySelected = true;
@@ -121,8 +121,8 @@ public class Select_Masechet extends AppCompatActivity {
                     }
                     // אם המסכת לא קיימת, הוסף אותה
                     if (!masechetAlreadySelected) {
-                        if (line.endsWith(",")) {
-                            lines.set(i, line + " " + masechet + ",");  // הוסף את המסכת אחרי פסיק
+                        if (line.endsWith("|")) {
+                            lines.set(i, line + " " + masechet + "|");  // הוסף את המסכת אחרי פסיק
                         }
                     }
                     masechetLineFound = true;
@@ -132,7 +132,7 @@ public class Select_Masechet extends AppCompatActivity {
 
             // אם לא נמצאה שורה של "מסכתות שנבחרו:", הוסף שורה חדשה
             if (!masechetLineFound) {
-                lines.add("מסכתות שנבחרו: " + masechet + ",");
+                lines.add("מסכתות שנבחרו: " + masechet + "|");
             }
 
             // אם המסכת כבר נבחרה, הצג הודעת שגיאה

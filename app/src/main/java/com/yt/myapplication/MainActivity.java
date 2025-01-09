@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     foundMasechetLine = true;
                     String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-                    String[] masechetArray = masechetData.split(",");
+                    String[] masechetArray = masechetData.split("|");
                     StringBuilder newLine = new StringBuilder("מסכתות שנבחרו:");
 
                     boolean masechetFound = false;
@@ -168,18 +168,18 @@ public class MainActivity extends AppCompatActivity {
                         if (!masechet.isEmpty()) {
                             if (masechet.startsWith(masechetName)) {
                                 // עדכון המסכת הקיימת עם הדף החדש
-                                newLine.append(" ").append(masechetName).append(" - ").append(selectedPage).append(",");
+                                newLine.append(" ").append(masechetName).append(" - ").append(selectedPage).append("|");
                                 masechetFound = true;
                             } else {
                                 // שמירה על המסכתות האחרות כפי שהן
-                                newLine.append(" ").append(masechet).append(",");
+                                newLine.append(" ").append(masechet).append("|");
                             }
                         }
                     }
 
                     // אם המסכת לא נמצאה, נוסיף אותה
                     if (!masechetFound) {
-                        newLine.append(" ").append(masechetName).append(" - ").append(selectedPage).append(",");
+                        newLine.append(" ").append(masechetName).append(" - ").append(selectedPage).append("|");
                     }
 
                     lines.set(i, newLine.toString().trim());
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
             // אם לא מצאנו שורת מסכתות, נוסיף אחת חדשה
             if (!foundMasechetLine) {
-                lines.add("מסכתות שנבחרו: " + masechetName + " - " + selectedPage + ",");
+                lines.add("מסכתות שנבחרו: " + masechetName + " - " + selectedPage + "|");
             }
 
             // שמירת השינויים בקובץ
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             for (String line : lines) {
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-                    String[] masechetArray = masechetData.split(",");
+                    String[] masechetArray = masechetData.split("|");
                     for (String masechet : masechetArray) {
                         masechet = masechet.trim();
                         if (!masechet.isEmpty()) {
@@ -682,7 +682,7 @@ public class MainActivity extends AppCompatActivity {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
                     // חילוץ המסכתות מתוך השורה
                     String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
-                    String[] masechetArray = masechetData.split(",");
+                    String[] masechetArray = masechetData.split("|");
 
                     // יצירת רשימה חדשה של מסכתות תוך התחשבות במסכת להסרה
                     List<String> newMasechetList = new ArrayList<>();
@@ -698,7 +698,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // הוספת פסיק בסוף אם הרשימה אינה ריקה
                     if (!updatedMasechetData.isEmpty()) {
-                        updatedMasechetData += ",";
+                        updatedMasechetData += "|";
                     }
 
                     // עדכון השורה בקובץ
