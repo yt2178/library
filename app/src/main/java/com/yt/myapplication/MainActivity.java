@@ -66,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         this.textViewNumberPagesRemaining = findViewById(R.id.textViewNumberPagesRemaining);//מציאת ה-ID של דפים שנשארו
         selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
         selectedMasechetList = new ArrayList<>();
-
         pageCalculator = new TalmudPageCalculator();//יצירת אובייקט של המחלקה
         updateDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
@@ -79,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
+        //לחיצה קצרה על מסכת מהרשימה תציג את רשימת הדפים שלה
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
         //לחיצה ארוכה על מסכת מהרשימה תפעיל פונקציה
         selectedmasechetListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -208,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     if (userName.isEmpty()) {
                         userName = "בחור יקר";  // אם לא הוזן שם, הגדר המשתנה כברירת מחדל
                     }
-                    // לולאת חיפוש שם המשתמש בקובץ
+                    //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
                     for (int i = 0; i < lines.size(); i++) {
                         String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                         if (line.startsWith(USERNAME_PREFIX)) {
@@ -422,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
-            // לולאת חיפוש שם המשתמש בקובץ
+            //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנלמדו:")) {
@@ -431,6 +430,7 @@ public class MainActivity extends AppCompatActivity {
                     break;  // יציאה מהלולאה לאחר עדכון
                 }
             }
+            //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנשארו:")) {
@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
-            // לולאת חיפוש שם המשתמש בקובץ
+            //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנלמדו:")) {//אם השורה מתחילה ב-"דפים שנלמדו:"
@@ -475,6 +475,7 @@ public class MainActivity extends AppCompatActivity {
                     break;  // יציאה מהלולאה לאחר עדכון
                 }
             }
+            //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
                 if (line.startsWith("דפים שנשארו:")) {//אם השורה מתחילה ב-"דפים שנשארו:"
@@ -502,14 +503,22 @@ public class MainActivity extends AppCompatActivity {
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // חיתוך המידע ללא רווח עד סוף השורה אחרי "מסכתות שנבחרו:"והפיכתו למשתנה שמכיל את כל רשימת המסכתות
                     String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-                    if (masechetData.endsWith(",")) { // אם יש פסיק בסוף, נוודא שאין אותו
-                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
-                    }
+//                    if (masechetData.endsWith("|")) { // אם יש "|" בסוף, נוודא שאין אותו
+//                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
+//                    }
                     // חיתוך המידע לפי פסיקים
-                    String[] masechetArray = masechetData.split(",");
+                    // אם אין מסכתות אחרי המילים "מסכתות שנבחרו:", הצג הודעה מתאימה
+                    if (masechetData.isEmpty()) {
+                        Toast.makeText(this, "לא נבחרו מסכתות", Toast.LENGTH_SHORT).show();
+                        break; // יציאה מהלולאה אם אין מסכתות
+                    }
+                    String[] masechetArray = masechetData.split("\\|");
                     // הוספת כל המסכתות לרשימה
                     for (String masechet : masechetArray) {
-                        selectedMasechetList.add(masechet.trim());
+                        String trimmedMasechet = masechet.trim();
+                        if (!trimmedMasechet.isEmpty()) {  // הוספה רק אם לא ריקה
+                            selectedMasechetList.add(trimmedMasechet);
+                        }
                     }
                     break; // מצאנו את השורה, אין צורך להמשיך לחפש
                 }
@@ -625,11 +634,12 @@ public class MainActivity extends AppCompatActivity {
     private void removeMasechetFromFile(String masechetToRemove) {
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+            //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
                     // חילוץ המסכתות מתוך השורה
                     String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
-                    String[] masechetArray = masechetData.split(",");
+                    String[] masechetArray = masechetData.split("\\|");
 
                     // יצירת רשימה חדשה של מסכתות תוך התחשבות במסכת להסרה
                     List<String> newMasechetList = new ArrayList<>();
@@ -641,15 +651,15 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     // בניית מחרוזת מעודכנת
-                    String updatedMasechetData = String.join(", ", newMasechetList);
+                    String updatedMasechetData = String.join("|", newMasechetList);
 
                     // הוספת פסיק בסוף אם הרשימה אינה ריקה
                     if (!updatedMasechetData.isEmpty()) {
-                        updatedMasechetData += ",";
+                        updatedMasechetData += "|";
                     }
 
                     // עדכון השורה בקובץ
-                    lines.set(i, "מסכתות שנבחרו: " + updatedMasechetData);
+                    lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
 
                     // כתיבת הנתונים המעודכנים לקובץ
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);

@@ -46,12 +46,12 @@ public class Welcome extends AppCompatActivity {
             //יוצר אובייקט File שמייצג את הקובץ בספריית הקבצים הפנימיים של האפליקציה, בעזרת הנתיב שניתן ב־getFilesDir().
             File file = new File(getFilesDir(), TOTAL_USER_DATA_NAME);
             if (!file.exists()) {//אם הקובץ לא קיים
-                String defaultData = "שם משתמש:\nדפים שנלמדו:\nדפים שנשארו:";//הגדרת סטרינג ברירת מחדל
+                String defaultData = "שם משתמש:\nדפים שנלמדו:\nדפים שנשארו:\nמסכתות שנבחרו:";//הגדרת סטרינג ברירת מחדל
                 fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, defaultData, false);//כתיבת הברירת מחדל לקובץ
                 // יציג רק בטקסט
                 textViewUserName.setText("ברוך הבא, בחור יקר!");
             } else {//אם הקובץ קיים
-                //  נקרא את תוכן הקובץ
+                // קריאת את תוכן הקובץ ושמירתו כמשתנה שורות
                 List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
                 if (lines.isEmpty()) {//אם השורות ריקות בקובץ
                     textViewUserName.setText("ברוך הבא, בחור יקר!");  // יציג רק בטקסט
