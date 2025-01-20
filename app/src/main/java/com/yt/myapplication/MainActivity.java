@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
-
+                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // חילוץ המסכתות שנבחרו
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();

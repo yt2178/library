@@ -79,11 +79,17 @@ public class Select_Masechet extends AppCompatActivity {
         try {
             List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA);
             for (String line : lines) {
+                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
+                    // פיצול כל המסכתות שנבחרו לפי |
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
                     for (String selected : selectedMasechetArray) {
-                        selectedMasechetList.add(selected.trim());
+                        // מסנן את המסכתות כך שלא יכנסו מסכתות ריקות
+                        String trimmedMasechet = selected.trim();
+                        if (!trimmedMasechet.isEmpty()) {
+                            selectedMasechetList.add(trimmedMasechet);  // מוסיף רק אם המסכת לא ריקה
+                        }
                     }
                 }
             }
@@ -101,7 +107,7 @@ public class Select_Masechet extends AppCompatActivity {
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
 
-                // אם מצאנו את השורה המתאימה
+                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // חיתוך כל המסכתות שנבחרו מתוך השורה
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
