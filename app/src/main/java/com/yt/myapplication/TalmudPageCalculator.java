@@ -5,10 +5,10 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TalmudPageCalculator {
-    private static final String TAG = "TalmudPageCalculator";
+    public class TalmudPageCalculator {
+     private static final String TAG = "TalmudPageCalculator";
 
-    private static final String[] HEBREW_LETTERS = {
+     private static final String[] HEBREW_LETTERS = {
             "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י",
             "יא", "יב", "יג", "יד", "טו", "טז", "יז", "יח", "יט", "כ",
             "כא", "כב", "כג", "כד", "כה", "כו", "כז", "כח", "כט", "ל",

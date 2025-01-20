@@ -17,7 +17,7 @@ import java.util.Objects;
 
 
 public class Select_Masechet extends AppCompatActivity {
-    private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
+    private static final String TOTAL_USER_DATA = "user_data.shinantam";
     private ListView masechetListView;//משתנה מסוג ListView שמייצג את המסכתות שמוצגת למשתמש.
     private List<String> masechetList;//רשימה (ArrayList) שמכילה את כל המסכתות שמוצגות למשתמש.
     private ArrayList<String> selectedMasechetList; // רשימה של המסכתות שנבחרו
@@ -77,7 +77,7 @@ public class Select_Masechet extends AppCompatActivity {
     private void loadSelectedMasechetFromFile() {
         FileManager fileManager = new FileManager(this);
         try {
-            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA);
             for (String line : lines) {
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
@@ -94,42 +94,44 @@ public class Select_Masechet extends AppCompatActivity {
     private void saveSelectedMasechetToFile(String masechet) {
         FileManager fileManager = new FileManager(this);
         try {
-            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
-            //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
+            // קריאת כל השורות בקובץ
+            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA);
+
+            // עובר על כל השורות בקובץ ומחפש את השורה שמתחילה ב-"מסכתות שנבחרו:"
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
 
-                if (line.startsWith("מסכתות שנבחרו:")) {//אם השורה מתחילה ב-"מסכתות שנבחרו:"
-                    // חיתוך המסכתות שנבחרו מתוך השורה, לפי | במקום פסיק
+                // אם מצאנו את השורה המתאימה
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    // חיתוך כל המסכתות שנבחרו מתוך השורה
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
 
+                    // אם אין מסכתות כבר בקובץ
                     if (selectedMasechetLine.isEmpty()) {
                         Toast.makeText(this, "בחירת המסכת פעם ראשונה!", Toast.LENGTH_SHORT).show();
                         lines.set(i, line + masechet + "|");
                         break;//יציאה מהלולאה
                     }
 
-                    // החלפת פסיק ב-| (יש צורך ב-\\ כי זהו תו מיוחד ב-Regex)
+                    // פיצול כל המסכתות שנבחרו לפי |
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
 
-                    // בדיקה אם המסכת כבר קיימת
+                    // בדוק אם המסכת כבר קיימת בקובץ
                     for (String selected : selectedMasechetArray) {
                         if (selected.trim().equals(masechet)) {
                             Toast.makeText(this, "כבר בחרת מסכת זאת!", Toast.LENGTH_SHORT).show();
-                            return; // אם המסכת כבר נבחרה, מחזירים מהפונקציה
+                            return; // אם המסכת כבר קיימת, עצור את הפונקציה
                         }
                     }
-                    // אם לא נמצאה, הוסף את המסכת לשורה
-                    lines.set(i, line + masechet + "|"); // הוסף את המסכת אחרי פסיק
-                    return; // אחרי שמצאנו את השורה והוספנו את המסכת, יוצאים מהפונקציה
+
+                    // אם המסכת לא קיימת, הוסף אותה לקובץ
+                    lines.set(i, line + masechet + "|");
+                    Toast.makeText(this, "המסכת נוספה בהצלחה!", Toast.LENGTH_SHORT).show();
+                    break; // אחרי שמצאנו את השורה והוספנו את המסכת, יצאנו מהלולאה
                 }
             }
-
-            // הצגת הודעה למשתמש אם המסכת נוספה בהצלחה
-            Toast.makeText(this, "המסכת נוספה בהצלחה!", Toast.LENGTH_SHORT).show();
-
-            // שמירת השינויים בקובץ
-            fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, String.join("\n", lines), false);
+            // שמור את הקובץ לאחר עדכון
+            fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
 
         } catch (IOException e) {
             // אם יש שגיאה בקריאת או כתיבת הקובץ, הצג הודעת שגיאה

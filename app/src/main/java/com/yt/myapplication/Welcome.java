@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class Welcome extends AppCompatActivity {
-    private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
+    private static final String TOTAL_USER_DATA = "user_data.shinantam";
     private static final String USERNAME_PREFIX = "שם משתמש:";
     // הצהרת משתנה textViewUserName
     private TextView textViewUserName;
@@ -44,15 +44,15 @@ public class Welcome extends AppCompatActivity {
         FileManager fileManager = new FileManager(this);
         try {
             //יוצר אובייקט File שמייצג את הקובץ בספריית הקבצים הפנימיים של האפליקציה, בעזרת הנתיב שניתן ב־getFilesDir().
-            File file = new File(getFilesDir(), TOTAL_USER_DATA_NAME);
+            File file = new File(getFilesDir(), TOTAL_USER_DATA);
             if (!file.exists()) {//אם הקובץ לא קיים
                 String defaultData = "שם משתמש:\nדפים שנלמדו:\nדפים שנשארו:\nמסכתות שנבחרו:";//הגדרת סטרינג ברירת מחדל
-                fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, defaultData, false);//כתיבת הברירת מחדל לקובץ
+                fileManager.writeInternalFile(TOTAL_USER_DATA, defaultData, false);//כתיבת הברירת מחדל לקובץ
                 // יציג רק בטקסט
                 textViewUserName.setText("ברוך הבא, בחור יקר!");
             } else {//אם הקובץ קיים
                 // קריאת את תוכן הקובץ ושמירתו כמשתנה שורות
-                List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA_NAME);
+                List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA);
                 if (lines.isEmpty()) {//אם השורות ריקות בקובץ
                     textViewUserName.setText("ברוך הבא, בחור יקר!");  // יציג רק בטקסט
                 } else {//אם השורות לא ריקות

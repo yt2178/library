@@ -1,6 +1,5 @@
 package com.yt.myapplication;
 
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,7 +23,7 @@ import java.util.Objects;
 public class Settings extends AppCompatActivity {
     private static final String TAG = "Settings";
     private static final String BACKUP_FOLDER = "TalmudBackup";
-    private static final String TOTAL_USER_DATA_NAME = "user_data.shinantam";
+    private static final String TOTAL_USER_DATA = "user_data.shinantam";
     private FileManager m_fileManager;
 
     private boolean isFileExist(String fileName) {
@@ -95,7 +94,7 @@ public class Settings extends AppCompatActivity {
             Log.d(TAG, "Backup file path: " + backupFile.getAbsolutePath());
 
             // העתקת הקובץ המקורי לקובץ הגיבוי
-            String content = m_fileManager.readInternalFile(TOTAL_USER_DATA_NAME);
+            String content = m_fileManager.readInternalFile(TOTAL_USER_DATA);
             Log.d(TAG, "Content to backup: " + content);
 
             // שימוש ב-FileOutputStream עם הוספת סימני שורה חדשה
@@ -156,7 +155,7 @@ public class Settings extends AppCompatActivity {
             Log.d(TAG, "Content to restore: " + content);
 
             // שמירת הקובץ עם שמירה על סימני שורה חדשה
-            m_fileManager.writeInternalFile(TOTAL_USER_DATA_NAME, content, false);
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA, content, false);
 
             Toast.makeText(this, "השחזור הושלם בהצלחה!", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {

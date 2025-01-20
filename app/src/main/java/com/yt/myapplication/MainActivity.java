@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-import android.view.ViewGroup;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +19,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.view.Gravity;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOTAL_USER_DATA = "user_data.shinantam";
     // הגדרה של קבוע
     private static final String USERNAME_PREFIX = "שם משתמש:";
+    private String selectedMasechet = ""; // משתנה לשמור את שם המסכת הנבחרת
     private static final int REQUEST_CODE = 1;
     private FileManager m_fileManager; // אובייקט לניהול קבצים
     private int m_pagesLearned; // משתנה למעקב אחרי מספר הדפים שלמד המשתמש
@@ -82,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedMasechet = selectedMasechetList.get(position);//שמירת שם המסכת שנבחרה למשתנה
+                selectedMasechet = selectedMasechetList.get(position);//שמירת שם המסכת שנבחרה למשתנה
                 //קבלת מספר הדפים מהפעילות MasechetData ושמירה למשתנה
                 int totalPages = new MasechetData().getPages(selectedMasechet);
                if (totalPages > 0) {//כל עוד הדפים של המסכת יותר מ-0
@@ -137,20 +134,61 @@ public class MainActivity extends AppCompatActivity {
             // הגדרת מאזין ללחיצות על פריטים ברשימה
             pagesListView.setOnItemClickListener((parent, view, position, id) -> {
                 String selectedPage = pages.get(position);
-                // כאן תוכל להוסיף את הלוגיקה שתרצה שתקרה בלחיצה על דף
-              //  Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
-            });
+                // עדכון הקובץ - הוספת הדף הנבחר למסכת
+                savePageToFile(selectedMasechet, selectedPage);
 
-//        // הצגת הדפים בתצוגה חדשה (אפשר להוסיף RecyclerView או ListView נוסף לצורך כך)
-//        // לדוגמה, הצגת הדפים ב-Toast, או יצירת תצוגה אחרת
-//       //יצירת אובייקט שיאפשר בניית מחרוזת (String) שמכילה את כל הדפים ברשימה
-//        StringBuilder pagesString = new StringBuilder();
-//       //מעבר על כל הדפים ברשימה pages, הוספת כל דף למחרוזת (עם ירידת שורה אחרי כל דף)
-//        for (String page : pages) {
-//            pagesString.append(page).append("\n");
-//        }
-//        Toast.makeText(this, pagesString.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
+            });
     }
+    public void savePageToFile(String masechetName, String page) {
+        if (masechetName.isEmpty()) {
+            Toast.makeText(this, "לא נבחרה מסכת", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // קריאה לקובץ ולחיפוש אחרי המסכת הנבחרת
+        try {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+            boolean masechetFound = false;
+
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    // חילוץ המסכתות שנבחרו
+                    String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
+                    String[] masechetArray = selectedMasechetLine.split("\\|");
+
+                    // חיפוש אם המסכת כבר קיימת
+                    for (int j = 0; j < masechetArray.length; j++) {
+                        if (masechetArray[j].startsWith(masechetName)) { // אם המסכת כבר קיימת
+                            // אם הדף לא קיים, נוסיף אותו
+                            if (!masechetArray[j].contains(page)) {
+                                masechetArray[j] += "," + page; // הוסף את הדף
+                            }
+                            lines.set(i, "מסכתות שנבחרו:" + String.join("|", masechetArray) + "|");
+                            m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                            return;
+                        }
+                    }
+
+                    // אם לא מצאנו את המסכת, נוסיף אותה עם הדף הנבחר
+                    lines.set(i, "מסכתות שנבחרו:" + masechetName + "-" + page + "|");
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    return;
+                }
+            }
+
+            // אם לא מצאנו שורה עם "מסכתות שנבחרו", נוסיף שורה חדשה
+            lines.add("מסכתות שנבחרו:" + masechetName + "-" + page + "|");
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בשמירת הדפים לקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     @Override
     public void onBackPressed(){
         // אם רשימת הדפים מוצגת, נחזור לרשימת המסכתות
@@ -547,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    public void onClickAddPointButton(View view) {//לחיצה על כפתור הוספה
+    public void onClickAddDafButton(View view) {//לחיצה על כפתור הוספה
         if (!(this.m_pagesRemaining == 0)) { //כל עוד הדפים שנשארו הם לא 0
             this.m_pagesLearned++;//הוספת מספר לדפים שנלמדו
             this.m_pagesRemaining--;//הסרת מספר מהדפים שנותרו
@@ -561,7 +599,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "כדאי להגדיר יעד ומטרה!", Toast.LENGTH_LONG).show();
         }
     }//נבדק
-    public void onClickRemovePointButton(View view) {//לחיצה על כפתור הסרה
+    public void onClickRemoveDafButton(View view) {//לחיצה על כפתור הסרה
         if (this.m_pagesLearned > 0) {//בדיקה שהדפים שנלמדו לא יורדים מתחת ל-0
             this.m_pagesRemaining++;//הוספת מספר לדפים שנותרו
             this.m_pagesLearned--;//הסרת מספר מהדפים שנלמדו
