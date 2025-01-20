@@ -569,7 +569,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
         }
-    }
+    }// לתקן את הקוד
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
