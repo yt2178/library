@@ -531,7 +531,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "שגיאה! לא הצליח להפוך את הקובץ לרשימה!", Toast.LENGTH_SHORT).show();
         }
     }//נבדק
-    private void updateSelectedMasechetFromFile() { // פונקציה לקרוא את המסכתות מהקובץ ולהציגן ברשימה
+    private void updateSelectedMasechetFromFile() {
         try {
             // ניקוי הרשימה לפני הטעינה
             selectedMasechetList.clear();
@@ -539,32 +539,38 @@ public class MainActivity extends AppCompatActivity {
             for (String line : lines) {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
-                    // חיתוך המידע ללא רווח עד סוף השורה אחרי "מסכתות שנבחרו:"והפיכתו למשתנה שמכיל את כל רשימת המסכתות
+                    // חיתוך המידע אחרי "מסכתות שנבחרו:"
                     String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-//                    if (masechetData.endsWith("|")) { // אם יש "|" בסוף, נוודא שאין אותו
-//                        masechetData = masechetData.substring(0, masechetData.length() - 1).trim();
-//                    }
-                    // חיתוך המידע לפי פסיקים
+
                     // אם אין מסכתות אחרי המילים "מסכתות שנבחרו:", הצג הודעה מתאימה
                     if (masechetData.isEmpty()) {
                         Toast.makeText(this, "לא נבחרו מסכתות", Toast.LENGTH_SHORT).show();
                         break; // יציאה מהלולאה אם אין מסכתות
                     }
+
+                    // חיתוך המידע לפי פסיקים (|) -> כל מסכת נפרדת
                     String[] masechetArray = masechetData.split("\\|");
-                    // הוספת כל המסכתות לרשימה
+
+                    // הוספת כל המסכתות לרשימה תוך שמירה על שמותיהם בלבד (ללא דפים)
                     for (String masechet : masechetArray) {
-                        String trimmedMasechet = masechet.trim();
-                        if (!trimmedMasechet.isEmpty()) {  // הוספה רק אם לא ריקה
-                            selectedMasechetList.add(trimmedMasechet);
+                        // חיתוך כל מסכת לפי הדפים (נמחק את הדפים כמו "ב." או "ב:")
+                        String masechetName = masechet.split("[\\.\\:]")[0].trim();
+
+                        // הוספת שם המסכת לרשימה אם הוא לא ריק ושהוא לא כבר ברשימה
+                        if (!masechetName.isEmpty() && !selectedMasechetList.contains(masechetName)) {
+                            selectedMasechetList.add(masechetName);
                         }
                     }
-                    break; // מצאנו את השורה, אין צורך להמשיך לחפש
+
+                    // סיום קריאת המידע
+                    break;
                 }
             }
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
