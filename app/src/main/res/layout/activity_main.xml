@@ -7,20 +7,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/besad"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/besad"
-        android:textAlignment="textStart"
-        android:textAllCaps="true"
-        android:textColor="#FFFFFF"
-        android:textSize="20.0sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
 
     <TextView
         android:id="@+id/textViewNumberPagesLearned"
@@ -36,14 +23,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/besad" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
 
     <TextView
         android:id="@+id/textViewNumberPagesRemaining"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:background="@color/semi_brown"
         android:text="שגיאה בטעינת הדפים"
         android:textAlignment="center"
@@ -99,7 +86,7 @@
         android:id="@+id/buttonAddPoint"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="4dp"
         android:onClick="onClickAddDafButton"
         android:text="הוסף עמוד שלמדת"
         android:textAlignment="center"
@@ -115,7 +102,7 @@
         android:id="@+id/buttonRemovePoint"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="8dp"
         android:onClick="onClickRemoveDafButton"
         android:text="הסר עמוד שהוסף בטעות"
         android:textAlignment="center"
@@ -124,7 +111,7 @@
         app:backgroundTint="@color/brown"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.Toolbar

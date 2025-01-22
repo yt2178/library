@@ -22,12 +22,11 @@ public class Select_Masechet extends AppCompatActivity {
     private List<String> masechetList;//רשימה (ArrayList) שמכילה את כל המסכתות שמוצגות למשתמש.
     private ArrayList<String> selectedMasechetList; // רשימה של המסכתות שנבחרו
     private CustomAdapterListMasechet adapter;// המתאם שלנו
-
+    private FileManager m_fileManager; // אובייקט לניהול קבצים
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_masechet);
-
         // מציב את ה-Toolbar כ-ActionBar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -39,6 +38,7 @@ public class Select_Masechet extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        m_fileManager = new FileManager(this);
         masechetListView = findViewById(R.id.masechetListView);
         masechetListView.setFocusable(true);
         masechetListView.setFocusableInTouchMode(true);
@@ -48,14 +48,11 @@ public class Select_Masechet extends AppCompatActivity {
         // יצירת רשימה (ריקה בינתיים) של המסכתות שנבחרו
         selectedMasechetList = new ArrayList<>();
         // קריאת המסכתות שנבחרו מתוך הקובץ
-        loadSelectedMasechetFromFile();
-
+        updateSelectedMasechetFromFile();
         // יצירת המתאם (Adapter) שלנו שמציג את המסכתות ברשימה
         adapter = new CustomAdapterListMasechet(this, masechetList, selectedMasechetList);
-
         // הגדרת המתאם לרשימה
         masechetListView.setAdapter(adapter);
-
         // טיפול בלחיצה על פריט ברשימה
         masechetListView.setOnItemClickListener((parent, view, position, id) -> {
             String selectedMasechet = masechetList.get(position);//קבלת מיקום הלחיצה ושמירתו במשתנה selectedMasechet
@@ -74,10 +71,9 @@ public class Select_Masechet extends AppCompatActivity {
         });//נבדק
     }
     // קריאת המסכתות שנבחרו מתוך הקובץ
-    private void loadSelectedMasechetFromFile() {
-        FileManager fileManager = new FileManager(this);
+    private void updateSelectedMasechetFromFile() {
         try {
-            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA);
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             for (String line : lines) {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
@@ -85,10 +81,12 @@ public class Select_Masechet extends AppCompatActivity {
                     // פיצול כל המסכתות שנבחרו לפי |
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
                     for (String selected : selectedMasechetArray) {
-                        // מסנן את המסכתות כך שלא יכנסו מסכתות ריקות
-                        String trimmedMasechet = selected.trim();
-                        if (!trimmedMasechet.isEmpty()) {
-                            selectedMasechetList.add(trimmedMasechet);  // מוסיף רק אם המסכת לא ריקה
+
+                        //חיתוך כל מסכת לפי הדפים (נמחק את הדפים )
+                        String masechetName = selected.split(",")[0].trim();
+
+                        if (!masechetName.isEmpty()) {
+                            selectedMasechetList.add(masechetName);  // מוסיף רק אם המסכת לא ריקה
                         }
                     }
                 }
@@ -98,10 +96,9 @@ public class Select_Masechet extends AppCompatActivity {
         }
     }
     private void saveSelectedMasechetToFile(String masechet) {
-        FileManager fileManager = new FileManager(this);
         try {
             // קריאת כל השורות בקובץ
-            List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA);
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
 
             // עובר על כל השורות בקובץ ומחפש את השורה שמתחילה ב-"מסכתות שנבחרו:"
             for (int i = 0; i < lines.size(); i++) {
@@ -137,14 +134,13 @@ public class Select_Masechet extends AppCompatActivity {
                 }
             }
             // שמור את הקובץ לאחר עדכון
-            fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+            m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
 
         } catch (IOException e) {
             // אם יש שגיאה בקריאת או כתיבת הקובץ, הצג הודעת שגיאה
             Toast.makeText(this, "שגיאה בשמירת המסכת לקובץ!", Toast.LENGTH_SHORT).show();
         }
     }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() != KeyEvent.ACTION_DOWN) {

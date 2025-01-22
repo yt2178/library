@@ -64,16 +64,16 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
         selectedMasechetList = new ArrayList<>();
         pageCalculator = new TalmudPageCalculator();//יצירת אובייקט של המחלקה
-        updateDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
-        checkIfUserNameExists();//בדיקה אם קיים שם משתמש
-        updateDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
-        selectedmasechetListView.setFocusable(true);//פוקוס
-        selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
-        selectedmasechetListView.requestFocus();//פוקוס
-        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
+        checkIfUserNameExists();//בדיקה אם קיים שם משתמש
+        updateDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
+        updateDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
+        updateSelectedMasechetFromFile(); // קריאת המסכתות שנבחרו מהקובץ
+        selectedmasechetListView.setFocusable(true);//פוקוס
+        selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
+        isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
         //לחיצה קצרה על מסכת מהרשימה תציג את רשימת הדפים שלה
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -103,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
                 return true; // מנע את פעולתו הרגילה של הלחיצה
             }
         });
-        updateSelectedMasechetFromFile(); // קריאת המסכתות שנבחרו מהקובץ
     }
 
     @Override
@@ -145,7 +144,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "לא נבחרה מסכת", Toast.LENGTH_SHORT).show();
             return;
         }
-
         // קריאה לקובץ ולחיפוש אחרי המסכת הנבחרת
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
@@ -187,8 +185,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "שגיאה בשמירת הדפים לקובץ!", Toast.LENGTH_SHORT).show();
         }
     }
-
-
     @Override
     public void onBackPressed(){
         // אם רשימת הדפים מוצגת, נחזור לרשימת המסכתות
@@ -553,8 +549,8 @@ public class MainActivity extends AppCompatActivity {
 
                     // הוספת כל המסכתות לרשימה תוך שמירה על שמותיהם בלבד (ללא דפים)
                     for (String masechet : masechetArray) {
-                        // חיתוך כל מסכת לפי הדפים (נמחק את הדפים כמו "ב." או "ב:")
-                        String masechetName = masechet.split("[\\.\\:]")[0].trim();
+                        //חיתוך כל מסכת לפי הדפים (נמחק את הדפים )
+                        String masechetName = masechet.split("[,]")[0].trim();
 
                         // הוספת שם המסכת לרשימה אם הוא לא ריק ושהוא לא כבר ברשימה
                         if (!masechetName.isEmpty() && !selectedMasechetList.contains(masechetName)) {
@@ -569,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
         }
-    }// לתקן את הקוד
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -662,7 +658,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // עדכון הקובץ על מנת להסיר את המסכת
                         removeMasechetFromFile(masechetToRemove);
-                        Toast.makeText(MainActivity.this,   "מסכת"+ masechetToRemove +"הוסרה!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,   "מסכת "+ masechetToRemove +" הוסרה!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("לא", new DialogInterface.OnClickListener() {

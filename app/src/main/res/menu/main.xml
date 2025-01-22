@@ -3,23 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_select_maschet"
-        android:title="בחירת מסכת"/>
+        android:title="@string/select_masechet"/>
     <item
         android:id="@+id/ask_User_Name"
-        android:title="שם משתמש"/>
+        android:title="@string/user_name"/>
     <item
         android:id="@+id/menu_set_target"
         android:title="הגדר יעד דפים" />
     <item
         android:id="@+id/menu_history"
-        android:title="היסטוריה"/>
+        android:title="@string/history"/>
     <item
         android:id="@+id/menu_notifications"
         android:title="התראות" />
     <item
         android:id="@+id/menu_settings"
-        android:title="הגדרות" />
+        android:title="@string/settings" />
     <item
         android:id="@+id/menu_About"
-        android:title="אודות"/>
+        android:title="@string/about"/>
 </menu>

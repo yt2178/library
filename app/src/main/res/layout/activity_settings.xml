@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background= "@drawable/img_screen_background_main_activity"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,15 +13,15 @@
         android:layout_width="fill_parent"
         android:layout_height="28.0dip"
         android:layout_marginTop="4.0dip"
-        android:text="בס''ד"
+        android:text="@string/besad"
         android:textAlignment="textStart"
         android:textAllCaps="true"
         android:textSize="20.0sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,7 +67,7 @@
             android:layout_marginBottom="8dp"
             android:text="גיבוי נתונים"
             android:textSize="18sp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/rounded_listview"
             android:textColor="#FFFFFF"/>
 
         <Button

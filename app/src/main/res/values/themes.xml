@@ -6,6 +6,7 @@
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+
 <style name="CustomListViewTheme" parent="Theme.AppCompat.Light">
     <!-- צבע הידית של פס הגלילה -->
     <item name="android:scrollbarThumbVertical">@color/semi_brown</item>
