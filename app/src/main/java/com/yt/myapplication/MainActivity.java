@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private ListView selectedmasechetListView;
     private List<String> selectedMasechetList; // הוספנו את הרשימה כאן
     private TalmudPageCalculator pageCalculator;
+    private List<String> pagesSelected = new ArrayList<>();
+
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -83,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 //קבלת מספר הדפים מהפעילות MasechetData ושמירה למשתנה
                 int totalPages = new MasechetData().getPages(selectedMasechet);
                if (totalPages > 0) {//כל עוד הדפים של המסכת יותר מ-0
-                    // חישוב הדפים בעזרת TalmudPageCalculator
                    //קריאה לפונקציה  calculatePages מתוך הפונקציה  TalmudPageCalculator
                    //העברת מספר הדפים וקבלת תוצאה במשתנה pages של רשימה
                     List<String> pages = pageCalculator.calculatePages(totalPages);
@@ -127,15 +128,22 @@ public class MainActivity extends AppCompatActivity {
             // הצגת הרשימה והסתרת רשימת המסכתות
             pagesListView.setVisibility(View.VISIBLE);
             selectedmasechetListView.setVisibility(View.GONE);
-            // התאמת הרשימה לתצוגה
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, pages);
-            pagesListView.setAdapter(adapter);
+
+            // יצירת CustomAdapterListDaf עם הדפים
+             CustomAdapterListDaf adapter = new CustomAdapterListDaf(this, pages, pagesSelected);  // dafList הוא הרשימה שלך של דפים שנבחרו
+             pagesListView.setAdapter(adapter);
+
             // הגדרת מאזין ללחיצות על פריטים ברשימה
             pagesListView.setOnItemClickListener((parent, view, position, id) -> {
                 String selectedPage = pages.get(position);
                 // עדכון הקובץ - הוספת הדף הנבחר למסכת
                 savePageToFile(selectedMasechet, selectedPage);
-
+                // הוספת הדף הנבחר ל-`pagesSelected`
+                if (!pagesSelected.contains(selectedPage)) {
+                    pagesSelected.add(selectedPage);  // הוסף את הדף לרשימה שנבחרו
+                }
+                // עדכון ה-Adapter
+                adapter.notifyDataSetChanged(); // זה יגרום ל-ListView להתעדכן ולשנות את הצבע
                 Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
             });
     }
@@ -147,8 +155,6 @@ public class MainActivity extends AppCompatActivity {
         // קריאה לקובץ ולחיפוש אחרי המסכת הנבחרת
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
-            boolean masechetFound = false;
-
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
@@ -156,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
                     // חילוץ המסכתות שנבחרו
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
                     String[] masechetArray = selectedMasechetLine.split("\\|");
-
                     // חיפוש אם המסכת כבר קיימת
                     for (int j = 0; j < masechetArray.length; j++) {
                         if (masechetArray[j].startsWith(masechetName)) { // אם המסכת כבר קיימת
@@ -169,18 +174,12 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
                     }
-
                     // אם לא מצאנו את המסכת, נוסיף אותה עם הדף הנבחר
                     lines.set(i, "מסכתות שנבחרו:" + masechetName + "-" + page + "|");
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                     return;
                 }
             }
-
-            // אם לא מצאנו שורה עם "מסכתות שנבחרו", נוסיף שורה חדשה
-            lines.add("מסכתות שנבחרו:" + masechetName + "-" + page + "|");
-            m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
-
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה בשמירת הדפים לקובץ!", Toast.LENGTH_SHORT).show();
         }
@@ -255,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                         if (userName.equals("בחור יקר")) {
                             Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
                         }else {
-                            Toast.makeText(MainActivity.this, "שם המשתמש נשמר בהצלחה!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "ברוך הבא " + userName +"!", Toast.LENGTH_SHORT).show();
                         }
                     } catch (IOException e) {//במידה וקרתה שגיאה כתיבה לקובץ הקפץ הודעה
                         Toast.makeText(MainActivity.this, "אירעה שגיאה בקריאת הקובץ!", Toast.LENGTH_SHORT).show();
@@ -528,8 +527,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }//נבדק
     private void updateSelectedMasechetFromFile() {
-        try {
-            // ניקוי הרשימה לפני הטעינה
+        try { // ניקוי הרשימה לפני הטעינה
             selectedMasechetList.clear();
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
             for (String line : lines) {
@@ -537,36 +535,29 @@ public class MainActivity extends AppCompatActivity {
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // חיתוך המידע אחרי "מסכתות שנבחרו:"
                     String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
-
                     // אם אין מסכתות אחרי המילים "מסכתות שנבחרו:", הצג הודעה מתאימה
                     if (masechetData.isEmpty()) {
                         Toast.makeText(this, "לא נבחרו מסכתות", Toast.LENGTH_SHORT).show();
                         break; // יציאה מהלולאה אם אין מסכתות
                     }
-
                     // חיתוך המידע לפי פסיקים (|) -> כל מסכת נפרדת
                     String[] masechetArray = masechetData.split("\\|");
-
                     // הוספת כל המסכתות לרשימה תוך שמירה על שמותיהם בלבד (ללא דפים)
                     for (String masechet : masechetArray) {
                         //חיתוך כל מסכת לפי הדפים (נמחק את הדפים )
-                        String masechetName = masechet.split("[,]")[0].trim();
-
+                        String masechetName = masechet.split(",")[0].trim();
                         // הוספת שם המסכת לרשימה אם הוא לא ריק ושהוא לא כבר ברשימה
                         if (!masechetName.isEmpty() && !selectedMasechetList.contains(masechetName)) {
                             selectedMasechetList.add(masechetName);
                         }
                     }
-
-                    // סיום קריאת המידע
-                    break;
+                    break;//סיום קריאת המידע
                 }
             }
         } catch (IOException e) {
             Toast.makeText(this, "שגיאה בקריאת קובץ המסכתות!", Toast.LENGTH_SHORT).show();
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -577,10 +568,9 @@ public class MainActivity extends AppCompatActivity {
                 // הוספת כל המסכתות שהתקבלו לרשימה הקיימת
                 for (String masechet : selectedMasechetListFromIntent) {
                     if (!selectedMasechetList.contains(masechet)) {
-                        selectedMasechetList.add(masechet);  // הוסף רק אם המסכת לא קיימת כבר
+                        selectedMasechetList.add(masechet);//הוסף רק אם המסכת לא קיימת כבר
                     }
                 }
-
                 // עדכון ה-ListView עם הרשימה המעודכנת
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
                 selectedmasechetListView.setAdapter(adapter);
