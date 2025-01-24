@@ -99,26 +99,21 @@ public class Select_Masechet extends AppCompatActivity {
         try {
             // קריאת כל השורות בקובץ
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
-
             // עובר על כל השורות בקובץ ומחפש את השורה שמתחילה ב-"מסכתות שנבחרו:"
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);//מגדיר את השורה שנמצאה כמשתנה סטרינגי
-
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // חיתוך כל המסכתות שנבחרו מתוך השורה
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
-
                     // אם אין מסכתות כבר בקובץ
                     if (selectedMasechetLine.isEmpty()) {
                         Toast.makeText(this, "בחירת המסכת פעם ראשונה!", Toast.LENGTH_SHORT).show();
                         lines.set(i, line + masechet + "|");
                         break;//יציאה מהלולאה
                     }
-
                     // פיצול כל המסכתות שנבחרו לפי |
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
-
                     // בדוק אם המסכת כבר קיימת בקובץ
                     for (String selected : selectedMasechetArray) {
                         if (selected.trim().equals(masechet)) {
@@ -126,7 +121,6 @@ public class Select_Masechet extends AppCompatActivity {
                             return; // אם המסכת כבר קיימת, עצור את הפונקציה
                         }
                     }
-
                     // אם המסכת לא קיימת, הוסף אותה לקובץ
                     lines.set(i, line + masechet + "|");
                     Toast.makeText(this, "המסכת נוספה בהצלחה!", Toast.LENGTH_SHORT).show();
@@ -135,7 +129,6 @@ public class Select_Masechet extends AppCompatActivity {
             }
             // שמור את הקובץ לאחר עדכון
             m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
-
         } catch (IOException e) {
             // אם יש שגיאה בקריאת או כתיבת הקובץ, הצג הודעת שגיאה
             Toast.makeText(this, "שגיאה בשמירת המסכת לקובץ!", Toast.LENGTH_SHORT).show();

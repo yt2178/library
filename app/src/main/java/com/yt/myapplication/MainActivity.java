@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView selectedmasechetListView;
     private List<String> selectedMasechetList; // הוספנו את הרשימה כאן
     private TalmudPageCalculator pageCalculator;
-    private List<String> pagesSelected = new ArrayList<>();
+    private List<String> dafSelected = new ArrayList<>();
 
 
     protected void onCreate(Bundle bundle) {
@@ -70,8 +70,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
-        updateDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
-        updateDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
+        updateTotalDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
+        updateTotalDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
         updateSelectedMasechetFromFile(); // קריאת המסכתות שנבחרו מהקובץ
         selectedmasechetListView.setFocusable(true);//פוקוס
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {//חזרה למצב פעיל לאקטיביטי
         super.onResume();
-        updateDafDFromFile();
-        updateDafDisplay();
+        updateTotalDafDFromFile();
+        updateTotalDafDisplay();
         // הגדרת פוקוס על ה-ListView
         selectedmasechetListView.requestFocus();
         selectedmasechetListView.setFocusable(true);
@@ -119,8 +119,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {//יציאה ממצב פעיל ועובד ברקע
         super.onPause();
-        updateDafDisplay();
+        updateTotalDafDisplay();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
+    }
+    private void updateDafSelectedFromFile(String masechetName) {
+        try {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+            for (String line : lines) {
+                // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
+                if (line.startsWith("מסכתות שנבחרו:")) {
+                    String masechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
+                    String[] masechetArray = masechetLine.split("\\|");
+                    for (String masechetData : masechetArray) {
+                        if (masechetData.startsWith(masechetName)) {
+                            String DafString = masechetData.substring(masechetName.length()).trim();
+                            String[] DafArray = DafString.split(",");
+                            dafSelected.clear();  // נוודא שהרשימה מתאפסת לפני שמוסיפים דפים חדשים
+                            for (String page : DafArray) {
+                                dafSelected.add(page.trim());
+                            }
+                        }
+                    }
+                }
+            }
+        } catch(IOException e){
+            Toast.makeText(this, "שגיאה בטעינת הדפים שנבחרו!", Toast.LENGTH_SHORT).show();
+        }
     }
     private void showPages(List<String> pages){
             // יצירת ListView חדש לדפים
@@ -130,28 +154,45 @@ public class MainActivity extends AppCompatActivity {
             selectedmasechetListView.setVisibility(View.GONE);
 
             // יצירת CustomAdapterListDaf עם הדפים
-             CustomAdapterListDaf adapter = new CustomAdapterListDaf(this, pages, pagesSelected);  // dafList הוא הרשימה שלך של דפים שנבחרו
+             CustomAdapterListDaf adapter = new CustomAdapterListDaf(this, pages, dafSelected);  // dafList הוא הרשימה שלך של דפים שנבחרו
              pagesListView.setAdapter(adapter);
-
+            // ביצוע עדכון הדפים שנלמדו מהקובץ
+            updateDafSelectedFromFile(selectedMasechet);
+        // נסה לבצע את הגלילה אחרי שהרשימה מעודכנת
+        pagesListView.post(() -> scrollToLastSelectedPage(pagesListView, pages));
             // הגדרת מאזין ללחיצות על פריטים ברשימה
             pagesListView.setOnItemClickListener((parent, view, position, id) -> {
-                String selectedPage = pages.get(position);
+                String selectedDaf = pages.get(position);
+                // קריאה לפונקציה onClickAddDafButton
+                onClickAddDafButton(view);// העברת את ה-View כאן
                 // עדכון הקובץ - הוספת הדף הנבחר למסכת
-                savePageToFile(selectedMasechet, selectedPage);
-                // הוספת הדף הנבחר ל-`pagesSelected`
-                if (!pagesSelected.contains(selectedPage)) {
-                    pagesSelected.add(selectedPage);  // הוסף את הדף לרשימה שנבחרו
+                saveDafSelectedToFile(selectedMasechet, selectedDaf);
+                // הוספת הדף הנבחר ל-`dafSelected`
+                if (!dafSelected.contains(selectedDaf)) {
+                    dafSelected.add(selectedDaf);  // הוסף את הדף לרשימה שנבחרו
                 }
                 // עדכון ה-Adapter
                 adapter.notifyDataSetChanged(); // זה יגרום ל-ListView להתעדכן ולשנות את הצבע
-                Toast.makeText(this, "נבחר דף: " + selectedPage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "נבחר דף: " + selectedDaf, Toast.LENGTH_SHORT).show();
             });
     }
-    public void savePageToFile(String masechetName, String page) {
-        if (masechetName.isEmpty()) {
-            Toast.makeText(this, "לא נבחרה מסכת", Toast.LENGTH_SHORT).show();
-            return;
+    private void scrollToLastSelectedPage(ListView pagesListView, List<String> pages) {
+        // אם יש דף שנבחר, נמצא את המיקום שלו ברשימה
+        if (!dafSelected.isEmpty()) {
+            String lastSelectedPage = dafSelected.get(dafSelected.size() - 1);  // הדף האחרון שנבחר
+            int position = pages.indexOf(lastSelectedPage);  // מצא את המיקום שלו ברשימה
+
+            // אם מצאנו את הדף האחרון שנבחר, נבצע גלילה אוטומטית אליו
+            if (position != -1) {
+                // עיכוב קצר לפני הגלילה, על מנת לאפשר ל-ListView להתעדכן
+                pagesListView.postDelayed(() -> {
+                    // גלילה עד הדף האחרון, תוך הצגת הדף בראש הרשימה
+                    pagesListView.smoothScrollToPositionFromTop(position, 0);
+                }, 100); // עיכוב של 100ms
+            }
         }
+    }
+    public void saveDafSelectedToFile(String masechetName, String saf) {
         // קריאה לקובץ ולחיפוש אחרי המסכת הנבחרת
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
@@ -166,16 +207,14 @@ public class MainActivity extends AppCompatActivity {
                     for (int j = 0; j < masechetArray.length; j++) {
                         if (masechetArray[j].startsWith(masechetName)) { // אם המסכת כבר קיימת
                             // אם הדף לא קיים, נוסיף אותו
-                            if (!masechetArray[j].contains(page)) {
-                                masechetArray[j] += "," + page; // הוסף את הדף
+                            if (!masechetArray[j].contains(saf)) {
+                                masechetArray[j] += "," + saf; // הוסף את הדף
                             }
                             lines.set(i, "מסכתות שנבחרו:" + String.join("|", masechetArray) + "|");
                             m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                             return;
                         }
                     }
-                    // אם לא מצאנו את המסכת, נוסיף אותה עם הדף הנבחר
-                    lines.set(i, "מסכתות שנבחרו:" + masechetName + "-" + page + "|");
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                     return;
                 }
@@ -399,15 +438,19 @@ public class MainActivity extends AppCompatActivity {
                 if (!target.isEmpty()){//אם המשתנה לא ריק
                     try {
                         int targetInt = Integer.parseInt(target); // המרת המשתנה הסטרינגי למספרי
-                        if (targetInt < m_pagesLearned) { // בדיקה אם היעד שהוזן קטן מהדפים שנלמדו
-                            Toast.makeText(MainActivity.this, "היעד לא יכול להיות קטן מהדפים שנלמדו!", Toast.LENGTH_SHORT).show();
+                        if (targetInt == 0) { // בדיקה אם היעד שווה ל-0
+                            Toast.makeText(MainActivity.this, "זה היעד שלך???", Toast.LENGTH_SHORT).show();
+                            return; // יוצאים מהפונקציה אם היעד שווה ל-0
+                        } else if (targetInt < m_pagesLearned) { // בדיקה אם היעד קטן מהדפים שנלמדו
+                            Toast.makeText(MainActivity.this, "היעד לא יכול להיות קטן מהדפים שלמדת!", Toast.LENGTH_SHORT).show();
                             return; // יוצאים מהפונקציה אם היעד קטן מדי
                         }
                         m_pagesRemaining = Integer.parseInt(target);//המרת המשתנה הסטרינגי למשתנה המספרי
                         m_pagesRemaining -= m_pagesLearned;//הפחתת הדפים שנלמדו מהדפים שנותרו
                         Toast.makeText(MainActivity.this, "היעד הוגדר בהצלחה!", Toast.LENGTH_LONG).show();
-                        updateDafDisplay();//עדכון התצוגה לאחר עדכון היעד
-                        updateDafInTheFile();//עדכון הקובץ לאחר עדכון היעד
+                        updateTotalDafDisplay();//עדכון התצוגה לאחר עדכון היעד
+                        saveTotalDafToFile();//עדכון הקובץ לאחר עדכון היעד
+
                     } catch (NumberFormatException e) {
                         Toast.makeText(MainActivity.this, "אנא הזן מספר תקין", Toast.LENGTH_SHORT).show();
                     }
@@ -450,7 +493,7 @@ public class MainActivity extends AppCompatActivity {
         input.requestFocus();// הבאת המוקד (פוקוס) לתוך ה-EditText
         showKeyboard(input);//הצגת המקלדת
     }//נבדק
-    private void updateDafInTheFile (){
+    private void saveTotalDafToFile(){
         try {
             m_fileManager = new FileManager(this); //יצירת אובייקט לניהול קבצים
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
@@ -479,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }//נבדק
     @SuppressLint("SetTextI18n")
-    private void updateDafDisplay(){
+    private void updateTotalDafDisplay(){//עדכון מהמשתנים לתצוגה סך הדפים שנלמדו ונשארו בס"כ
         //עדכון התצוגה לאחר שמירת הנתונים בקובץ
         this.textViewNumberPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
         if (m_pagesRemaining == 0) {
@@ -488,7 +531,7 @@ public class MainActivity extends AppCompatActivity {
             this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + this.m_pagesRemaining);
         }
     }//נבדק
-    private void updateDafDFromFile(){
+    private void updateTotalDafDFromFile(){//עדכון מהקובץ למשתנים סך הדפים שנלמדו ונשארו בס"כ
         m_fileManager = new FileManager(this);// יצירת אובייקט FileManager
         // קריאת הנתונים מהקובץ ושמירתם במשתנים
         try {
@@ -581,12 +624,13 @@ public class MainActivity extends AppCompatActivity {
         if (!(this.m_pagesRemaining == 0)) { //כל עוד הדפים שנשארו הם לא 0
             this.m_pagesLearned++;//הוספת מספר לדפים שנלמדו
             this.m_pagesRemaining--;//הסרת מספר מהדפים שנותרו
-            updateDafDisplay();// עדכון התצוגה לאחר עדכון היעד
-            updateDafInTheFile();//עדכון הקובץ לאחר עדכון היעד
+            updateTotalDafDisplay();// עדכון התצוגה לאחר עדכון היעד
+            saveTotalDafToFile();//עדכון הקובץ לאחר עדכון היעד
             if (this.m_pagesRemaining == 0) {// בדיקה אם המשתמש השלים את כל הדפים
                 startActivity(new Intent(this,CongratulationsActivity.class));
             }
         } else {//אם הדפים שנשארו הם 0 ונלחץ הכפתור הוספה
+            this.m_pagesLearned++;//הוספת מספר לדפים שנלמדו
             openSetTargetDialog();
             Toast.makeText(this, "כדאי להגדיר יעד ומטרה!", Toast.LENGTH_LONG).show();
         }
@@ -595,8 +639,8 @@ public class MainActivity extends AppCompatActivity {
         if (this.m_pagesLearned > 0) {//בדיקה שהדפים שנלמדו לא יורדים מתחת ל-0
             this.m_pagesRemaining++;//הוספת מספר לדפים שנותרו
             this.m_pagesLearned--;//הסרת מספר מהדפים שנלמדו
-            updateDafDisplay();//עדכון התצוגה לאחר עדכון היעד
-            updateDafInTheFile();//עדכון הקובץ לאחר עדכון היעד
+            updateTotalDafDisplay();//עדכון התצוגה לאחר עדכון היעד
+            saveTotalDafToFile();//עדכון הקובץ לאחר עדכון היעד
             return;
         }
         Toast.makeText(this, "לא ניתן לרדת מתחת ל-0 דף!", Toast.LENGTH_SHORT).show();
