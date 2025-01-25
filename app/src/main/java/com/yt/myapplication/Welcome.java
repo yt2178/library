@@ -36,6 +36,7 @@ public class Welcome extends AppCompatActivity {
             // יצירת Intent לעבור לאקטיביטי הבא
             Intent intent = new Intent(Welcome.this, MainActivity.class); // שים את שם הקטיביטי הבא במקום NextActivity
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish(); // לסיים את הקטיביטי הנוכחי כדי שלא יחזור אליו
         }, 2000); // 2000 מילישניות = 2 שניות
     }
@@ -71,5 +72,13 @@ public class Welcome extends AppCompatActivity {
             Toast.makeText(Welcome.this, "לא ניתן לשמור נתונים", Toast.LENGTH_SHORT).show();
             // ליצור בעתיד פתיחת התמיכה במקרה שלא מצליח ליצור את הקובץ
         }
+
+    }
+    @Override
+    public void onBackPressed() {
+        // סוגר את כל האקטיביטיז הפתוחות ומסיים את האפליקציה
+        super.onBackPressed();
+        finishAffinity(); // סוגר את כל האקטיביטיז הקודמות
+        System.exit(0);   // סוגר את האפליקציה לחלוטין
     }
 }

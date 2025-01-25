@@ -47,6 +47,8 @@ public class Settings extends AppCompatActivity {
             public void onClick(View v) {
                 // חזרה לאחור - סגירת האקטיביטי הנוכחי
                 onBackPressed();
+                // אנימציה בעת חזרה לאחור
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
 

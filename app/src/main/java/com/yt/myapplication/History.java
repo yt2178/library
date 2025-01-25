@@ -25,7 +25,6 @@ public class History extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_history);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -35,6 +34,8 @@ public class History extends AppCompatActivity {
             public void onClick(View v) {
                 // חזרה לאחור - סגירת האקטיביטי הנוכחי
                 onBackPressed();
+                // אנימציה בעת חזרה לאחור
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
         // אתחול ה-Handler

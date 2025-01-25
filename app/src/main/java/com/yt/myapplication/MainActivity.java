@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
         updateTotalDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
         updateTotalDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
-        updateSelectedMasechetFromFile(); // קריאת המסכתות שנבחרו מהקובץ
+        updateSelectedMasechetFromFile(); // טעינת המסכתות שנבחרו מהקובץ
         selectedmasechetListView.setFocusable(true);//פוקוס
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
@@ -241,8 +241,10 @@ public class MainActivity extends AppCompatActivity {
              for (String line : lines) {
                 if (line.startsWith(USERNAME_PREFIX)) {
                     String userName = line.substring(USERNAME_PREFIX.length()).trim(); // חתוך את "שם משתמש: " בלי לציין מספר קבוע,,והסר רווחים מיותרים
-                    Toast.makeText(this, "ברוך הבא  " + userName + "!", Toast.LENGTH_SHORT).show();
-                    return;
+                    if (!userName.isEmpty()){
+                        Toast.makeText(this, "ברוך הבא  " + userName + "!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
             }
             // אם אין שורה שמתחילה ב"שם משתמש:" נבקש שם משתמש
@@ -649,14 +651,18 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_select_maschet) {
             Intent intent = new Intent(this, Select_Masechet.class);
             startActivityForResult(intent, REQUEST_CODE);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             return true;
         }
         if (item.getItemId() == R.id.menu_settings) {
             startActivity(new Intent(this, Settings.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }if (item.getItemId() == R.id.menu_About) {
             startActivity(new Intent(this, About.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }if (item.getItemId() == R.id.menu_history) {
             startActivity(new Intent(this, History.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }if (item.getItemId() == R.id.ask_User_Name) {
             askUserName();
         }else if (item.getItemId() == R.id.menu_set_target){
