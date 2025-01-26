@@ -6,37 +6,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".About">
+    tools:context=".History">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/history"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeTextView"/>
-
-    <TextView
-        android:id="@+id/timeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:text="00:00"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-    </TextView>
-
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -46,16 +18,60 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+        <Button
+            android:id="@+id/clearHistoryButton"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:text="הסר את כל ההיסטוריה"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
-        <!-- כותרת מותאמת אישית -->
         <TextView
             android:id="@+id/toolbar_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/history"
-            android:textColor="#000000"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
+
+    <!-- TextView להצגת השעה -->
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+
+    <!-- RecyclerView להצגת ההיסטוריה -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/historyRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeTextView" />
+
+    <!-- TextView המודיע שההיסטוריה ריקה -->
+    <TextView
+        android:id="@+id/emptyHistoryTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ההיסטוריה ריקה!"
+        android:textColor="#C5C5C5"
+        android:textSize="32sp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/timeTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

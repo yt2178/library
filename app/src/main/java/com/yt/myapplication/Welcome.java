@@ -51,6 +51,7 @@ public class Welcome extends AppCompatActivity {
                 fileManager.writeInternalFile(TOTAL_USER_DATA, defaultData, false);//כתיבת הברירת מחדל לקובץ
                 // יציג רק בטקסט
                 textViewUserName.setText("ברוך הבא, בחור יקר!");
+                HistoryUtils.logAction(Welcome.this, "כניסה ראשונה לאפליקציה");
             } else {//אם הקובץ קיים
                 // קריאת את תוכן הקובץ ושמירתו כמשתנה שורות
                 List<String> lines = fileManager.readFileLines(TOTAL_USER_DATA);
@@ -71,6 +72,7 @@ public class Welcome extends AppCompatActivity {
         }catch (IOException e) {
             Toast.makeText(Welcome.this, "לא ניתן לשמור נתונים", Toast.LENGTH_SHORT).show();
             // ליצור בעתיד פתיחת התמיכה במקרה שלא מצליח ליצור את הקובץ
+            HistoryUtils.logAction(Welcome.this, "שגיאה בקריאת הקובץ או כתיבתו");
         }
 
     }

@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 // עדכון ה-Adapter
                 adapter.notifyDataSetChanged(); // זה יגרום ל-ListView להתעדכן ולשנות את הצבע
-                Toast.makeText(this, "נבחר דף: " + selectedDaf, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "נבחר דף: " + selectedDaf , Toast.LENGTH_SHORT).show();
             });
     }
     private void scrollToLastSelectedPage(ListView pagesListView, List<String> pages) {
@@ -212,6 +212,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             lines.set(i, "מסכתות שנבחרו:" + String.join("|", masechetArray) + "|");
                             m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                            // שמירה בהיסטוריה לאחר הוספת הדף
+                            HistoryUtils.logAction(MainActivity.this, "נבחר דף: " + saf + " במסכת " + masechetName);
                             return;
                         }
                     }
@@ -292,6 +294,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
                 m_fileManager.writeInternalFile(TOTAL_USER_DATA,String.join("\n",lines),false);
+                    // שמירת פעולה בהיסטוריה עם שם המשתמש החדש
+                    HistoryUtils.logAction(MainActivity.this, "הוזן שם משתמש חדש: " + userName);
                         if (userName.equals("בחור יקר")) {
                             Toast.makeText(MainActivity.this, "ניתן להגדיר שם משתמש בתפריט!", Toast.LENGTH_SHORT).show();
                         }else {
@@ -326,8 +330,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    // שמירת פעולה בהיסטוריה אם המשתמש בחר לא לשנות
+                    HistoryUtils.logAction(MainActivity.this, "שם המשתמש הוגדר: " + userName);
                     hideKeyboard(input); // הסתרת המקלדת
-
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש!", Toast.LENGTH_SHORT).show();
                 }
@@ -357,8 +362,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    // שמירת פעולה בהיסטוריה
+                    HistoryUtils.logAction(MainActivity.this, "השם לא שונה, נשמר השם הקודם: " + userName);
                     hideKeyboard(input); // הסתרת המקלדת
-
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש!", Toast.LENGTH_SHORT).show();
                 }
@@ -452,7 +458,8 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "היעד הוגדר בהצלחה!", Toast.LENGTH_LONG).show();
                         updateTotalDafDisplay();//עדכון התצוגה לאחר עדכון היעד
                         saveTotalDafToFile();//עדכון הקובץ לאחר עדכון היעד
-
+                        // שמירה בהיסטוריה לאחר הגדרת היעד
+                        HistoryUtils.logAction(MainActivity.this, "הגדרת יעד חדש: " + targetInt + " דפים");
                     } catch (NumberFormatException e) {
                         Toast.makeText(MainActivity.this, "אנא הזן מספר תקין", Toast.LENGTH_SHORT).show();
                     }
@@ -626,6 +633,8 @@ public class MainActivity extends AppCompatActivity {
         if (!(this.m_pagesRemaining == 0)) { //כל עוד הדפים שנשארו הם לא 0
             this.m_pagesLearned++;//הוספת מספר לדפים שנלמדו
             this.m_pagesRemaining--;//הסרת מספר מהדפים שנותרו
+            // שמירת הפעולה בהיסטוריה
+            HistoryUtils.logAction(MainActivity.this, "הוספת דף");
             updateTotalDafDisplay();// עדכון התצוגה לאחר עדכון היעד
             saveTotalDafToFile();//עדכון הקובץ לאחר עדכון היעד
             if (this.m_pagesRemaining == 0) {// בדיקה אם המשתמש השלים את כל הדפים
@@ -633,6 +642,8 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {//אם הדפים שנשארו הם 0 ונלחץ הכפתור הוספה
             this.m_pagesLearned++;//הוספת מספר לדפים שנלמדו
+            // שמירת הפעולה בהיסטוריה
+            HistoryUtils.logAction(MainActivity.this, "הוספת דף");
             openSetTargetDialog();
             Toast.makeText(this, "כדאי להגדיר יעד ומטרה!", Toast.LENGTH_LONG).show();
         }
@@ -641,6 +652,7 @@ public class MainActivity extends AppCompatActivity {
         if (this.m_pagesLearned > 0) {//בדיקה שהדפים שנלמדו לא יורדים מתחת ל-0
             this.m_pagesRemaining++;//הוספת מספר לדפים שנותרו
             this.m_pagesLearned--;//הסרת מספר מהדפים שנלמדו
+            HistoryUtils.logAction(MainActivity.this, "הסרת דף");
             updateTotalDafDisplay();//עדכון התצוגה לאחר עדכון היעד
             saveTotalDafToFile();//עדכון הקובץ לאחר עדכון היעד
             return;
@@ -737,7 +749,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!updatedMasechetData.isEmpty()) {
                         updatedMasechetData += "|";
                     }
-
+                    HistoryUtils.logAction(MainActivity.this, "הסרת מסכת");
                     // עדכון השורה בקובץ
                     lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
 

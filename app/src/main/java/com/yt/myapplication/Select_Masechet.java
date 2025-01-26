@@ -63,9 +63,9 @@ public class Select_Masechet extends AppCompatActivity {
             } else {//אם המסכת שנבחרה לא נמצאת בתוך רשימת המסכתות שנבחרו
                 selectedMasechetList.add(selectedMasechet); // הוספת המסכת שנבחרה לרשימת המסכתות שנבחרו
                 saveSelectedMasechetToFile(selectedMasechet);//שמירת המסכתות שנבחרו לקובץ
+                HistoryUtils.logAction(Select_Masechet.this, "נבחרה מסכת " + selectedMasechet);
                 adapter.notifyDataSetChanged();  // עדכון המתאם
             }
-
            //שליחה לפונקציה את המסכתות שנבחרה
             Intent resultIntent = new Intent();//העברת נתונים בין אקטיביטי
             resultIntent.putStringArrayListExtra("selected_masechet_list", selectedMasechetList);//העברת הנתון המפתח הרשימה הוא  ב -" " והערך אחרי הפסיק
