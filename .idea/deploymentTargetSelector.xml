@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-01-26T11:51:14.426567800Z">
+        <DropdownSelection timestamp="2025-02-05T16:04:34.516936900Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=BluePhoneQIN1S" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Yedidya\.android\avd\Qin_1s_API_19.avd" />
             </handle>
           </Target>
         </DropdownSelection>

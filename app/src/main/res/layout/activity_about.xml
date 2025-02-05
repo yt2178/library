@@ -48,16 +48,90 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- WebView להצגת תוכן HTML -->
-    <WebView
-        android:id="@+id/webView"
+    <!-- ScrollView עבור גלילה -->
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#00FFFFFF"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardView" />
+        app:layout_constraintTop_toBottomOf="@id/cardView">
+
+        <!-- LinearLayout לארגון הטקסטים -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="vertical"> <!-- הצמדת כל הטקסט לימין -->
+
+            <!-- כותרת ראשית -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="ברוכים הבאים לאפליקציית ושננתם!"
+                android:textColor="#A0522D"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <!-- מידע על הגירסה -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="גירסה נוכחית: 1.0.0"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="תאריך עדכון אחרון: 05/02/2025"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+
+            <!-- תיאור האפליקציה -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="אפליקציה זו נועדה לעזור לך להישאר מסודר וממוקד בלמידה ובמעקב אחרי הדפים שנלמדו. האפליקציה מציעה מגוון כלים שיעזרו לך להשיג את מטרות הלמידה שלך בצורה יעילה ומסודרת. עם מערכת פשוטה לשימוש, תוכל לעקוב אחרי הדפים הנלמדים, להגדיר יעדים, ולקבל התראות שיעזרו לך לשמור על קצב הלמידה"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- קישור למייל -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="לשליחת הערות, הארות או שאלות, ניתן לפנות אלינו במייל:"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/emailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:linksClickable="true"
+                android:text="yt0508352872@gmail.com"
+                android:textColor="#A04123"
+                android:textSize="18sp" />
+
+
+            <!-- תיאור נוסף -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ניתן להעביר לכל מי שרוצה כדי שיזכה במצווה."
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+    </ScrollView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"

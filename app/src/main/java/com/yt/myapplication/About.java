@@ -1,5 +1,7 @@
 package com.yt.myapplication;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,20 +39,16 @@ public class About extends AppCompatActivity {
 
             }
         });
+        TextView emailTextView = findViewById(R.id.emailTextView);
+        emailTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // יצירת Intent עם URI של דואר אלקטרוני
+                Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "yt0508352872@gmail.com", null));
+                intent.putExtra(Intent.EXTRA_SUBJECT, "אפליקציית ושננתם");  // הוספת נושא לדוא"ל
+                startActivity(Intent.createChooser(intent, "בחר אפליקציה לשלוח"));
+            }
+        });
 
-        // קבלת גישה ל- WebView
-        WebView myWebView = findViewById(R.id.webView);
-        myWebView.setFocusableInTouchMode(true);
-        myWebView.requestFocus();
-
-        myWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        myWebView.getSettings().setJavaScriptEnabled(true); // מאפשר ג'אווה סקריפט
-        myWebView.getSettings().setAllowFileAccess(true); // מאפשר גישה לקבצים
-        myWebView.getSettings().setLoadsImagesAutomatically(true); // טוען תמונות באופן אוטומטי
-        myWebView.getSettings().setDomStorageEnabled(true); // מאפשר אחסון מקומי בדפדפן
-        // קביעת הרקע של WebView להיות שקוף
-        myWebView.setBackgroundColor(0x00000000);  // רקע שקוף (ARGB)
-        // טעינת קובץ ה-HTML מתוך תיקיית assets
-        myWebView.loadUrl("file:///android_asset/about.html");
     }
 }
