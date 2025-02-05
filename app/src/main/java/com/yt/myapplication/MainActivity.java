@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> selectedMasechetList; // הוספנו את הרשימה כאן
     private TalmudPageCalculator pageCalculator;
     private List<String> dafSelected = new ArrayList<>();
-
+    private TextView emptyMasechetTextView;//TextView שמוצג אם ההיסטוריה ריקה
 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -77,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
+        // אתחול TextView לרשימת המסכתות ריקה
+        emptyMasechetTextView = findViewById(R.id.emptyMasechetTextView);
+        // אם הרשימה ריקה, הצג את ה-TextView
+        updateEmptyView();
         //לחיצה קצרה על מסכת מהרשימה תציג את רשימת הדפים שלה
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {//חזרה למצב פעיל לאקטיביטי
         super.onResume();
+        updateEmptyView();
         updateTotalDafDFromFile();
         updateTotalDafDisplay();
         // הגדרת פוקוס על ה-ListView
@@ -190,6 +195,16 @@ public class MainActivity extends AppCompatActivity {
                     pagesListView.smoothScrollToPositionFromTop(position, 0);
                 }, 100); // עיכוב של 100ms
             }
+        }
+    }
+    // פונקציה לעדכון מצב הצגת רשימת המסכתות הריקה
+    void updateEmptyView() {
+        if (selectedMasechetList.isEmpty()) {
+            selectedmasechetListView.setVisibility(View.GONE);  // מחביא את ה-RecyclerView
+            emptyMasechetTextView.setVisibility(View.VISIBLE);  // מציג את ה-TextView עם ההודעה
+        } else {
+            selectedmasechetListView.setVisibility(View.VISIBLE);  // מציג את ה-RecyclerView
+            emptyMasechetTextView.setVisibility(View.GONE);  // מחביא את ה-TextView
         }
     }
     public void saveDafSelectedToFile(String masechetName, String saf) {
@@ -711,6 +726,7 @@ public class MainActivity extends AppCompatActivity {
                         // עדכון הקובץ על מנת להסיר את המסכת
                         removeMasechetFromFile(masechetToRemove);
                         Toast.makeText(MainActivity.this,   "מסכת "+ masechetToRemove +" הוסרה!", Toast.LENGTH_SHORT).show();
+                        updateEmptyView();
                     }
                 })
                 .setNegativeButton("לא", new DialogInterface.OnClickListener() {
@@ -749,7 +765,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!updatedMasechetData.isEmpty()) {
                         updatedMasechetData += "|";
                     }
-                    HistoryUtils.logAction(MainActivity.this, "הסרת מסכת");
+                    HistoryUtils.logAction(MainActivity.this, "מסכת " + masechetToRemove + " הוסרה");
                     // עדכון השורה בקובץ
                     lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
 

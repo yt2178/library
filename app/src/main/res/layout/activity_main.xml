@@ -5,7 +5,8 @@
     android:background= "@drawable/img_screen_background_main_activity"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:ignore="VisualLintBounds">
 
 
 
@@ -84,34 +85,30 @@
 
     <Button
         android:id="@+id/buttonAddPoint"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="30dp"
         android:onClick="onClickAddDafButton"
-        android:text="הוסף עמוד שלמדת"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRemovePoint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonRemovePoint"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:onClick="onClickRemoveDafButton"
-        android:text="הסר עמוד שהוסף בטעות"
+        android:text="הוסף עמוד"
         android:textAlignment="center"
         android:textSize="16sp"
         android:textStyle="bold"
         app:backgroundTint="@color/brown"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buttonRemovePoint"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:onClick="onClickRemoveDafButton"
+        android:text="הסר עמוד"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/brown"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.Toolbar
@@ -134,5 +131,18 @@
             android:textSize="24sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
-
+    <!-- TextView המודיע שההיסטוריה ריקה -->
+    <TextView
+        android:id="@+id/emptyMasechetTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="רשימת המסכתות ריקה!"
+        android:textColor="@color/brown"
+        android:textSize="30sp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

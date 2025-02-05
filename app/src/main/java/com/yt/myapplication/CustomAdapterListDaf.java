@@ -30,7 +30,7 @@ public class CustomAdapterListDaf extends ArrayAdapter<String> {
         String currentDaf = pages.get(position);
 
         // נמצא את ה-TextView ברשימה
-        TextView textView = rowView.findViewById(R.id.dafName); // נניח שזו ה-TextView ב-`daf_item.xml`
+        TextView textView = rowView.findViewById(R.id.dafName);
 
         // הצגת שם הדף ב-TextView
         textView.setText(currentDaf);
