@@ -15,7 +15,7 @@
         android:title="@string/history"/>
     <item
         android:id="@+id/menu_notifications"
-        android:title="התראות" />
+        android:title="התראות (לא פעיל כרגע)" />
     <item
         android:id="@+id/menu_settings"
         android:title="@string/settings" />
