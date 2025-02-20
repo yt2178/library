@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
             selectedmasechetListView.setVisibility(View.GONE);
 
             // יצירת CustomAdapterListDaf עם הדפים
-             CustomAdapterListDaf adapter = new CustomAdapterListDaf(this, pages, dafSelected);  // dafList הוא הרשימה שלך של דפים שנבחרו
+             CustomAdapterListDaf adapter = new CustomAdapterListDaf(this, pages, dafSelected);
              pagesListView.setAdapter(adapter);
             // ביצוע עדכון הדפים שנלמדו מהקובץ
             updateDafSelectedFromFile(selectedMasechet);
@@ -180,6 +180,16 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged(); // זה יגרום ל-ListView להתעדכן ולשנות את הצבע
                 Toast.makeText(this, "נבחר דף: " + selectedDaf , Toast.LENGTH_SHORT).show();
             });
+        // הגדרת מאזין ללחיצה ארוכה על דף מהרשימה
+        pagesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                String selectedDaf = pages.get(position); // הדף שנבחר נשמר במשתנה
+                showRemoveDafDialog(selectedDaf, position,pages); // שליחת הדף לפונקציה והפעלת הפונקציה
+                return true; // מנע את פעולתו הרגילה של הלחיצה
+            }
+        });
+
     }
     private void scrollToLastSelectedPage(ListView pagesListView, List<String> pages) {
         // אם יש דף שנבחר, נמצא את המיקום שלו ברשימה
@@ -778,6 +788,85 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "שגיאה בהסרת מסכת מהקובץ!", Toast.LENGTH_SHORT).show();
         }
     }
+    private void showRemoveDafDialog(final String dafToRemove, final int position, final List<String> pages) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("האם אתה בטוח שברצונך להסיר את הדף: " + dafToRemove + "?")
+                .setCancelable(false)
+                .setPositiveButton("כן", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        ListView pagesListView = findViewById(R.id.pagesListView);  // חפש את ה-ListView מתוך ה-XML
+
+                        // הסרת הדף מהרשימה
+                        if (!pages.isEmpty() && position >= 0 && position < pages.size()) {
+                            pages.remove(position);
+                        } else {
+                            // הוסף טיפול במצב שבו הרשימה ריקה או האינדקס לא תקין
+                            Toast.makeText(MainActivity.this, "הרשימה ריקה או האינדקס לא תקין", Toast.LENGTH_SHORT).show();
+                        }
+
+
+                        // עדכון ה-ListView
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, pages);
+                        pagesListView.setAdapter(adapter);
+
+                        // עדכון הקובץ על מנת להסיר את הדף
+                        removeDafFromFile(dafToRemove);
+                        Toast.makeText(MainActivity.this, "דף " + dafToRemove + " הוסר!", Toast.LENGTH_SHORT).show();
+                        updateEmptyView();
+                    }
+                })
+                .setNegativeButton("לא", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss(); // סגירת הדיאלוג בלי פעולה
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    private void removeDafFromFile(String dafToRemove) {
+        try {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+            // לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).startsWith("דפים שנבחרו:")) {
+                    // חילוץ הדפים מתוך השורה
+                    String dafData = lines.get(i).substring("דפים שנבחרו:".length()).trim();
+                    String[] dafArray = dafData.split("\\|");
+
+                    // יצירת רשימה חדשה של דפים תוך התחשבות בדף להסרה
+                    List<String> newDafList = new ArrayList<>();
+                    for (String daf : dafArray) {
+                        daf = daf.trim();
+                        if (!daf.equals(dafToRemove) && !daf.isEmpty()) {
+                            newDafList.add(daf); // הוספה אם זה לא הדף להסרה
+                        }
+                    }
+
+                    // בניית מחרוזת מעודכנת
+                    String updatedDafData = String.join("|", newDafList);
+
+                    // הוספת פסיק בסוף אם הרשימה אינה ריקה
+                    if (!updatedDafData.isEmpty()) {
+                        updatedDafData += "|";
+                    }
+
+                    // עדכון השורה בקובץ
+                    lines.set(i, "דפים שנבחרו:" + updatedDafData);
+
+                    // כתיבת הנתונים המעודכנים לקובץ
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בהסרת דף מהקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
     private void showKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);

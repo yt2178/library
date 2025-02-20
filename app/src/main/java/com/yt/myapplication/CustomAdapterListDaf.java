@@ -11,15 +11,15 @@ import java.util.List;
 
 public class CustomAdapterListDaf extends ArrayAdapter<String> {
     private final Context context;
-    private final List<String> pages;
-    private final List<String> dafList;
+    private final List<String> pages;//רשימה של שמות הדפים
+    private final List<String> dafSelected;//רשימת הדפים שנבחרו
 
 
     public CustomAdapterListDaf(Context context, List<String> pages, List<String> dafList) {
         super(context, R.layout.daf_item, pages);
         this.context = context;
         this.pages = pages;
-        this.dafList = dafList;
+        this.dafSelected = dafList;
     }
 
     @Override
@@ -35,11 +35,11 @@ public class CustomAdapterListDaf extends ArrayAdapter<String> {
         // הצגת שם הדף ב-TextView
         textView.setText(currentDaf);
 
-        // סימון דפים שנבחרו
-        if (dafList.contains(currentDaf)) {
+        // אם הדף נמצא ברשימת הדפים שנבחרו, נבצע שינוי ברקע
+        if (dafSelected.contains(currentDaf)) {
             rowView.setBackgroundResource(R.color.third_brown);  // צבע רקע לדפים שנבחרו
         }
-
+        // מחזירים את ה-View עם העדכונים
         return rowView;
     }
 }
