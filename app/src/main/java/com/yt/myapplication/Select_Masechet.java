@@ -84,8 +84,8 @@ public class Select_Masechet extends AppCompatActivity {
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
                     for (String selected : selectedMasechetArray) {
 
-                        //חיתוך כל מסכת לפי הדפים (נמחק את הדפים )
-                        String masechetName = selected.split(",")[0].trim();
+                        String masechetName = selected.split("\\.")[0].trim();
+
 
                         if (!masechetName.isEmpty()) {
                             selectedMasechetList.add(masechetName);  // מוסיף רק אם המסכת לא ריקה
@@ -111,20 +111,24 @@ public class Select_Masechet extends AppCompatActivity {
                     // אם אין מסכתות כבר בקובץ
                     if (selectedMasechetLine.isEmpty()) {
                         Toast.makeText(this, "בחירת המסכת פעם ראשונה!", Toast.LENGTH_SHORT).show();
-                        lines.set(i, line + masechet + "|");
+                        lines.set(i, line + masechet + ".|");
                         break;//יציאה מהלולאה
                     }
                     // פיצול כל המסכתות שנבחרו לפי |
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
-                    // בדוק אם המסכת כבר קיימת בקובץ
+                    // בדוק אם המסכת כבר קיימת בקובץ (בלי הנקודה בסוף)
                     for (String selected : selectedMasechetArray) {
-                        if (selected.trim().equals(masechet)) {
+                        selected = selected.trim();  // חיתוך רווחים
+                        if (selected.endsWith(".")) {
+                            selected = selected.substring(0, selected.length() - 1);  // חיתוך הנקודה בסוף
+                        }
+                        if (selected.equals(masechet)) {
                             Toast.makeText(this, "כבר בחרת מסכת זאת!", Toast.LENGTH_SHORT).show();
                             return; // אם המסכת כבר קיימת, עצור את הפונקציה
                         }
                     }
                     // אם המסכת לא קיימת, הוסף אותה לקובץ
-                    lines.set(i, line + masechet + "|");
+                    lines.set(i, line + masechet + ".|");
                     Toast.makeText(this, "המסכת נוספה בהצלחה!", Toast.LENGTH_SHORT).show();
                     break; // אחרי שמצאנו את השורה והוספנו את המסכת, יצאנו מהלולאה
                 }

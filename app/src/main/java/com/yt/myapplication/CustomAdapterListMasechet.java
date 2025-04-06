@@ -1,6 +1,7 @@
 package com.yt.myapplication;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,19 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
         TextView masechetName = rowView.findViewById(R.id.masechetName);
         String currentMasechet = masechetList.get(position);
 
+        // הסרת נקודה בסוף השם אם קיימת וגם רווחים מיותרים
+        if (currentMasechet.endsWith(".")) {
+            currentMasechet = currentMasechet.substring(0, currentMasechet.length() - 1).trim(); // הסרת נקודה ורווחים
+        } else {
+            currentMasechet = currentMasechet.trim(); // הסרת רווחים מיותרים
+        }
+
+        // הדפסת שם המסכת לאחר הסרת נקודה ורווחים
+        Log.d("Masechet after trim", currentMasechet);
+
+        // הצגת תוכן הרשימה של מסכתות נבחרות
+        Log.d("Selected Masechet List", selectedMasechetList.toString());
+
         // קבלת מספר הדפים של המסכת
         int totalPages = MasechetData.getPages(currentMasechet);
         // חישוב הדף האחרון בפורמט עברי
@@ -41,7 +55,10 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
 
         // סימון מסכתות שכבר נבחרו
         if (selectedMasechetList.contains(currentMasechet)) {
+            Log.d("Selected Masechet", "Found: " + currentMasechet); // הוסף כאן הדפסה כדי לראות אם המסכת נמצאת ברשימה
             rowView.setBackgroundResource(R.color.third_brown);
+        } else {
+            Log.d("Selected Masechet", "Not found: " + currentMasechet); // הדפסת "לא נמצא" אם המסכת לא נמצאת ברשימה
         }
 
         return rowView;
