@@ -22,18 +22,22 @@ public class HistoryUtils {
 
     // שמירת פעולה עם תאריך ושעה
     public static void logAction(Context context, String action) {
-        // אתחול SharedPreferences אם לא אתחול קודם
         if (sharedPreferences == null) {
-            init(context);
+            init(context);  // אתחול אם לא אתחול קודם
         }
 
         // יצירת רשימת פעולות
         List<HistoryItem> historyList = loadHistory(context);
 
-        // יצירת אובייקט HistoryItem עם הפעולה והזמן הנוכחי
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String dateTime = sdf.format(new Date());
-        HistoryItem newItem = new HistoryItem(action, dateTime);
+        // קבלת התאריך העברי
+        String hebrewDate = HebrewDateUtils.getHebrewDate();
+
+        // קבלת השעה הנוכחית
+        String timestamp = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+
+        // יצירת אובייקט HistoryItem עם הפעולה, התאריך העברי והזמן
+        HistoryItem newItem = new HistoryItem(action, hebrewDate + " " + timestamp);
+
 
         // הוספת הפעולה לרשימה
         historyList.add(0,newItem);

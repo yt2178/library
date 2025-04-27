@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.zmanim)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

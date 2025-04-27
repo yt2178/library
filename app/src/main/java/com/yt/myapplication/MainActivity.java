@@ -81,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
         emptyMasechetTextView = findViewById(R.id.emptyMasechetTextView);
         // אם הרשימה ריקה, הצג את ה-TextView
         updateEmptyView();
+        // קריאה למתודה ולקבלת התאריך העברי
+        String hebrewDateString = HebrewDateUtils.getHebrewDate();
+        // הצגת התאריך ב-TextView
+        TextView hebrewDateTextView = findViewById(R.id.hebrewDateTextView);
+        hebrewDateTextView.setText(hebrewDateString);
         //לחיצה קצרה על מסכת מהרשימה תציג את רשימת הדפים שלה
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -558,11 +563,11 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void updateTotalDafDisplay(){//עדכון מהמשתנים לתצוגה סך הדפים שנלמדו ונשארו בס"כ
         //עדכון התצוגה לאחר שמירת הנתונים בקובץ
-        this.textViewNumberPagesLearned.setText("מספר דפים שנלמדו: " + this.m_pagesLearned);
+        this.textViewNumberPagesLearned.setText("דפים שנלמדו: " + this.m_pagesLearned);
         if (m_pagesRemaining == 0) {
-            this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: לא הוגדר");
+            this.textViewNumberPagesRemaining.setText("דפים שנותרו: לא הוגדר");
         } else {
-            this.textViewNumberPagesRemaining.setText("מספר דפים שנותרו: " + this.m_pagesRemaining);
+            this.textViewNumberPagesRemaining.setText("דפים שנותרו: " + this.m_pagesRemaining);
         }
     }//נבדק
     private void updateTotalDafDFromFile(){//עדכון מהקובץ למשתנים סך הדפים שנלמדו ונשארו בס"כ

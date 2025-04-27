@@ -2,115 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="fill_parent"
-    android:background= "@drawable/img_screen_background_main_activity"
+    android:background="@drawable/img_screen_background_main_activity"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="VisualLintBounds">
 
-
-
-    <TextView
-        android:id="@+id/textViewNumberPagesLearned"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@color/semi_brown"
-        android:text="שגיאה בטעינת הדפים"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
-
-
-    <TextView
-        android:id="@+id/textViewNumberPagesRemaining"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:background="@color/semi_brown"
-        android:text="שגיאה בטעינת הדפים"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesLearned" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonAddPoint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewNumberPagesRemaining"
-        app:layout_constraintVertical_bias="0.0">
-
-
-        <ListView
-            android:id="@+id/masechetListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_listview"
-            android:divider="@color/brown"
-            android:dividerHeight="0.2dp"
-            android:scrollbars="vertical"
-            android:fadeScrollbars="false"
-            android:fastScrollAlwaysVisible="true"
-            android:theme="@style/CustomListViewTheme">
-
-        </ListView>
-        <ListView
-            android:id="@+id/pagesListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_listview"
-            android:divider="@color/brown"
-            android:dividerHeight="0.2dp"
-            android:visibility="gone"
-            android:scrollbars="vertical"
-            android:fadeScrollbars="false"
-            android:fastScrollAlwaysVisible="true"
-            android:theme="@style/CustomListViewTheme"/>
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/buttonAddPoint"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginEnd="30dp"
-        android:onClick="onClickAddDafButton"
-        android:text="הוסף עמוד"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/buttonRemovePoint"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="30dp"
-        android:onClick="onClickRemoveDafButton"
-        android:text="הסר עמוד"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:backgroundTint="@color/brown"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -131,6 +29,126 @@
             android:textSize="24sp"
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/hebrewDateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="תאריך"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintBottom_toTopOf="@+id/textViewsContainer"
+        android:gravity="center"/>
+
+    <!-- LinearLayout עם שני TextView -->
+    <LinearLayout
+        android:id="@+id/textViewsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal"
+        android:background="@color/semi_brown"
+        app:layout_constraintTop_toBottomOf="@+id/hebrewDateTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/textViewNumberPagesLearned"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="נלמדו"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/textViewNumberPagesRemaining"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="נשארו"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <!-- ListViews (ברשימה מסכתות ורשימת עמודים) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonAddPoint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewsContainer"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ListView
+            android:id="@+id/masechetListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_listview"
+            android:divider="@color/brown"
+            android:dividerHeight="0.2dp"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:fastScrollAlwaysVisible="true"
+            android:theme="@style/CustomListViewTheme"/>
+
+        <ListView
+            android:id="@+id/pagesListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_listview"
+            android:divider="@color/brown"
+            android:dividerHeight="0.2dp"
+            android:visibility="gone"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:fastScrollAlwaysVisible="true"
+            android:theme="@style/CustomListViewTheme"/>
+
+    </LinearLayout>
+
+    <!-- כפתור הוספה -->
+    <Button
+        android:id="@+id/buttonAddPoint"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="30dp"
+        android:onClick="onClickAddDafButton"
+        android:text="הוסף עמוד"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/brown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- כפתור הסרה -->
+    <Button
+        android:id="@+id/buttonRemovePoint"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="30dp"
+        android:onClick="onClickRemoveDafButton"
+        android:text="הסר עמוד"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@color/brown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <!-- TextView המודיע שההיסטוריה ריקה -->
     <TextView
         android:id="@+id/emptyMasechetTextView"
@@ -145,4 +163,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

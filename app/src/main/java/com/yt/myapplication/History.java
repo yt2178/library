@@ -14,6 +14,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kosherjava.zmanim.hebrewcalendar.HebrewDateFormatter;
+import com.kosherjava.zmanim.hebrewcalendar.JewishDate;
+
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -62,6 +66,14 @@ public class History extends AppCompatActivity {
         recyclerView.setFocusable(true);
         recyclerView.setFocusableInTouchMode(true);
         recyclerView.requestFocus();
+
+
+        // קריאה למתודה ולקבלת התאריך העברי
+        String hebrewDateString = HebrewDateUtils.getHebrewDate();
+        // הצגת התאריך ב-TextView
+        TextView hebrewDateTextView = findViewById(R.id.hebrewDateTextView);
+        hebrewDateTextView.setText(hebrewDateString);
+
 
         // טעינת ההיסטוריה
         historyList = loadHistory(this);  // טוען את ההיסטוריה
@@ -150,12 +162,13 @@ public class History extends AppCompatActivity {
     // שינוי כאן: הפכנו את הפונקציה לסטטית
     public static void logAction(Context context, String action) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
-        // יצירת תאריך ושעה עבור הפעולה
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        String dateTime = sdf.format(new Date());
+        // קבלת התאריך העברי
+        String hebrewDateString = HebrewDateUtils.getHebrewDate();
+        Log.d("HebrewDate", hebrewDateString);  // הצגת התאריך העברי בלוג
 
         // יצירת אובייקט HistoryItem עם הפעולה והזמן הנוכחי
-        HistoryItem newItem = new HistoryItem(action, dateTime);
+        HistoryItem newItem = new HistoryItem(action, hebrewDateString);
+        Log.d("HistoryItem", "Action: " + newItem.getAction() + ", Timestamp: " + newItem.getTimestamp());
 
         // טעינת ההיסטוריה הנוכחית
         List<HistoryItem> historyList = loadHistory(context);
