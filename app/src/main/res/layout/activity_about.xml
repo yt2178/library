@@ -8,6 +8,7 @@
 
     <!-- FrameLayout להכיל את התמונה וה-overlay -->
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -72,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="ברוכים הבאים לאפליקציית ושננתם!"
-                android:textColor="#A0522D"
+                android:textColor="@color/brown"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
@@ -156,5 +157,21 @@
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher_foreground" />
     </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/Diary_Changes"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="#FFFFFF"
+        android:text=""
+        android:elevation="4dp"
+        app:layout_constraintTop_toTopOf="@id/cardView"
+        app:layout_constraintBottom_toBottomOf="@id/cardView"
+        app:layout_constraintStart_toEndOf="@id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="55dp"
+        android:layout_marginEnd="1dp" /> <!-- כאן אתה שולט במרחק מהקצה הימני -->
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

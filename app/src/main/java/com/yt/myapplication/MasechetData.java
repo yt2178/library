@@ -45,9 +45,9 @@ public class MasechetData {
         MASECHET_PAGES.put("כריתות", 54);      // 27 דפים - נבדק
         MASECHET_PAGES.put("מעילה", 41);       // 20.5 דפים - נבדק
         MASECHET_PAGES.put("תמיד", 17);        // 8.5 דפים - נבדק
-        MASECHET_PAGES.put("מדות", 8);         // 4 דפים
-        MASECHET_PAGES.put("קינים", 6);        // 3 דפים
-        MASECHET_PAGES.put("נדה", 146);        // 73 דפים
+        MASECHET_PAGES.put("מדות", 8);         // 4 דפים - נבדק
+        MASECHET_PAGES.put("קינים", 6);        // 3 דפים - נבדק
+        MASECHET_PAGES.put("נדה", 143);        // 73 דפים - נבדק
 
     }
 
