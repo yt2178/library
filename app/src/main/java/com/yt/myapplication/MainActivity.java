@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private TalmudPageCalculator pageCalculator;
     private List<String> dafSelected = new ArrayList<>();
     private TextView emptyMasechetTextView;//TextView שמוצג אם ההיסטוריה ריקה
-
+    private Button addMasechet;//TextView שמוצג אם ההיסטוריה ריקה
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
@@ -79,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
         // אתחול TextView לרשימת המסכתות ריקה
         emptyMasechetTextView = findViewById(R.id.emptyMasechetTextView);
-        // אם הרשימה ריקה, הצג את ה-TextView
+        addMasechet = findViewById(R.id.addMasechet);
+        // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
         updateEmptyView();
         // קריאה למתודה ולקבלת התאריך העברי
         String hebrewDateString = HebrewDateUtils.getHebrewDate();
@@ -217,9 +219,11 @@ public class MainActivity extends AppCompatActivity {
         if (selectedMasechetList.isEmpty()) {
             selectedmasechetListView.setVisibility(View.GONE);  // מחביא את ה-RecyclerView
             emptyMasechetTextView.setVisibility(View.VISIBLE);  // מציג את ה-TextView עם ההודעה
+            addMasechet.setVisibility(View.VISIBLE);  // מציג את ה-TextView עם ההודעה
         } else {
             selectedmasechetListView.setVisibility(View.VISIBLE);  // מציג את ה-RecyclerView
             emptyMasechetTextView.setVisibility(View.GONE);  // מחביא את ה-TextView
+            addMasechet.setVisibility(View.GONE);  // מחביא את ה-TextView
         }
     }
     public void saveDafSelectedToFile(String masechetName, String saf) {
@@ -563,11 +567,11 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void updateTotalDafDisplay(){//עדכון מהמשתנים לתצוגה סך הדפים שנלמדו ונשארו בס"כ
         //עדכון התצוגה לאחר שמירת הנתונים בקובץ
-        this.textViewNumberPagesLearned.setText("דפים שנלמדו: " + this.m_pagesLearned);
+        this.textViewNumberPagesLearned.setText("נלמדו: " + this.m_pagesLearned);
         if (m_pagesRemaining == 0) {
             this.textViewNumberPagesRemaining.setText("דפים שנותרו: לא הוגדר");
         } else {
-            this.textViewNumberPagesRemaining.setText("דפים שנותרו: " + this.m_pagesRemaining);
+            this.textViewNumberPagesRemaining.setText("נותרו: " + this.m_pagesRemaining);
         }
     }//נבדק
     private void updateTotalDafDFromFile(){//עדכון מהקובץ למשתנים סך הדפים שנלמדו ונשארו בס"כ
@@ -825,7 +829,7 @@ public class MainActivity extends AppCompatActivity {
                         // עדכון הקובץ על מנת להסיר את הדף
                         removeDafFromFile(dafToRemove);
                         Toast.makeText(MainActivity.this, "דף " + dafToRemove + " הוסר!", Toast.LENGTH_SHORT).show();
-                        updateEmptyView();
+//                        updateEmptyView();
                     }
                 })
                 .setNegativeButton("לא", new DialogInterface.OnClickListener() {
@@ -886,6 +890,12 @@ public class MainActivity extends AppCompatActivity {
     private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public void onClickAddMasechet(View view) {
+        Intent intent = new Intent(this, Select_Masechet.class);
+        startActivityForResult(intent, REQUEST_CODE);
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }
 

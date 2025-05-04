@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FFFFFF" /> <!-- צבע רקע -->
+    <stroke
+        android:width="2dp"
+        android:color="#A97565" /> <!-- צבע המסגרת -->
+    <corners android:radius="8dp" /> <!-- פינות מעוגלות, אופציונלי -->
+</shape>

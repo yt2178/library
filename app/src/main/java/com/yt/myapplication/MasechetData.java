@@ -9,46 +9,46 @@ public class MasechetData {
     private static final Map<String, Integer> MASECHET_PAGES = new LinkedHashMap<>();
 
     static {
-        MASECHET_PAGES.put("ברכות", 125);
-        MASECHET_PAGES.put("שבת", 337);
-        MASECHET_PAGES.put("עירובין", 218);
-        MASECHET_PAGES.put("פסחים", 4);
-        MASECHET_PAGES.put("שקלים", 5);
-        MASECHET_PAGES.put("יומא", 6);
-        MASECHET_PAGES.put("סוכה", 56);
-        MASECHET_PAGES.put("ביצה", 82);
-        MASECHET_PAGES.put("ראש השנה", 35);
-        MASECHET_PAGES.put("תענית", 31);
-        MASECHET_PAGES.put("מגילה", 32);
-        MASECHET_PAGES.put("מועד קטן", 29);
-        MASECHET_PAGES.put("חגיגה", 27);
-        MASECHET_PAGES.put("יבמות", 122);
-        MASECHET_PAGES.put("כתובות", 112);
-        MASECHET_PAGES.put("נדרים", 91);
-        MASECHET_PAGES.put("נזיר", 66);
-        MASECHET_PAGES.put("סוטה", 49);
-        MASECHET_PAGES.put("גיטין", 90);
-        MASECHET_PAGES.put("קידושין", 82);
-        MASECHET_PAGES.put("בבא קמא", 119);
-        MASECHET_PAGES.put("בבא מציעא", 119);
-        MASECHET_PAGES.put("בבא בתרא", 176);
-        MASECHET_PAGES.put("סנהדרין", 113);
-        MASECHET_PAGES.put("מכות", 24);
-        MASECHET_PAGES.put("שבועות", 49);
-        MASECHET_PAGES.put("עבודה זרה", 76);
-        MASECHET_PAGES.put("הוריות", 14);
-        MASECHET_PAGES.put("זבחים", 120);
-        MASECHET_PAGES.put("מנחות", 110);
-        MASECHET_PAGES.put("חולין", 142);
-        MASECHET_PAGES.put("בכורות", 61);
-        MASECHET_PAGES.put("ערכין", 34);
-        MASECHET_PAGES.put("תמורה", 34);
-        MASECHET_PAGES.put("כריתות", 28);
-        MASECHET_PAGES.put("מעילה", 22);
-        MASECHET_PAGES.put("קנים", 4);
-        MASECHET_PAGES.put("תמיד", 10);
-        MASECHET_PAGES.put("מידות", 4);
-        MASECHET_PAGES.put("נידה", 73);
+        MASECHET_PAGES.put("ברכות", 126);      // 63 דפים - נבדק
+        MASECHET_PAGES.put("שבת", 312);        // 156 דפים - נבדק
+        MASECHET_PAGES.put("עירובין", 207);    // 103.5 דפים - נבדק
+        MASECHET_PAGES.put("פסחים", 240);      // 120 דפים - נבדק
+        MASECHET_PAGES.put("ראש השנה", 67);    // 33.5  דפים - נבדק
+        MASECHET_PAGES.put("יומא", 174);       // 87 דפים  - נבדק
+        MASECHET_PAGES.put("סוכה", 110);       // 55 דפים - נבדק
+        MASECHET_PAGES.put("ביצה", 78);        // 39 דפים - נבדק
+        MASECHET_PAGES.put("תענית", 59);       // 29.5 דפים - נבדק
+        MASECHET_PAGES.put("מגילה", 61);       // 30.5 דפים - נבדק
+        MASECHET_PAGES.put("מועד קטן", 55);    // 27.5 דפים  - נבדק
+        MASECHET_PAGES.put("חגיגה", 51);       // 25.5 דפים - נבדק
+        MASECHET_PAGES.put("יבמות", 242);      // 121 דפים - נבדק
+        MASECHET_PAGES.put("כתובות", 222);     // 111 דפים - נבדק
+        MASECHET_PAGES.put("נדרים", 180);      // 90 דפים - נבדק
+        MASECHET_PAGES.put("נזיר", 130);       // 65 דפים - נבדק
+        MASECHET_PAGES.put("סוטה", 96);        // 48 דפים - נבדק
+        MASECHET_PAGES.put("גיטין", 178);      // 89 דפים - נבדק
+        MASECHET_PAGES.put("קידושין", 162);    // 81 דפים - נבדק
+        MASECHET_PAGES.put("בבא קמא", 236);    // 118 דפים - נבדק
+        MASECHET_PAGES.put("בבא מציעא", 235);  // 117.5 דפים - נבדק
+        MASECHET_PAGES.put("בבא בתרא", 350);   // 175 דפים - נבדק
+        MASECHET_PAGES.put("סנהדרין", 224);    // 112 דפים - נבדק
+        MASECHET_PAGES.put("מכות", 46);        // 23 דפים - נבדק
+        MASECHET_PAGES.put("שבועות", 96);      // 48 דפים - נבדק
+        MASECHET_PAGES.put("עבודה זרה", 150);  // 75 דפים - נבדק
+        MASECHET_PAGES.put("הוריות", 24);      // 12 דפים - נבדק
+        MASECHET_PAGES.put("זבחים", 238);      // 119 דפים - נבדק
+        MASECHET_PAGES.put("מנחות", 217);      // 108.5 דפים - נבדק
+        MASECHET_PAGES.put("חולין", 281);      // 140.5 דפים - נבדק
+        MASECHET_PAGES.put("בכורות", 119);     // 59.5 דפים - נבדק
+        MASECHET_PAGES.put("ערכין", 65);       // 32.5 דפים - נבדק
+        MASECHET_PAGES.put("תמורה", 65);       // 32.5 דפים - נבדק
+        MASECHET_PAGES.put("כריתות", 54);      // 27 דפים - נבדק
+        MASECHET_PAGES.put("מעילה", 41);       // 20.5 דפים - נבדק
+        MASECHET_PAGES.put("תמיד", 17);        // 8.5 דפים - נבדק
+        MASECHET_PAGES.put("מדות", 8);         // 4 דפים
+        MASECHET_PAGES.put("קינים", 6);        // 3 דפים
+        MASECHET_PAGES.put("נדה", 146);        // 73 דפים
+
     }
 
     public static Map<String, Integer> getMasechetPages() {

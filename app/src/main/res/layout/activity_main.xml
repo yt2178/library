@@ -37,6 +37,7 @@
         android:text="תאריך"
         android:textSize="18sp"
         android:textColor="#FFFFFF"
+        android:background="@color/semi_brown"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
@@ -82,6 +83,7 @@
 
     <!-- ListViews (ברשימה מסכתות ורשימת עמודים) -->
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -99,10 +101,10 @@
             android:background="@drawable/rounded_listview"
             android:divider="@color/brown"
             android:dividerHeight="0.2dp"
-            android:scrollbars="vertical"
             android:fadeScrollbars="false"
             android:fastScrollAlwaysVisible="true"
-            android:theme="@style/CustomListViewTheme"/>
+            android:scrollbars="vertical"
+            android:theme="@style/CustomListViewTheme" />
 
         <ListView
             android:id="@+id/pagesListView"
@@ -111,11 +113,11 @@
             android:background="@drawable/rounded_listview"
             android:divider="@color/brown"
             android:dividerHeight="0.2dp"
-            android:visibility="gone"
-            android:scrollbars="vertical"
             android:fadeScrollbars="false"
             android:fastScrollAlwaysVisible="true"
-            android:theme="@style/CustomListViewTheme"/>
+            android:scrollbars="vertical"
+            android:theme="@style/CustomListViewTheme"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -125,6 +127,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginEnd="30dp"
+        android:layout_marginBottom="4dp"
         android:onClick="onClickAddDafButton"
         android:text="הוסף עמוד"
         android:textAlignment="center"
@@ -134,12 +137,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- כפתור הסרה -->
+
     <Button
         android:id="@+id/buttonRemovePoint"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="30dp"
+        android:layout_marginBottom="4dp"
         android:onClick="onClickRemoveDafButton"
         android:text="הסר עמוד"
         android:textAlignment="center"
@@ -149,7 +153,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- TextView המודיע שההיסטוריה ריקה -->
     <TextView
         android:id="@+id/emptyMasechetTextView"
         android:layout_width="wrap_content"
@@ -164,6 +167,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
-
+    <Button
+        android:id="@+id/addMasechet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="הוסף מסכת"
+        android:onClick="onClickAddMasechet"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:backgroundTint="@color/brown"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/emptyMasechetTextView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

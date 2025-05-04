@@ -51,7 +51,7 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
         String lastPage = pageCalculator.getHebrewDafFormat(totalPages);
 
         // הצגת שם המסכת והדף האחרון
-        masechetName.setText(currentMasechet + " - מספר הדפים: " + lastPage);
+        masechetName.setText(currentMasechet + " - דפים - " + lastPage);
 
         // סימון מסכתות שכבר נבחרו
         if (selectedMasechetList.contains(currentMasechet)) {

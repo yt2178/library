@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="תאריך עדכון אחרון: 05/02/2025"
+                android:text="תאריך עדכון אחרון: 04/05/2025"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
 
@@ -118,8 +118,11 @@
                 android:layout_marginBottom="16dp"
                 android:linksClickable="true"
                 android:text="yt0508352872@gmail.com"
-                android:textColor="#A04123"
-                android:textSize="18sp" />
+                android:textColor="#A97565"
+                android:textSize="18sp"
+                android:padding="8dp"
+                android:background="@drawable/border_background" />
+
 
 
             <!-- תיאור נוסף -->
