@@ -1,5 +1,6 @@
 package com.yt.myapplication;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,7 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -47,6 +50,20 @@ public class About extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "yt0508352872@gmail.com", null));
                 intent.putExtra(Intent.EXTRA_SUBJECT, "אפליקציית ושננתם");  // הוספת נושא לדוא"ל
                 startActivity(Intent.createChooser(intent, "בחר אפליקציה לשלוח"));
+            }
+        });
+        Button DiaryChanges = findViewById(R.id.DiaryChanges);
+        DiaryChanges.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(About.this)
+                        .setTitle("יומן שינויים")
+                        .setMessage("גירסה 1.0.0 \n* עודכנו כל מספרי הדפים של כלל המסכתות למספר הדפים הנכון והמעודכן.")
+                        .setPositiveButton("אישור", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .setOnCancelListener(dialog -> finish())
+                        .show();
             }
         });
 

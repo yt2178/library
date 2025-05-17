@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         addMasechet = findViewById(R.id.addMasechet);
         // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
         updateEmptyView();
-        // קריאה למתודה ולקבלת התאריך העברי
+        // קריאה לקבלת התאריך העברי
         String hebrewDateString = HebrewDateUtils.getHebrewDate();
         // הצגת התאריך ב-TextView
         TextView hebrewDateTextView = findViewById(R.id.hebrewDateTextView);
@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {//חזרה למצב פעיל לאקטיביטי
         super.onResume();
-        updateEmptyView();
         updateTotalDafDFromFile();
         updateTotalDafDisplay();
         // הגדרת פוקוס על ה-ListView
@@ -160,10 +159,8 @@ public class MainActivity extends AppCompatActivity {
     private void showPages(List<String> pages){
             // יצירת ListView חדש לדפים
             ListView pagesListView = findViewById(R.id.pagesListView);
-         //   TextView MasechetName = findViewById(R.id.MasechetName);
             // הצגת הרשימה והסתרת רשימת המסכתות
             pagesListView.setVisibility(View.VISIBLE);
-         //   MasechetName.setVisibility(View.VISIBLE);
             selectedmasechetListView.setVisibility(View.GONE);
             // יצירת CustomAdapterListDaf עם הדפים
              CustomAdapterListDaf adapter = new CustomAdapterListDaf(this, pages, dafSelected);
@@ -219,11 +216,11 @@ public class MainActivity extends AppCompatActivity {
         if (selectedMasechetList.isEmpty()) {
             selectedmasechetListView.setVisibility(View.GONE);  // מחביא את ה-RecyclerView
             emptyMasechetTextView.setVisibility(View.VISIBLE);  // מציג את ה-TextView עם ההודעה
-            addMasechet.setVisibility(View.VISIBLE);  // מציג את ה-TextView עם ההודעה
-        } else {
+            addMasechet.setVisibility(View.VISIBLE);  // מציג את הכפתור עם ההודעה
+        }else {
             selectedmasechetListView.setVisibility(View.VISIBLE);  // מציג את ה-RecyclerView
             emptyMasechetTextView.setVisibility(View.GONE);  // מחביא את ה-TextView
-            addMasechet.setVisibility(View.GONE);  // מחביא את ה-TextView
+            addMasechet.setVisibility(View.GONE);  // מחביא את הכפתור
         }
     }
     public void saveDafSelectedToFile(String masechetName, String saf) {
@@ -829,7 +826,6 @@ public class MainActivity extends AppCompatActivity {
                         // עדכון הקובץ על מנת להסיר את הדף
                         removeDafFromFile(dafToRemove);
                         Toast.makeText(MainActivity.this, "דף " + dafToRemove + " הוסר!", Toast.LENGTH_SHORT).show();
-//                        updateEmptyView();
                     }
                 })
                 .setNegativeButton("לא", new DialogInterface.OnClickListener() {
