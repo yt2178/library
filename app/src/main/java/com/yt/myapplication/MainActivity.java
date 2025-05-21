@@ -635,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(this, "לא נבחרו מסכתות", Toast.LENGTH_SHORT).show();
                         break; // יציאה מהלולאה אם אין מסכתות
                     }
-                    // חיתוך המידע לפי פסיקים (|) -> כל מסכת נפרדת
+                    // פיצול כל המסכתות שנבחרו לפי |
                     String[] masechetArray = masechetData.split("\\|");
                     // הוספת כל המסכתות לרשימה תוך שמירה על שמותיהם בלבד (ללא דפים)
                     for (String masechet : masechetArray) {
@@ -855,17 +855,18 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
                     // חילוץ הדפים מתוך השורה
-                    String dafData = lines.get(i).substring("דפים שנבחרו:".length()).trim();
-                    String[] dafArray = dafData.split("\\|");
+                    String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
+                    // פיצול כל המסכתות שנבחרו לפי |
+                    String[] masechetArray = masechetData.split("\\|");
 
                     // יצירת רשימה חדשה של דפים תוך התחשבות בדף להסרה
                     List<String> newDafList = new ArrayList<>();
-                    for (String daf : dafArray) {
-                        daf = daf.trim();
-                        if (!daf.equals(dafToRemove) && !daf.isEmpty()) {
-                            newDafList.add(daf); // הוספה אם זה לא הדף להסרה
-                        }
-                    }
+//                    for (String daf : dafArray) {
+//                        daf = daf.trim();
+//                        if (!daf.equals(dafToRemove) && !daf.isEmpty()) {
+//                            newDafList.add(daf); // הוספה אם זה לא הדף להסרה
+//                        }
+//                    }
 
                     // בניית מחרוזת מעודכנת
                     String updatedDafData = String.join("|", newDafList);
@@ -887,8 +888,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "שגיאה בהסרת דף מהקובץ!", Toast.LENGTH_SHORT).show();
         }
     }
-
-
     private void showKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);

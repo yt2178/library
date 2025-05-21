@@ -13,63 +13,45 @@ public class HistoryUtils {
 
     private static final String HISTORY_DATA = "history_data";
     private static final String HISTORY_KEY = "history_key";
-    private static SharedPreferences sharedPreferences;
 
-    // אתחול של SharedPreferences
-    public static void init(Context context) {
-        sharedPreferences = context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
-    }
-
-    // שמירת פעולה עם תאריך ושעה
     public static void logAction(Context context, String action) {
-        if (sharedPreferences == null) {
-            init(context);  // אתחול אם לא אתחול קודם
-        }
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
 
-        // יצירת רשימת פעולות
         List<HistoryItem> historyList = loadHistory(context);
 
-        // קבלת התאריך העברי
+        // תאריך עברי ושעה (לדוגמה)
         String hebrewDate = HebrewDateUtils.getHebrewDate();
 
-        // קבלת השעה הנוכחית
-        String timestamp = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        HistoryItem newItem = new HistoryItem(action, hebrewDate);
 
-        // יצירת אובייקט HistoryItem עם הפעולה, התאריך העברי והזמן
-        HistoryItem newItem = new HistoryItem(action, hebrewDate + " " + timestamp);
+        historyList.add(newItem);
 
-
-        // הוספת הפעולה לרשימה
-        historyList.add(0,newItem);
-
-        // שמירה ב-SharedPreferences
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(HISTORY_KEY, convertListToString(historyList));
         editor.apply();
     }
 
-    // המרת רשימה למחרוזת לשמירה ב-SharedPreferences
-    private static String convertListToString(List<HistoryItem> list) {
-        StringBuilder sb = new StringBuilder();
-        for (HistoryItem item : list) {
-            sb.append(item.getAction()).append("||").append(item.getTimestamp()).append("##");
-        }
-        return sb.toString();
-    }
-
-    // טעינת ההיסטוריה מ-SharedPreferences
     public static List<HistoryItem> loadHistory(Context context) {
         List<HistoryItem> historyList = new ArrayList<>();
-        String historyString = sharedPreferences.getString(HISTORY_KEY, "");
-        if (!historyString.isEmpty()) {
-            String[] historyItems = historyString.split("\n");
-            for (String historyItem : historyItems) {
-                String[] parts = historyItem.split(" - ");
+        SharedPreferences sharedPreferences = context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
+        String raw = sharedPreferences.getString(HISTORY_KEY, "");
+        if (!raw.isEmpty()) {
+            String[] entries = raw.split("##");
+            for (String entry : entries) {
+                String[] parts = entry.split("\\|\\|");
                 if (parts.length == 2) {
                     historyList.add(new HistoryItem(parts[0], parts[1]));
                 }
             }
         }
         return historyList;
+    }
+
+    public static String convertListToString(List<HistoryItem> list) {
+        StringBuilder sb = new StringBuilder();
+        for (HistoryItem item : list) {
+            sb.append(item.getAction()).append("||").append(item.getTimestamp()).append("##");
+        }
+        return sb.toString();
     }
 }

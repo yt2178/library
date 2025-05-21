@@ -4,12 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -186,6 +188,29 @@ public class History extends AppCompatActivity {
         }
         return sb.toString();
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        View root = findViewById(android.R.id.content);
+        if (root != null) {
+            clearTooltips(root);
+        }
+    }
+
+    private void clearTooltips(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            view.setTooltipText(null);
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) view;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                clearTooltips(vg.getChildAt(i));
+            }
+        }
+    }
+
+
+
     // טעינת ההיסטוריה מ-SharedPreferences
     public static List<HistoryItem> loadHistory(Context context) {
         List<HistoryItem> historyList = new ArrayList<>();
