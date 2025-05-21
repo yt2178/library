@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private List<String> dafSelected = new ArrayList<>();
     private TextView emptyMasechetTextView;//TextView שמוצג אם ההיסטוריה ריקה
     private Button addMasechet;//TextView שמוצג אם ההיסטוריה ריקה
+    private ListView pagesListView;
+
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_main);
@@ -73,8 +76,6 @@ public class MainActivity extends AppCompatActivity {
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
-        // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
-        updateEmptyView();
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
         updateTotalDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
         updateTotalDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
@@ -83,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
-
-
+        // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
+        updateEmptyView();
         // קריאה לקבלת התאריך העברי
         String hebrewDateString = HebrewDateUtils.getHebrewDate();
         // הצגת התאריך ב-TextView
@@ -121,17 +122,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {//חזרה למצב פעיל לאקטיביטי
         super.onResume();
+        // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
+        updateEmptyView();
         updateTotalDafDFromFile();
         updateTotalDafDisplay();
         // הגדרת פוקוס על ה-ListView
-        selectedmasechetListView.requestFocus();
-        selectedmasechetListView.setFocusable(true);
-        selectedmasechetListView.setFocusableInTouchMode(true);
+       selectedmasechetListView.requestFocus();
+      selectedmasechetListView.setFocusable(true);
+       selectedmasechetListView.setFocusableInTouchMode(true);
     }
     @Override
     protected void onPause() {//יציאה ממצב פעיל ועובד ברקע
         super.onPause();
-        updateTotalDafDisplay();
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
     }
     private void updateDafSelectedFromFile(String masechetName) {
@@ -159,8 +161,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void showPages(List<String> pages){
-            // יצירת ListView חדש לדפים
-            ListView pagesListView = findViewById(R.id.pagesListView);
+            pagesListView = findViewById(R.id.pagesListView);
             // הצגת הרשימה והסתרת רשימת המסכתות
             pagesListView.setVisibility(View.VISIBLE);
             selectedmasechetListView.setVisibility(View.GONE);
@@ -213,18 +214,22 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    // פונקציה לעדכון מצב הצגת רשימת המסכתות הריקה
     void updateEmptyView() {
         if (selectedMasechetList.isEmpty()) {
-            selectedmasechetListView.setVisibility(View.GONE);  // מחביא את ה-RecyclerView
-            emptyMasechetTextView.setVisibility(View.VISIBLE);  // מציג את ה-TextView עם ההודעה
-            addMasechet.setVisibility(View.VISIBLE);  // מציג את הכפתור עם ההודעה
-        }else {
-            selectedmasechetListView.setVisibility(View.VISIBLE);  // מציג את ה-RecyclerView
-            emptyMasechetTextView.setVisibility(View.GONE);  // מחביא את ה-TextView
-            addMasechet.setVisibility(View.GONE);  // מחביא את הכפתור
+            selectedmasechetListView.setVisibility(View.GONE);
+            emptyMasechetTextView.setVisibility(View.VISIBLE);
+            addMasechet.setVisibility(View.VISIBLE);
+        } else {
+            if (pagesListView == null || pagesListView.getVisibility() != View.VISIBLE) {
+                selectedmasechetListView.setVisibility(View.VISIBLE);
+            } else {
+                selectedmasechetListView.setVisibility(View.GONE);
+            }
+            emptyMasechetTextView.setVisibility(View.GONE);
+            addMasechet.setVisibility(View.GONE);
         }
     }
+
     public void saveDafSelectedToFile(String masechetName, String saf) {
         // קריאה לקובץ ולחיפוש אחרי המסכת הנבחרת
         try {
@@ -234,14 +239,19 @@ public class MainActivity extends AppCompatActivity {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     // חילוץ המסכתות שנבחרו
+                    //מוציא את מה שיש אחרי "מסכתות שנבחרו:"
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
+                    //מחלק את המידע לפי תו ה-|
                     String[] masechetArray = selectedMasechetLine.split("\\|");
                     // חיפוש אם המסכת כבר קיימת
+                    //  עובר על כל המסכתות ברשימה
                     for (int j = 0; j < masechetArray.length; j++) {
-                        if (masechetArray[j].startsWith(masechetName)) { // אם המסכת כבר קיימת
+                        //מחפש מסכת שהשם שלה מתחיל ב־masechetName
+                        if (masechetArray[j].startsWith(masechetName)) {
                             // אם הדף לא קיים, נוסיף אותו
                             if (!masechetArray[j].contains(saf)) {
-                                masechetArray[j] += "," + saf; // הוסף את הדף
+                                // הוסף את הדף בסוף השורה
+                                masechetArray[j] += "," + saf;
                             }
                             lines.set(i, "מסכתות שנבחרו:" + String.join("|", masechetArray) + "|");
                             m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
@@ -630,7 +640,7 @@ public class MainActivity extends AppCompatActivity {
                     // הוספת כל המסכתות לרשימה תוך שמירה על שמותיהם בלבד (ללא דפים)
                     for (String masechet : masechetArray) {
                         //חיתוך כל מסכת לפי הדפים (נמחק את הדפים )
-                        String masechetName = masechet.split("\\.")[0].trim();
+                        String masechetName = masechet.split("_")[0].trim();
 
                         // הוספת שם המסכת לרשימה אם הוא לא ריק ושהוא לא כבר ברשימה
                         if (!masechetName.isEmpty() && !selectedMasechetList.contains(masechetName)) {
@@ -766,36 +776,34 @@ public class MainActivity extends AppCompatActivity {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
                     // חילוץ המסכתות מתוך השורה
                     String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
+                    // פיצול כל המסכתות שנבחרו לפי |
                     String[] masechetArray = masechetData.split("\\|");
-
-                    // יצירת רשימה חדשה של מסכתות תוך התחשבות במסכת להסרה
+                    // יצירת רשימה חדשה של מסכתות
                     List<String> newMasechetList = new ArrayList<>();
                     for (String masechet : masechetArray) {
                         masechet = masechet.trim();
 
-                        // הסרת הנקודה אם היא קיימת בסוף שם המסכת
-                        if (masechet.endsWith(".")) {
-                            masechet = masechet.substring(0, masechet.length() - 1).trim();
-                        }
-
-                        if (!masechet.equals(masechetToRemove) && !masechet.isEmpty()) {
-                            newMasechetList.add(masechet); // הוספה אם זה לא המסכת להסרה
+                        // אם זה לא הפריט שאנחנו רוצים להסיר – נשאיר אותו
+                        if (!masechet.startsWith(masechetToRemove + "_")) {
+                            newMasechetList.add(masechet);
                         }
                     }
 
-                    // בניית מחרוזת מעודכנת
+                    // בניית השורה מחדש
                     String updatedMasechetData = String.join("|", newMasechetList);
 
-                    // הוספת פסיק בסוף אם הרשימה אינה ריקה
+                    // אם לא ריק – להוסיף | בסוף (אם אתה תמיד שומר כך)
                     if (!updatedMasechetData.isEmpty()) {
                         updatedMasechetData += "|";
                     }
-                    HistoryUtils.logAction(MainActivity.this, "מסכת " + masechetToRemove + " הוסרה");
-                    // עדכון השורה בקובץ
-                    lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
 
-                    // כתיבת הנתונים המעודכנים לקובץ
+                    // כתיבה לקובץ
+                    lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+
+                    // תיעוד
+                    HistoryUtils.logAction(MainActivity.this, "מסכת " + masechetToRemove + " הוסרה");
+
                     break;
                 }
             }

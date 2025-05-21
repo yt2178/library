@@ -46,7 +46,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                             HistoryItem removedItem = historyList.remove(pos);
                             notifyItemRemoved(pos);
 
-                            // עדכון המצב של ההיסטוריה הריקה
                             if (historyList.isEmpty() && context instanceof History) {
                                 ((History) context).updateEmptyView();  // עדכון מצב הצגת ההיסטוריה הריקה
                             }
