@@ -41,10 +41,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
                     .setMessage("האם אתה בטוח שברצונך למחוק את הפריט הזה?")
                     .setPositiveButton("כן", (dialog, which) -> {
                         // הגנה לוודא שהמיקום תקין לפני שמחיקים את הפריט
-                        if (position < historyList.size()) {
-                            historyList.remove(position);
-                            // עדכון ה-RecyclerView
-                            notifyItemRemoved(position);
+                        int pos = holder.getAdapterPosition();
+                        if (pos != RecyclerView.NO_POSITION) {
+                            HistoryItem removedItem = historyList.remove(pos);
+                            notifyItemRemoved(pos);
 
                             // עדכון המצב של ההיסטוריה הריקה
                             if (historyList.isEmpty() && context instanceof History) {
@@ -60,7 +60,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             return true;  // מחזיר true כי לא נרצה שהאירוע יתפוס גם פעולה רגילה של לחיצה
         });
     }
-        @Override
+    @Override
     public int getItemCount() {
         return historyList.size();
     }
@@ -87,11 +87,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
 
     // המרת רשימת ה- HistoryItems למחרוזת כדי לשמור אותה ב-SharedPreferences
-    private String convertListToString(List<HistoryItem> list) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private static String convertListToString(List<HistoryItem> list) {
+        StringBuilder sb = new StringBuilder();
         for (HistoryItem item : list) {
-            stringBuilder.append(item.getAction()).append(" - ").append(item.getTimestamp()).append("\n");
+            sb.append(item.getAction()).append("||").append(item.getTimestamp()).append("##");
         }
-        return stringBuilder.toString();
+        return sb.toString();
     }
 }

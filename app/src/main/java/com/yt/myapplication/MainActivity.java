@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        // אתחול TextView לרשימת המסכתות ריקה
+        emptyMasechetTextView = findViewById(R.id.emptyMasechetTextView);
+        addMasechet = findViewById(R.id.addMasechet);
         this.textViewNumberPagesLearned = findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
         this.textViewNumberPagesRemaining = findViewById(R.id.textViewNumberPagesRemaining);//מציאת ה-ID של דפים שנשארו
         selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
@@ -70,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         // הצגת המסכתות ברשימה (ListView)
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, selectedMasechetList);
         selectedmasechetListView.setAdapter(adapter);
+        // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
+        updateEmptyView();
         checkIfUserNameExists();//בדיקה אם קיים שם משתמש
         updateTotalDafDFromFile();//טעינת נתוני הדפים מהקובץ ושמירתם למשתנים
         updateTotalDafDisplay();//עדכון התצוגה מהמשתנים לתצוגה
@@ -78,11 +83,8 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.setFocusableInTouchMode(true);//פוקוס
         isDialogOpen = false;//הדיאלוג מוגדר כסגור והתפריט יכול להפתח כרגיל
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
-        // אתחול TextView לרשימת המסכתות ריקה
-        emptyMasechetTextView = findViewById(R.id.emptyMasechetTextView);
-        addMasechet = findViewById(R.id.addMasechet);
-        // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
-        updateEmptyView();
+
+
         // קריאה לקבלת התאריך העברי
         String hebrewDateString = HebrewDateUtils.getHebrewDate();
         // הצגת התאריך ב-TextView

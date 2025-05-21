@@ -50,11 +50,11 @@ public class HistoryUtils {
 
     // המרת רשימה למחרוזת לשמירה ב-SharedPreferences
     private static String convertListToString(List<HistoryItem> list) {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (HistoryItem item : list) {
-            stringBuilder.append(item.getAction()).append(" - ").append(item.getTimestamp()).append("\n");
+            sb.append(item.getAction()).append("||").append(item.getTimestamp()).append("##");
         }
-        return stringBuilder.toString();
+        return sb.toString();
     }
 
     // טעינת ההיסטוריה מ-SharedPreferences
