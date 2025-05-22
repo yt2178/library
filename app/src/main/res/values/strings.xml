@@ -4,9 +4,9 @@
     <string name="settings_button">הגדרות</string>
     <string name="menu_button">תפריט</string>
     <string name="besad">בס\'\'ד</string>
-    <string name="select_masechet">בחירת מסכת</string>
-    <string name="user_name">שם משתמש</string>
+    <string name="select_masechet">בחירת מסכת 📚</string>
+    <string name="user_name">שם משתמש 👤</string>
     <string name="history">היסטוריה 📅</string>
-    <string name="settings">הגדרות</string>
+    <string name="settings">הגדרות ⚙️</string>
     <string name="about">אודות</string>
 </resources>

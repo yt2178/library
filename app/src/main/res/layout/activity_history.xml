@@ -9,6 +9,8 @@
     tools:context=".History">
 
     <!-- Toolbar -->
+
+    <!-- LinearLayout for Date and Time -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -16,16 +18,20 @@
         android:background="#74A05036"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
             android:id="@+id/clearHistoryButton"
-            android:layout_width="30dp"
+            android:layout_width="38dp"
             android:layout_height="wrap_content"
-            android:text="הסר את כל ההיסטוריה"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:background="#00FFFFFF"
+            android:drawableBottom="@drawable/ic_settings_delete"
+            android:text="הסר את כל ההיסטוריה"
+            tools:layout_editor_absoluteX="16dp" />
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -38,7 +44,6 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- LinearLayout for Date and Time -->
     <LinearLayout
         android:id="@+id/textViewsContainer"
         android:layout_width="match_parent"

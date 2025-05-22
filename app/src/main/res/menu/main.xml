@@ -9,7 +9,7 @@
         android:title="@string/user_name"/>
     <item
         android:id="@+id/menu_set_target"
-        android:title="הגדר יעד דפים" />
+        android:title="הגדר יעד דפים 📈" />
     <item
         android:id="@+id/menu_history"
         android:title="@string/history"/>

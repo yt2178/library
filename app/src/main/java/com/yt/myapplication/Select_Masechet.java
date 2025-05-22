@@ -80,7 +80,7 @@ public class Select_Masechet extends AppCompatActivity {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
-                    // פיצול כל המסכתות שנבחרו לפי |
+                    // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
                     for (String selected : selectedMasechetArray) {
 
@@ -114,7 +114,7 @@ public class Select_Masechet extends AppCompatActivity {
                         lines.set(i, line + masechet + "_|");
                         break;//יציאה מהלולאה
                     }
-                    // פיצול כל המסכתות שנבחרו לפי |
+                    //  פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
                     String[] selectedMasechetArray = selectedMasechetLine.split("\\|");
                     // בדוק אם המסכת כבר קיימת בקובץ (בלי הנקודה בסוף)
                     for (String selected : selectedMasechetArray) {
