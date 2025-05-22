@@ -4,19 +4,17 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.kosherjava.zmanim.hebrewcalendar.HebrewDateFormatter;
-import com.kosherjava.zmanim.hebrewcalendar.JewishDate;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -184,21 +182,44 @@ public class History extends AppCompatActivity {
 
     // המרת רשימת HistoryItem למחרוזת לשמירה ב-SharedPreferences
     private static String convertListToString(List<HistoryItem> list) {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for (HistoryItem item : list) {
-            stringBuilder.append(item.getAction()).append(" - ").append(item.getTimestamp()).append("\n");
+            sb.append(item.getAction()).append("||").append(item.getTimestamp()).append("##");
         }
-        return stringBuilder.toString();
+        return sb.toString();
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        View root = findViewById(android.R.id.content);
+        if (root != null) {
+            clearTooltips(root);
+        }
+    }
+
+    private void clearTooltips(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            view.setTooltipText(null);
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup) view;
+            for (int i = 0; i < vg.getChildCount(); i++) {
+                clearTooltips(vg.getChildAt(i));
+            }
+        }
+    }
+
+
+
     // טעינת ההיסטוריה מ-SharedPreferences
     public static List<HistoryItem> loadHistory(Context context) {
         List<HistoryItem> historyList = new ArrayList<>();
         SharedPreferences sharedPreferences = context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
-        String historyString = sharedPreferences.getString(HISTORY_KEY, "");
-        if (!historyString.isEmpty()) {
-            String[] historyItems = historyString.split("\n");
-            for (String historyItem : historyItems) {
-                String[] parts = historyItem.split(" - ");
+        String raw = sharedPreferences.getString(HISTORY_KEY, "");
+        if (!raw.isEmpty()) {
+            String[] entries = raw.split("##");
+            for (String entry : entries) {
+                String[] parts = entry.split("\\|\\|");
                 if (parts.length == 2) {
                     historyList.add(new HistoryItem(parts[0], parts[1]));
                 }
@@ -206,5 +227,6 @@ public class History extends AppCompatActivity {
         }
         return historyList;
     }
+
 
 }

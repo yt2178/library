@@ -3,7 +3,9 @@ package com.yt.myapplication;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -15,6 +17,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class About extends AppCompatActivity {
@@ -56,16 +60,32 @@ public class About extends AppCompatActivity {
         DiaryChanges.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(About.this)
-                        .setTitle("יומן שינויים")
-                        .setMessage("גירסה 1.0.0 \n* עודכנו כל מספרי הדפים של כלל המסכתות למספר הדפים הנכון והמעודכן.")
-                        .setPositiveButton("אישור", (dialog, which) -> {
-                            dialog.dismiss();
-                        })
-                        .setOnCancelListener(dialog -> finish())
-                        .show();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    new AlertDialog.Builder(About.this)
+                            .setTitle("יומן שינויים")
+                            .setMessage(Html.fromHtml(readChangelogFromAssets(), Html.FROM_HTML_MODE_LEGACY))
+
+                            .setPositiveButton("אישור", (dialog, which) -> dialog.dismiss())
+                            .setOnCancelListener(dialog -> finish())
+                            .show();
+                }
+
             }
         });
 
     }
+    private String readChangelogFromAssets() {
+        try {
+            InputStream is = getAssets().open("changelog.txt");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            return new String(buffer, "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "לא ניתן לטעון את יומן השינויים.";
+        }
+    }
+
 }

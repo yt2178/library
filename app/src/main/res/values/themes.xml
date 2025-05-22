@@ -1,16 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!--  Base application theme.  -->
     <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!--  התאם אישית את נושא האור שלך כאן.  -->
+        <!--  <item name="colorPrimary">@color/my_light_primary</item>  -->
+        <item name="android:statusBarColor">@color/colorLightStatusBar</item>
     </style>
-
-    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
-
-<style name="CustomListViewTheme" parent="Theme.AppCompat.Light">
-    <!-- צבע הידית של פס הגלילה -->
-    <item name="android:scrollbarThumbVertical">@color/semi_brown</item>
-    <!-- צבע הרקע של פס הגלילה -->
-    <item name="android:scrollbarTrackVertical">@color/third_brown</item>
-</style>
+    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication"/>
+    <style name="CustomListViewTheme" parent="Theme.AppCompat.Light">
+        <!--  צבע הידית של פס הגלילה  -->
+        <item name="android:scrollbarThumbVertical">@color/semi_brown</item>
+        <!--  צבע הרקע של פס הגלילה  -->
+        <item name="android:scrollbarTrackVertical">@color/third_brown</item>
+    </style>
 </resources>
