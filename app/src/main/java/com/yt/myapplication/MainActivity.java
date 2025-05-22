@@ -214,19 +214,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    // פונקציה לעדכון מצב הצגת רשימת המסכתות הריקה + כפתור
     void updateEmptyView() {
         if (selectedMasechetList.isEmpty()) {
-            selectedmasechetListView.setVisibility(View.GONE);
-            emptyMasechetTextView.setVisibility(View.VISIBLE);
-            addMasechet.setVisibility(View.VISIBLE);
+            selectedmasechetListView.setVisibility(View.GONE);// מחביא את ה-RecyclerView
+            emptyMasechetTextView.setVisibility(View.VISIBLE);// מציג את ה-TextView עם ההודעה
+            addMasechet.setVisibility(View.VISIBLE); // מציג את הכפתור עם ההודעה
         } else {
             if (pagesListView == null || pagesListView.getVisibility() != View.VISIBLE) {
-                selectedmasechetListView.setVisibility(View.VISIBLE);
+                selectedmasechetListView.setVisibility(View.VISIBLE);// מציג את ה-RecyclerView
             } else {
-                selectedmasechetListView.setVisibility(View.GONE);
+                selectedmasechetListView.setVisibility(View.GONE);// מחביא את ה-RecyclerView
             }
-            emptyMasechetTextView.setVisibility(View.GONE);
-            addMasechet.setVisibility(View.GONE);
+            emptyMasechetTextView.setVisibility(View.GONE);// מחביא את ה-TextView
+            addMasechet.setVisibility(View.GONE);// מחביא את הכפתור
         }
     }
 

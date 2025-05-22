@@ -14,18 +14,29 @@ public class HistoryUtils {
     private static final String HISTORY_DATA = "history_data";
     private static final String HISTORY_KEY = "history_key";
 
+    // פונקציית עזר פנימית לקבלת SharedPreferences
+    private static SharedPreferences getPrefs(Context context) {
+        return context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
+    }
+
+    // שמירת פעולה עם תאריך עברי ושעה
     public static void logAction(Context context, String action) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPrefs(context);
 
         List<HistoryItem> historyList = loadHistory(context);
 
-        // תאריך עברי ושעה (לדוגמה)
+        // תאריך עברי + שעה
         String hebrewDate = HebrewDateUtils.getHebrewDate();
+        String timestamp = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        String fullDate = hebrewDate + " " + timestamp;
 
-        HistoryItem newItem = new HistoryItem(action, hebrewDate);
+        // יצירת פריט חדש עם הפעולה והתאריך-שעה
+        HistoryItem newItem = new HistoryItem(action, fullDate);
 
-        historyList.add(newItem);
+        // הוספה בתחילת הרשימה (כדי להציג מהחדש לישן)
+        historyList.add(0, newItem);
 
+        // שמירה
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(HISTORY_KEY, convertListToString(historyList));
         editor.apply();
@@ -33,7 +44,7 @@ public class HistoryUtils {
 
     public static List<HistoryItem> loadHistory(Context context) {
         List<HistoryItem> historyList = new ArrayList<>();
-        SharedPreferences sharedPreferences = context.getSharedPreferences(HISTORY_DATA, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPrefs(context);
         String raw = sharedPreferences.getString(HISTORY_KEY, "");
         if (!raw.isEmpty()) {
             String[] entries = raw.split("##");
