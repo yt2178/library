@@ -26,11 +26,9 @@ public class CustomAdapterListDaf extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.daf_item, parent, false);
-
-        String currentDaf = pages.get(position);
-
         // נמצא את ה-TextView ברשימה
         TextView textView = rowView.findViewById(R.id.dafName);
+        String currentDaf = pages.get(position);
 
         // הצגת שם הדף ב-TextView
         textView.setText(currentDaf);

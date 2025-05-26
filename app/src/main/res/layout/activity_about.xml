@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:text="גירסה נוכחית: 0.0.3"
+                android:text="גירסה נוכחית: 0.0.4"
                 android:textColor="#FFFFFF"
                 android:textSize="15sp" />
 
@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="תאריך עדכון אחרון: 21/05/2025"
+                android:text="תאריך עדכון אחרון: 26/05/2025"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp" />
 

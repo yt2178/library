@@ -9,9 +9,10 @@
         android:id="@+id/masechetName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textDirection="rtl"
+        android:gravity="right"
         android:layoutDirection="rtl"
-        android:gravity="right"/>
+        android:textDirection="rtl"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

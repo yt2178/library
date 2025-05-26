@@ -146,15 +146,19 @@ public class MainActivity extends AppCompatActivity {
             for (String line : lines) {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
-                    String masechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
-                    String[] masechetArray = masechetLine.split("\\|");
+                    //מוציא את מה שיש אחרי "מסכתות שנבחרו:"
+                    String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
+                    //מחלק את המידע לפי תו ה-|
+                    String[] masechetArray = selectedMasechetLine.split("\\|");
                     for (String masechetData : masechetArray) {
-                        if (masechetData.startsWith(masechetName)) {
-                            String DafString = masechetData.substring(masechetName.length()).trim();
+                        if (masechetData.startsWith(masechetName + "_")) {
+                            String DafString = masechetData.substring((masechetName + "_").length()).trim();
                             String[] DafArray = DafString.split(",");
-                            dafSelected.clear();  // נוודא שהרשימה מתאפסת לפני שמוסיפים דפים חדשים
+                            dafSelected.clear();
                             for (String page : DafArray) {
-                                dafSelected.add(page.trim());
+                                if (!page.trim().isEmpty()) { // להיזהר מרווחים מיותרים
+                                    dafSelected.add(page.trim());
+                                }
                             }
                         }
                     }
@@ -635,15 +639,15 @@ public class MainActivity extends AppCompatActivity {
             for (String line : lines) {
                 // מחפשים את השורה שמתחילה ב-"מסכתות שנבחרו:"
                 if (line.startsWith("מסכתות שנבחרו:")) {
-                    // חיתוך המידע אחרי "מסכתות שנבחרו:"
-                    String masechetData = line.substring("מסכתות שנבחרו:".length()).trim();
+                    //מוציא את מה שיש אחרי "מסכתות שנבחרו:"
+                    String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
                     // אם אין מסכתות אחרי המילים "מסכתות שנבחרו:", הצג הודעה מתאימה
-                    if (masechetData.isEmpty()) {
+                    if (selectedMasechetLine.isEmpty()) {
                         Toast.makeText(this, "לא נבחרו מסכתות", Toast.LENGTH_SHORT).show();
                         break; // יציאה מהלולאה אם אין מסכתות
                     }
                     // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
-                    String[] masechetArray = masechetData.split("\\|");
+                    String[] masechetArray = selectedMasechetLine.split("\\|");
                     // הוספת כל המסכתות לרשימה תוך שמירה על שמותיהם בלבד (ללא דפים)
                     for (String masechet : masechetArray) {
                         //חיתוך כל מסכת לפי הדפים (נמחק את הדפים) כל מה שאחרי הסמל _
@@ -782,9 +786,9 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
                     // חילוץ המסכתות מתוך השורה
-                    String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
+                    String selectedMasechetLine = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
                     // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
-                    String[] masechetArray = masechetData.split("\\|");
+                    String[] masechetArray = selectedMasechetLine.split("\\|");
                     // יצירת רשימה חדשה של מסכתות
                     List<String> newMasechetList = new ArrayList<>();
                     for (String masechet : masechetArray) {
@@ -819,35 +823,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void showRemoveDafDialog(final String dafToRemove, final int position, final List<String> pages) {
+        // בדיקה אם הדף לא נמצא ברשימת הדפים שנבחרו בעבר
+        if (!dafSelected.contains(dafToRemove)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("שגיאה!")
+                    .setMessage("לחיצה ארוכה מסירה דף שנלמד בעבר.\nדף זה לא נלמד בעבר!")
+                    .setPositiveButton("אישור", null)
+                    .show();
+            return; // לא נמשיך להצגת הדיאלוג של ההסרה
+        }
+
+        // אם הדף כן נבחר בעבר – נמשיך עם הדיאלוג הרגיל
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+       builder.setTitle("הסרת דף");
         builder.setMessage("האם אתה בטוח שברצונך להסיר את דף " + dafToRemove + " ?")
-                .setCancelable(false) // לא מאפשר למשתמש לסגור את הדיאלוג בלחיצה מחוץ לו (חייב לבחור כן או לא).
                 .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        // עדכון הקובץ על מנת להסיר את הדף
-                        removeDafFromFile(dafToRemove,selectedMasechet);
-                        // הסרת הדף מהרשימה של הדפים שנבחרו (כדי לשנות את הצבע)
-                        if (dafSelected.contains(dafToRemove)) {
-                            dafSelected.remove(dafToRemove);
-                        }
-
-                        // עדכון ה-ListView באמצעות notifyDataSetChanged (אין צורך ליצור אדפטור חדש)
-                        pagesListView.invalidateViews(); // או adapter.notifyDataSetChanged();
-
+                        // הסרה מהקובץ
+                        removeDafFromFile(dafToRemove, selectedMasechet);
+                        // הסרה מהזיכרון
+                        dafSelected.remove(dafToRemove);
+                        // עדכון התצוגה
+                        pagesListView.invalidateViews();
                         Toast.makeText(MainActivity.this, "דף " + dafToRemove + " הוסר!", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("לא", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss(); // סגירת הדיאלוג בלי פעולה
+                        dialog.dismiss();
                     }
                 });
 
         AlertDialog alert = builder.create();
         alert.show();
     }
+
     private void removeDafFromFile(String dafToRemove, String selectedMasechet) {
         try {
             List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);

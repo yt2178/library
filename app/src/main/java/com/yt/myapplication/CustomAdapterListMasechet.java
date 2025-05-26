@@ -28,7 +28,7 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.masechet_item, parent, false);
-
+        // נמצא את ה-TextView ברשימה
         TextView masechetName = rowView.findViewById(R.id.masechetName);
         String currentMasechet = masechetList.get(position);
 
@@ -38,12 +38,6 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
         } else {
             currentMasechet = currentMasechet.trim(); // הסרת רווחים מיותרים
         }
-
-        // הדפסת שם המסכת לאחר הסרת נקודה ורווחים
-        Log.d("Masechet after trim", currentMasechet);
-
-        // הצגת תוכן הרשימה של מסכתות נבחרות
-        Log.d("Selected Masechet List", selectedMasechetList.toString());
 
         // קבלת מספר הדפים של המסכת
         int totalPages = MasechetData.getPages(currentMasechet);
@@ -55,12 +49,9 @@ public class CustomAdapterListMasechet extends ArrayAdapter<String> {
 
         // סימון מסכתות שכבר נבחרו
         if (selectedMasechetList.contains(currentMasechet)) {
-            Log.d("Selected Masechet", "Found: " + currentMasechet); // הוסף כאן הדפסה כדי לראות אם המסכת נמצאת ברשימה
             rowView.setBackgroundResource(R.color.third_brown);
-        } else {
-            Log.d("Selected Masechet", "Not found: " + currentMasechet); // הדפסת "לא נמצא" אם המסכת לא נמצאת ברשימה
-        }
-
+       }
+        // מחזירים את ה-View עם העדכונים
         return rowView;
     }
 }
