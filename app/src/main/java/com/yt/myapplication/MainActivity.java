@@ -886,7 +886,7 @@ public class MainActivity extends AppCompatActivity {
                             String newDafsString = String.join(",", updatedDafs);
                             //לוקח את שם המסכת שנבחרה + _ + המחרוזת של הדפים ושומר במחרוזת
                             String newMasechetAndDafsString = selectedMasechet + "_" + newDafsString;
-                            //
+                            // הערה
                             updatedMasechetList.add(newMasechetAndDafsString);
                         }
                   }
