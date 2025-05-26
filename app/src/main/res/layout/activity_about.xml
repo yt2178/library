@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
-                android:text="גירסה נוכחית: 0.0.2"
+                android:text="גירסה נוכחית: 0.0.3"
                 android:textColor="#FFFFFF"
                 android:textSize="15sp" />
 

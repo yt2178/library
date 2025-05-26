@@ -837,7 +837,7 @@ public class MainActivity extends AppCompatActivity {
                         pagesListView.setAdapter(adapter);
 
                         // עדכון הקובץ על מנת להסיר את הדף
-//                        removeDafFromFile(dafToRemove,selectedMasechet);
+                        removeDafFromFile(dafToRemove,selectedMasechet);
                         Toast.makeText(MainActivity.this, "דף " + dafToRemove + " הוסר!", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -851,66 +851,56 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alert = builder.create();
         alert.show();
     }
-//    private void removeDafFromFile(String dafToRemove, String selectedMasechet) {
-//        try {
-//            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
-//            // לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
-//            for (int i = 0; i < lines.size(); i++) {
-//                if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
-//                    // חילוץ הדפים מתוך השורה
-//                    String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
-//                    // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
-//                    String[] masechetArray = masechetData.split("\\|");
-//                    //יוצר רשימה ריקה שיוספו לה המסכתות והדפים לאחר ההסרה
-//                    List<String> updatedMasechetList = new ArrayList<>();
-//                    //עובר על כל המסכתות במערך
-//                    for (String masechet : masechetArray) {
-//                        //אם אחת המסכתות מתחילה בשם המסכת שנשמרה לפני במשתנה ויש אחריה _
-//                        if (masechet.startsWith(selectedMasechet + "_")) {
-//                            //מחלצים את חלק הדפים של המסכת את הטקסט אחרי ה־_
-//                            //את שם המסכת מהמשתנה + אות אחת אחרי שבמקרה הזה זה הסמל _
-//                            String dafs = masechet.substring(selectedMasechet.length() + 1);
-//                            // פיצול כל הדפים  לפי , ושומר במערך ללא הסמל ,
-//                            String[] dafsArray = dafs.split(",");
-//                            //יוצר רשימה חדשה של כל הדפים של המסכת בלי הדף שהוסר
-//                            List<String> updatedDafs = new ArrayList<>();
-//                            //עובר על כל הדפים במערך
-//                            for (String daf : dafsArray) {
-//                                //בודק אם זה לא הדף שלחצנו עליו
-//                                if (!daf.equals(dafToRemove.trim())) {
-//                                    //מוסיף את הדף לרשימת הדפים המעודכנת
-//                                    updatedDafs.add(daf);
-//                                }
-//                            }
-//                            //לוקח את רשימת הדפים מפצל אותם לפי , ושומר במחרוזת
-//                            String newDafsString = String.join(",", updatedDafs);
-//                            //לוקח את שם המסכת שנבחרה + _ + המחרוזת של הדפים ושומר במחרוזת
-//                            String newMasechetAndDafsString = selectedMasechet + "_" + newDafsString;
-//                            updatedMasechetList.add(updatedMasechetString);
-//
-//                        }
-//                  }
-//
-////                    // בניית מחרוזת מעודכנת
-////                    String updatedDafData = String.join("|", newDafList);
-////
-////                    // הוספת פסיק בסוף אם הרשימה אינה ריקה
-////                    if (!updatedDafData.isEmpty()) {
-////                        updatedDafData += "|";
-////                    }
-////
-////                    // עדכון השורה בקובץ
-////                    lines.set(i, "דפים שנבחרו:" + updatedDafData);
-//
-//                    // כתיבת הנתונים המעודכנים לקובץ
-//                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
-//                    break;
-//                }
-//            }
-//        } catch (IOException e) {
-//            Toast.makeText(this, "שגיאה בהסרת דף מהקובץ!", Toast.LENGTH_SHORT).show();
-//        }
-//    }
+    private void removeDafFromFile(String dafToRemove, String selectedMasechet) {
+        try {
+            List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);
+            // לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
+            for (int i = 0; i < lines.size(); i++) {
+                if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
+                    // חילוץ הדפים מתוך השורה
+                    String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
+                    // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
+                    String[] masechetArray = masechetData.split("\\|");
+                    //יוצר רשימה ריקה שיוספו לה המסכתות והדפים לאחר ההסרה
+                    List<String> updatedMasechetList = new ArrayList<>();
+                    //עובר על כל המסכתות במערך
+                    for (String masechet : masechetArray) {
+                        //אם אחת המסכתות מתחילה בשם המסכת שנשמרה לפני במשתנה ויש אחריה _
+                        if (masechet.startsWith(selectedMasechet + "_")) {
+                            //מחלצים את חלק הדפים של המסכת את הטקסט אחרי ה־_
+                            //את שם המסכת מהמשתנה + אות אחת אחרי שבמקרה הזה זה הסמל _
+                            String dafs = masechet.substring(selectedMasechet.length() + 1);
+                            // פיצול כל הדפים  לפי , ושומר במערך ללא הסמל ,
+                            String[] dafsArray = dafs.split(",");
+                            //יוצר רשימה חדשה של כל הדפים של המסכת בלי הדף שהוסר
+                            List<String> updatedDafs = new ArrayList<>();
+                            //עובר על כל הדפים במערך
+                            for (String daf : dafsArray) {
+                                //בודק אם זה לא הדף שלחצנו עליו
+                                if (!daf.equals(dafToRemove.trim())) {
+                                    //מוסיף את הדף לרשימת הדפים המעודכנת
+                                    updatedDafs.add(daf);
+                                }
+                            }
+                            //לוקח את רשימת הדפים מפצל אותם לפי , ושומר במחרוזת
+                            String newDafsString = String.join(",", updatedDafs);
+                            //לוקח את שם המסכת שנבחרה + _ + המחרוזת של הדפים ושומר במחרוזת
+                            String newMasechetAndDafsString = selectedMasechet + "_" + newDafsString;
+                            //
+                            updatedMasechetList.add(newMasechetAndDafsString);
+                        }
+                  }
+                    String updatedMasechetData = String.join("|", updatedMasechetList);
+                    lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
+                    // כתיבת הנתונים המעודכנים לקובץ
+                    m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            Toast.makeText(this, "שגיאה בהסרת דף מהקובץ!", Toast.LENGTH_SHORT).show();
+        }
+    }
     private void showKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
