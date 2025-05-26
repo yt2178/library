@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        // אתחול TextView לרשימת המסכתות ריקה
+        pagesListView = findViewById(R.id.pagesListView);
         emptyMasechetTextView = findViewById(R.id.emptyMasechetTextView);
         addMasechet = findViewById(R.id.addMasechet);
         this.textViewNumberPagesLearned = findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
@@ -122,6 +122,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {//חזרה למצב פעיל לאקטיביטי
         super.onResume();
+        if (pagesListView.getVisibility() == View.VISIBLE) {
+            pagesListView.setVisibility(View.GONE);
+            selectedmasechetListView.setVisibility(View.VISIBLE);
+        }
         // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
         updateEmptyView();
         updateTotalDafDFromFile();
@@ -164,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
 //        TextView masechetTitle = findViewById(R.id.masechetTitleTextView);
 //        masechetTitle.setText("מסכת: " + selectedMasechet);
 
-        pagesListView = findViewById(R.id.pagesListView);
+
             // הצגת הרשימה והסתרת רשימת המסכתות
             pagesListView.setVisibility(View.VISIBLE);
             selectedmasechetListView.setVisibility(View.GONE);
@@ -816,28 +820,21 @@ public class MainActivity extends AppCompatActivity {
     }
     private void showRemoveDafDialog(final String dafToRemove, final int position, final List<String> pages) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("האם אתה בטוח שברצונך להסיר את הדף: " + dafToRemove + "?")
-                .setCancelable(false)
+        builder.setMessage("האם אתה בטוח שברצונך להסיר את דף " + dafToRemove + " ?")
+                .setCancelable(false) // לא מאפשר למשתמש לסגור את הדיאלוג בלחיצה מחוץ לו (חייב לבחור כן או לא).
                 .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        ListView pagesListView = findViewById(R.id.pagesListView);  // חפש את ה-ListView מתוך ה-XML
-
-                        // הסרת הדף מהרשימה
-                        if (!pages.isEmpty() && position >= 0 && position < pages.size()) {
-                            pages.remove(position);
-                        } else {
-                            // הוסף טיפול במצב שבו הרשימה ריקה או האינדקס לא תקין
-                            Toast.makeText(MainActivity.this, "הרשימה ריקה או האינדקס לא תקין", Toast.LENGTH_SHORT).show();
-                        }
-
-
-                        // עדכון ה-ListView
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, pages);
-                        pagesListView.setAdapter(adapter);
-
                         // עדכון הקובץ על מנת להסיר את הדף
                         removeDafFromFile(dafToRemove,selectedMasechet);
+                        // הסרת הדף מהרשימה של הדפים שנבחרו (כדי לשנות את הצבע)
+                        if (dafSelected.contains(dafToRemove)) {
+                            dafSelected.remove(dafToRemove);
+                        }
+
+                        // עדכון ה-ListView באמצעות notifyDataSetChanged (אין צורך ליצור אדפטור חדש)
+                        pagesListView.invalidateViews(); // או adapter.notifyDataSetChanged();
+
                         Toast.makeText(MainActivity.this, "דף " + dafToRemove + " הוסר!", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -886,11 +883,17 @@ public class MainActivity extends AppCompatActivity {
                             String newDafsString = String.join(",", updatedDafs);
                             //לוקח את שם המסכת שנבחרה + _ + המחרוזת של הדפים ושומר במחרוזת
                             String newMasechetAndDafsString = selectedMasechet + "_" + newDafsString;
-                            // הערה
+                            // מוסיף את המסכת עם רשימת הדפים המעודכנת לרשימה
                             updatedMasechetList.add(newMasechetAndDafsString);
                         }
-                  }
-                    String updatedMasechetData = String.join("|", updatedMasechetList);
+                        else { //אם זה לא אחת המסכתות שמתחילה בשם המסכת שנשמרה לפני במשתנה
+                            //מוסיף את המסכת הזאת בחזרה לרשימה
+                            updatedMasechetList.add(masechet);
+                        }
+                    }
+                    //לוקח את רשימת המסכתות מפצל אותם לפי | ושומר במחרוזת
+                    String updatedMasechetData = String.join("|", updatedMasechetList) + "|";
+                    // מעדכן את השורה בקובץ כך שתכלול את רשימת המסכתות המעודכנת
                     lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
                     // כתיבת הנתונים המעודכנים לקובץ
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
