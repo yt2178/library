@@ -101,20 +101,35 @@
             android:background="@drawable/rounded_listview"
             android:divider="@color/brown"
             android:dividerHeight="0.2dp"
-            android:fadeScrollbars="false"
-            android:fastScrollAlwaysVisible="true"
+            android:fadeScrollbars="true"
             android:scrollbars="vertical"
             android:theme="@style/CustomListViewTheme" />
 
+        <TextView
+            android:id="@+id/selectedMasechetTitleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="מסכת: "
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/dark_brown"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/rounded_listview"
+            android:visibility="gone" />
+
+
         <ListView
-            android:id="@+id/pagesListView"
+            android:id="@+id/dafsListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_listview"
             android:divider="@color/brown"
             android:dividerHeight="0.2dp"
-            android:fadeScrollbars="false"
-            android:fastScrollAlwaysVisible="true"
+            android:fadeScrollbars="true"
+            app:fastScrollEnabled="true"
+            android:fastScrollAlwaysVisible="false"
             android:scrollbars="vertical"
             android:theme="@style/CustomListViewTheme"
             android:visibility="gone" />

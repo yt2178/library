@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private TalmudPageCalculator pageCalculator;
     private List<String> dafSelected = new ArrayList<>();
     private TextView emptyMasechetTextView;//TextView שמוצג אם ההיסטוריה ריקה
+    private TextView masechetTitle;//תצוגת שם המסכת הנבחרת
     private Button addMasechet;//TextView שמוצג אם ההיסטוריה ריקה
     private ListView pagesListView;
 
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        pagesListView = findViewById(R.id.pagesListView);
+        masechetTitle = findViewById(R.id.selectedMasechetTitleTextView);
+        pagesListView = findViewById(R.id.dafsListView);
         emptyMasechetTextView = findViewById(R.id.emptyMasechetTextView);
         addMasechet = findViewById(R.id.addMasechet);
         this.textViewNumberPagesLearned = findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         if (pagesListView.getVisibility() == View.VISIBLE) {
             pagesListView.setVisibility(View.GONE);
+            masechetTitle.setVisibility(View.GONE);
             selectedmasechetListView.setVisibility(View.VISIBLE);
         }
         // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
@@ -169,10 +172,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void showPages(List<String> pages){
-//        TextView masechetTitle = findViewById(R.id.masechetTitleTextView);
-//        masechetTitle.setText("מסכת: " + selectedMasechet);
 
-
+            masechetTitle.setText("מסכת " + selectedMasechet);
+            masechetTitle.setVisibility(View.VISIBLE);
             // הצגת הרשימה והסתרת רשימת המסכתות
             pagesListView.setVisibility(View.VISIBLE);
             selectedmasechetListView.setVisibility(View.GONE);
@@ -283,9 +285,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         // אם רשימת הדפים מוצגת, נחזור לרשימת המסכתות
-        ListView pagesListView = findViewById(R.id.pagesListView);
         if (pagesListView.getVisibility() == View.VISIBLE) {
             pagesListView.setVisibility(View.GONE);
+            masechetTitle.setVisibility(View.GONE);
             selectedmasechetListView.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
