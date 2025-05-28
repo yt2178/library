@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         addMasechet = findViewById(R.id.addMasechet);
         this.textViewNumberPagesLearned = findViewById(R.id.textViewNumberPagesLearned);//מציאת ה-ID של דפים שנלמדו
         this.textViewNumberPagesRemaining = findViewById(R.id.textViewNumberPagesRemaining);//מציאת ה-ID של דפים שנשארו
-        selectedmasechetListView = findViewById(R.id.masechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
+        selectedmasechetListView = findViewById(R.id.selectedmasechetListView);//מציאת ה-ID של הרשימה של המסכתות שנבחרו
         selectedMasechetList = new ArrayList<>();
         pageCalculator = new TalmudPageCalculator();//יצירת אובייקט של המחלקה
         // הצגת המסכתות ברשימה (ListView)
@@ -153,14 +153,21 @@ public class MainActivity extends AppCompatActivity {
                     String selectedMasechetLine = line.substring("מסכתות שנבחרו:".length()).trim();
                     //מחלק את המידע לפי תו ה-|
                     String[] masechetArray = selectedMasechetLine.split("\\|");
+                    //עובר על כל השורות במערך ושומר במחרוזת
                     for (String masechetData : masechetArray) {
+                        //אם אחת המסכתות מתחילה בשם המסכת שנשמרה לפני במשתנה ויש אחריה _
                         if (masechetData.startsWith(masechetName + "_")) {
+                            // הערה
                             String DafString = masechetData.substring((masechetName + "_").length()).trim();
+                            // הערה
                             String[] DafArray = DafString.split(",");
+                            // הערה
                             dafSelected.clear();
-                            for (String page : DafArray) {
-                                if (!page.trim().isEmpty()) { // להיזהר מרווחים מיותרים
-                                    dafSelected.add(page.trim());
+                            // הערה
+                            for (String dafs : DafArray) {
+                                // הערה
+                                if (!dafs.trim().isEmpty()) { // להיזהר מרווחים מיותרים
+                                    dafSelected.add(dafs.trim());
                                 }
                             }
                         }
@@ -172,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void showPages(List<String> pages){
-
             masechetTitle.setText("מסכת " + selectedMasechet);
             masechetTitle.setVisibility(View.VISIBLE);
             // הצגת הרשימה והסתרת רשימת המסכתות
@@ -335,7 +341,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String userName = input.getText().toString();//לקיחת הטקסט שהוכנס והפיכתו למשתנה
                 try {
-                    m_fileManager = new FileManager(MainActivity.this); //יצירת אובייקט לניהול קבצים
                     List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA);//קריאת הקובץ
                     if (userName.isEmpty()) {
                         userName = "בחור יקר";  // אם לא הוזן שם, הגדר המשתנה כברירת מחדל
@@ -368,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 try {
-                    List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA); // קריאת הקובץ
+                List<String> lines = m_fileManager.readFileLines(TOTAL_USER_DATA); // קריאת הקובץ
                 String userName = "בחור יקר";  // הגדר את המשתנה כ"בחור יקר"
                    //לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
                     for (int i = 0; i < lines.size(); i++) {
@@ -650,7 +655,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
                     String[] masechetArray = selectedMasechetLine.split("\\|");
-                    // הוספת כל המסכתות לרשימה תוך שמירה על שמותיהם בלבד (ללא דפים)
+                    // עובר על  כל המסכתות במערך ושומר אותם במחרוזת
                     for (String masechet : masechetArray) {
                         //חיתוך כל מסכת לפי הדפים (נמחק את הדפים) כל מה שאחרי הסמל _
                         String masechetName = masechet.split("_")[0].trim();
@@ -753,8 +758,8 @@ public class MainActivity extends AppCompatActivity {
     }//נבדק
     private void showRemoveMasechetDialog(final String masechetToRemove, final int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("האם אתה בטוח שברצונך להסיר את מסכת: " + masechetToRemove + "?")
-                .setCancelable(false)
+        builder.setTitle("הסרת מסכת");
+        builder.setMessage("האם אתה בטוח שברצונך להסיר את מסכת " + masechetToRemove + "?")
                 .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
@@ -791,27 +796,27 @@ public class MainActivity extends AppCompatActivity {
                     String selectedMasechetLine = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
                     // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
                     String[] masechetArray = selectedMasechetLine.split("\\|");
-                    // יצירת רשימה חדשה של מסכתות
+                    // //יוצר רשימה ריקה שיוספו לה המסכתות והדפים לאחר הסרת המסכת
                     List<String> newMasechetList = new ArrayList<>();
+                    // עובר על  כל המסכתות במערך ושומר אותם במחרוזת
                     for (String masechet : masechetArray) {
+                        //מסיר רווחים
                         masechet = masechet.trim();
-
-                        // אם זה לא הפריט שאנחנו רוצים להסיר – נשאיר אותו
-                        if (!masechet.startsWith(masechetToRemove + "_")) {
+                        //אם זה לא המסכת להסרה
+                        if (!masechet.startsWith(masechetToRemove)) {
+                            //מוסיף את המסכת לרשימת המסכתות המעודכנת
                             newMasechetList.add(masechet);
                         }
                     }
-
-                    // בניית השורה מחדש
+                    //לוקח את רשימת המסכתות מפצל אותם לפי | ושומר במחרוזת
                     String updatedMasechetData = String.join("|", newMasechetList);
-
                     // אם לא ריק – להוסיף | בסוף (אם אתה תמיד שומר כך)
                     if (!updatedMasechetData.isEmpty()) {
                         updatedMasechetData += "|";
                     }
-
-                    // כתיבה לקובץ
+                    // מעדכן את השורה בקובץ כך שתכלול את רשימת המסכתות המעודכנת
                     lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
+                    // כתיבת הנתונים המעודכנים לקובץ
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
 
                     // תיעוד
@@ -868,13 +873,13 @@ public class MainActivity extends AppCompatActivity {
             // לולאה שעוברת על כל שורות ברשימת lines וכל שורה נשמרת במשתנה line לצורך עיבוד או בדיקה
             for (int i = 0; i < lines.size(); i++) {
                 if (lines.get(i).startsWith("מסכתות שנבחרו:")) {
-                    // חילוץ הדפים מתוך השורה
+                    // מחלץ את הדפים מתוך השורה ושומר במחרוזת
                     String masechetData = lines.get(i).substring("מסכתות שנבחרו:".length()).trim();
                     // פיצול כל המסכתות שנבחרו לפי | ושומר במערך ללא הסמל |
                     String[] masechetArray = masechetData.split("\\|");
-                    //יוצר רשימה ריקה שיוספו לה המסכתות והדפים לאחר ההסרה
+                    //יוצר רשימה ריקה שיוספו לה המסכתות והדפים לאחר הסרת הדף
                     List<String> updatedMasechetList = new ArrayList<>();
-                    //עובר על כל המסכתות במערך
+                    // עובר על  כל המסכתות במערך ושומר אותם במחרוזת
                     for (String masechet : masechetArray) {
                         //אם אחת המסכתות מתחילה בשם המסכת שנשמרה לפני במשתנה ויש אחריה _
                         if (masechet.startsWith(selectedMasechet + "_")) {
@@ -906,11 +911,13 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     //לוקח את רשימת המסכתות מפצל אותם לפי | ושומר במחרוזת
-                    String updatedMasechetData = String.join("|", updatedMasechetList) + "|";
+                    String updatedMasechetAndDafData = String.join("|", updatedMasechetList) + "|";
                     // מעדכן את השורה בקובץ כך שתכלול את רשימת המסכתות המעודכנת
-                    lines.set(i, "מסכתות שנבחרו:" + updatedMasechetData);
+                    lines.set(i, "מסכתות שנבחרו:" + updatedMasechetAndDafData);
                     // כתיבת הנתונים המעודכנים לקובץ
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
+                    // שמירה בהיסטוריה לאחר הסרת הדף
+                    HistoryUtils.logAction(MainActivity.this, "הוסר דף " + dafToRemove + " במסכת " + selectedMasechet);
                     break;
                 }
             }

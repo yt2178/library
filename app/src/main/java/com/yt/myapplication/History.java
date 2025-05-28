@@ -111,7 +111,7 @@ public class History extends AppCompatActivity {
     }
     private void showClearHistoryDialog() {
         new AlertDialog.Builder(History.this)
-                .setTitle("האם אתה בטוח?")
+                .setTitle("מחיקת ההיסטוריה")
                 .setMessage("האם אתה בטוח שברצונך למחוק את כל ההיסטוריה?")
                 .setPositiveButton("כן", new DialogInterface.OnClickListener() {
                     @Override
