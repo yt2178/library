@@ -47,10 +47,12 @@ public class WidgetConfigActivity extends AppCompatActivity {
             isUpdate = true;
         }
 
+        // אתחול כל הרכיבים
         SwitchMaterial switchGregorian = findViewById(R.id.switch_gregorian);
         SwitchMaterial switchParasha = findViewById(R.id.switch_parasha);
-         spinnerCities = findViewById(R.id.spinner_cities);
+        spinnerCities = findViewById(R.id.spinner_cities);
         SeekBar seekbarTransparency = findViewById(R.id.seekbar_transparency);
+        SeekBar seekbarClockSize = findViewById(R.id.seekbar_clock_size); // <-- הוספה: אתחול ה-SeekBar של גודל השעון
         Button saveButton = findViewById(R.id.btn_save);
 
         List<String> cityNames = CityData.getCityNames();
@@ -60,52 +62,47 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
         if (isUpdate) {
             saveButton.setText("שמור שינויים");
-            loadPreferences(switchGregorian, switchParasha, spinnerCities, seekbarTransparency);
+            // הוספה: העברת ה-SeekBar החדש לפונקציית הטעינה
+            loadPreferences(switchGregorian, switchParasha, spinnerCities, seekbarTransparency, seekbarClockSize);
         }
 
         saveButton.setOnClickListener(v -> {
-            saveAndFinish(switchGregorian, switchParasha, spinnerCities, seekbarTransparency);
+            // הוספה: העברת ה-SeekBar החדש לפונקציית השמירה
+            saveAndFinish(switchGregorian, switchParasha, spinnerCities, seekbarTransparency, seekbarClockSize);
         });
 
-        // ==========================================================
-        // ==== קוד חדש לקביעת גודל החלון באופן ידני ====
-        // ==========================================================
         Window window = getWindow();
         if (window != null) {
-            // קבלת מידות המסך
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-
-            // הגדרת רוחב החלון ל-90% מרוחב המסך
             int width = (int) (displayMetrics.widthPixels * 0.90);
-
-            // הגדרת גובה החלון לפי התוכן (אבל לא יותר מ-80% מגובה המסך)
             int height = WindowManager.LayoutParams.WRAP_CONTENT;
-
-            // החלת המידות החדשות על החלון
             window.setLayout(width, height);
-            window.setGravity(Gravity.CENTER); // ממקם את הדיאלוג במרכז
+            window.setGravity(Gravity.CENTER);
         }
-        // ==========================================================
     }
 
-    private void loadPreferences(SwitchMaterial sGregorian, SwitchMaterial sParasha, Spinner spinner, SeekBar seekbar) {
+    // הוספה: הוספת פרמטר חדש לפונקציה
+    private void loadPreferences(SwitchMaterial sGregorian, SwitchMaterial sParasha, Spinner spinner, SeekBar sTransparency, SeekBar sClockSize) {
         SharedPreferences prefs = getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE);
         sGregorian.setChecked(prefs.getBoolean("show_gregorian", true));
         sParasha.setChecked(prefs.getBoolean("show_parasha", true));
-        seekbar.setProgress(prefs.getInt("transparency", 128));
+        sTransparency.setProgress(prefs.getInt("transparency", 128));
+        sClockSize.setProgress(prefs.getInt("clock_size", 48)); // <-- הוספה: טעינת הערך השמור של גודל השעון
         String savedCity = prefs.getString("city_name", "ירושלים");
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
         int position = adapter.getPosition(savedCity);
         spinner.setSelection(position);
     }
 
-    private void saveAndFinish(SwitchMaterial sGregorian, SwitchMaterial sParasha, Spinner spinner, SeekBar seekbar) {
+    // הוספה: הוספת פרמטר חדש לפונקציה
+    private void saveAndFinish(SwitchMaterial sGregorian, SwitchMaterial sParasha, Spinner spinner, SeekBar sTransparency, SeekBar sClockSize) {
         String selectedCity = spinner.getSelectedItem().toString();
         SharedPreferences.Editor prefs = getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE).edit();
         prefs.putBoolean("show_gregorian", sGregorian.isChecked());
         prefs.putBoolean("show_parasha", sParasha.isChecked());
-        prefs.putInt("transparency", seekbar.getProgress());
+        prefs.putInt("transparency", sTransparency.getProgress());
+        prefs.putInt("clock_size", sClockSize.getProgress()); // <-- הוספה: שמירת הערך החדש של גודל השעון
         prefs.putString("city_name", selectedCity);
         prefs.apply();
 
