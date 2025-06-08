@@ -13,7 +13,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -23,7 +22,6 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
     private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private boolean isUpdate = false;
-    private Spinner spinnerCities;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,25 +32,21 @@ public class WidgetConfigActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            appWidgetId = extras.getInt(
-                    AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+            appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
         }
-
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
             finish();
             return;
         }
-
         if (!AppWidgetManager.ACTION_APPWIDGET_CONFIGURE.equals(intent.getAction())) {
             isUpdate = true;
         }
 
-        // אתחול כל הרכיבים
         SwitchMaterial switchGregorian = findViewById(R.id.switch_gregorian);
         SwitchMaterial switchParasha = findViewById(R.id.switch_parasha);
-        spinnerCities = findViewById(R.id.spinner_cities);
+        Spinner spinnerCities = findViewById(R.id.spinner_cities);
         SeekBar seekbarTransparency = findViewById(R.id.seekbar_transparency);
-        SeekBar seekbarClockSize = findViewById(R.id.seekbar_clock_size); // <-- הוספה: אתחול ה-SeekBar של גודל השעון
+        SeekBar seekbarClockSize = findViewById(R.id.seekbar_clock_size);
         Button saveButton = findViewById(R.id.btn_save);
 
         List<String> cityNames = CityData.getCityNames();
@@ -62,12 +56,10 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
         if (isUpdate) {
             saveButton.setText("שמור שינויים");
-            // הוספה: העברת ה-SeekBar החדש לפונקציית הטעינה
             loadPreferences(switchGregorian, switchParasha, spinnerCities, seekbarTransparency, seekbarClockSize);
         }
 
         saveButton.setOnClickListener(v -> {
-            // הוספה: העברת ה-SeekBar החדש לפונקציית השמירה
             saveAndFinish(switchGregorian, switchParasha, spinnerCities, seekbarTransparency, seekbarClockSize);
         });
 
@@ -76,38 +68,37 @@ public class WidgetConfigActivity extends AppCompatActivity {
             DisplayMetrics displayMetrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
             int width = (int) (displayMetrics.widthPixels * 0.90);
-            int height = WindowManager.LayoutParams.WRAP_CONTENT;
-            window.setLayout(width, height);
+            window.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
             window.setGravity(Gravity.CENTER);
         }
     }
 
-    // הוספה: הוספת פרמטר חדש לפונקציה
     private void loadPreferences(SwitchMaterial sGregorian, SwitchMaterial sParasha, Spinner spinner, SeekBar sTransparency, SeekBar sClockSize) {
         SharedPreferences prefs = getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE);
         sGregorian.setChecked(prefs.getBoolean("show_gregorian", true));
         sParasha.setChecked(prefs.getBoolean("show_parasha", true));
         sTransparency.setProgress(prefs.getInt("transparency", 128));
-        sClockSize.setProgress(prefs.getInt("clock_size", 48)); // <-- הוספה: טעינת הערך השמור של גודל השעון
+        sClockSize.setProgress(prefs.getInt("clock_size", 48));
         String savedCity = prefs.getString("city_name", "ירושלים");
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
         int position = adapter.getPosition(savedCity);
-        spinner.setSelection(position);
+        if (position >= 0) {
+            spinner.setSelection(position);
+        }
     }
 
-    // הוספה: הוספת פרמטר חדש לפונקציה
     private void saveAndFinish(SwitchMaterial sGregorian, SwitchMaterial sParasha, Spinner spinner, SeekBar sTransparency, SeekBar sClockSize) {
         String selectedCity = spinner.getSelectedItem().toString();
         SharedPreferences.Editor prefs = getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE).edit();
         prefs.putBoolean("show_gregorian", sGregorian.isChecked());
         prefs.putBoolean("show_parasha", sParasha.isChecked());
         prefs.putInt("transparency", sTransparency.getProgress());
-        prefs.putInt("clock_size", sClockSize.getProgress()); // <-- הוספה: שמירת הערך החדש של גודל השעון
+        prefs.putInt("clock_size", sClockSize.getProgress());
         prefs.putString("city_name", selectedCity);
         prefs.apply();
 
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
-        HebrewDateWidgetProvider.updateAppWidget(this, appWidgetManager, appWidgetId);
+        WidgetProvider.updateAppWidget(this, appWidgetManager, appWidgetId);
 
         if (!isUpdate) {
             Intent resultValue = new Intent();

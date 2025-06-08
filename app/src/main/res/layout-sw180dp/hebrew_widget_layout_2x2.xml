@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:padding="2dp">
 
-    <!-- שכבת רקע (ללא שינוי) -->
     <ImageView
         android:id="@+id/iv_widget_background"
         android:layout_width="match_parent"
@@ -14,13 +13,12 @@
         android:src="@drawable/widget_background"
         android:contentDescription="@null" />
 
-    <!-- התוכן של הווידג'ט -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="4dp">
+        android:padding="8dp">
 
         <TextClock
             android:id="@+id/tc_clock"
@@ -29,34 +27,61 @@
             android:format12Hour="h:mm"
             android:format24Hour="HH:mm"
             android:textColor="@android:color/white"
-            android:textSize="40sp"
+            android:textSize="48sp"
             android:textStyle="bold"
             tools:text="12:34" />
 
-        <!--  כאן השינוי: LinearLayout אופקי עם שני התאריכים -->
+        <!-- קונטיינר אופקי לתאריכים (זה המצב הרחב) -->
         <LinearLayout
+            android:id="@+id/date_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:layout_marginTop="4dp">
 
             <TextView
                 android:id="@+id/tv_hebrew_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
-                tools:text="כ' סיוון" />
+                android:textSize="20sp"
+                tools:text="י' סיוון התשפ'ה" />
 
-            <!-- הוספנו את התאריך הלועזי -->
             <TextView
                 android:id="@+id/tv_gregorian_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:textColor="@android:color/white"
-                android:textSize="16sp"
-                tools:text="(26/6/24)" />
+                android:textSize="14sp"
+                tools:text="(8/6/25)" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_parasha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            tools:text="פרשת השבוע" />
+
+        <TextView
+            android:id="@+id/tv_shabbat_entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            tools:text="כניסת שבת:" />
+
+        <TextView
+            android:id="@+id/tv_shabbat_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            tools:text="יציאת שבת:" />
     </LinearLayout>
 </FrameLayout>
