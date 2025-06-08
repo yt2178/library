@@ -1,8 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
+    <!-- Base application theme for Night Mode -->
     <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- התאם אישית את הנושא הכהה שלך כאן. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
-        <item name="android:statusBarColor">@color/colorDarkStatusBar</item>
+
+        <!-- הגדרת צבע ה-Status Bar למצב לילה -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/colorDarkStatusBar</item>
     </style>
+
 </resources>

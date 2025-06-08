@@ -88,11 +88,18 @@ public class MainActivity extends AppCompatActivity {
         selectedmasechetListView.requestFocus(); // מבטיח שהרשימה תקבל פוקוס אחרי עדכון הנתונים
         // אם הרשימה ריקה, הצג - רשימת המסכתות ריקה וכפתור הוספה
         updateEmptyView();
-        // קריאה לקבלת התאריך העברי
+        //תאריך עברי ופרשה
         String hebrewDateString = HebrewDateUtils.getHebrewDate();
-        // הצגת התאריך ב-TextView
+        String parshaString = HebrewDateUtils.getParsha();
         TextView hebrewDateTextView = findViewById(R.id.hebrewDateTextView);
+        TextView parshaTextView = findViewById(R.id.parshaTextView); // ודא שיש לך ID כזה ב-XML
         hebrewDateTextView.setText(hebrewDateString);
+        if (parshaString != null && !parshaString.isEmpty()) {
+            parshaTextView.setText(parshaString);
+            parshaTextView.setVisibility(View.VISIBLE);
+        } else {
+            parshaTextView.setVisibility(View.GONE); // הסתר אם אין פרשה
+        }
         //לחיצה קצרה על מסכת מהרשימה תציג את רשימת הדפים שלה
         selectedmasechetListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

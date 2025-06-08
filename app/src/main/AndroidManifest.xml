@@ -55,6 +55,29 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-    </application>
 
+
+
+        <receiver
+            android:name=".HebrewDateWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/hebrew_widget_info" />
+        </receiver>
+
+        <!-- 2. מסך ההגדרות של הווידג'ט -->
+        <activity
+            android:name=".WidgetConfigActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Dialog">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
+    </application>
 </manifest>

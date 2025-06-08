@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="110dp"
+    android:minHeight="40dp"
+    android:targetCellWidth="2"
+    android:targetCellHeight="1"
+    android:updatePeriodMillis="86400000"
+    android:previewLayout="@layout/hebrew_widget_layout_2x1"
+    android:initialLayout="@layout/hebrew_widget_layout_2x1"
+    android:configure="com.yt.myapplication.WidgetConfigActivity"
+    android:resizeMode="horizontal|vertical"
+    android:widgetCategory="home_screen"
+    android:widgetFeatures="reconfigurable|configuration_optional">
+
+
+    <preview-image-and-label
+        android:previewLayout="@layout/hebrew_widget_layout_2x2"
+        android:targetCellWidth="2"
+        android:targetCellHeight="2"
+        android:label="@string/app_name" />
+
+</appwidget-provider>

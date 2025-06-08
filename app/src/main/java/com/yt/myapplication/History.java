@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -67,10 +66,10 @@ public class History extends AppCompatActivity {
 
 
         // קריאה למתודה ולקבלת התאריך העברי
-        String hebrewDateString = HebrewDateUtils.getHebrewDate();
+        String hebrewDate = HebrewDateUtils.getHebrewDate();
         // הצגת התאריך ב-TextView
         TextView hebrewDateTextView = findViewById(R.id.hebrewDateTextView);
-        hebrewDateTextView.setText(hebrewDateString);
+        hebrewDateTextView.setText(hebrewDate);
 
 
         // טעינת ההיסטוריה

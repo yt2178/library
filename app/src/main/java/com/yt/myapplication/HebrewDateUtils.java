@@ -1,27 +1,42 @@
 package com.yt.myapplication;
 
-import android.widget.TextView;
-
-import com.kosherjava.zmanim.hebrewcalendar.JewishDate;
+import com.kosherjava.zmanim.hebrewcalendar.JewishCalendar;
 import com.kosherjava.zmanim.hebrewcalendar.HebrewDateFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 public class HebrewDateUtils {
 
-    // מתודה שמחזירה את התאריך העברי בפורמט יפה
+    public static JewishCalendar getJewishCalendar() {
+        return new JewishCalendar();
+    }
+
     public static String getHebrewDate() {
-        // יצירת תאריך עברי
-        JewishDate jewishDate = new JewishDate();
-
-        // יצירת Formatter שממיר תאריך עברי למחרוזת בעברית
+        JewishCalendar jc = getJewishCalendar();
         HebrewDateFormatter hdf = new HebrewDateFormatter();
-        hdf.setHebrewFormat(true); // קובע שהתאריך יודפס באותיות עבריות
+        hdf.setHebrewFormat(true);
+        return hdf.format(jc);
+    }
 
-        // קבלת מחרוזת תאריך עברי
-        return hdf.format(jewishDate);
+    public static String getParsha() {
+        // מתחילים מהיום
+        Date today = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(today);
+        HebrewDateFormatter hdf = new HebrewDateFormatter();
+        hdf.setHebrewFormat(true);
+
+        // נבדוק לכל יום בעד שבועיים
+        for (int i = 0; i < 14; i++) {
+            Date checkDate = cal.getTime();
+            JewishCalendar jc = new JewishCalendar(checkDate);
+            String parshaName = hdf.formatParsha(jc);
+            if (parshaName != null && !parshaName.trim().isEmpty()) {
+                return "פרשת " + parshaName;
+            }
+            // נעבור ליום הבא
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+        }
+        return "אין פרשה קרובה";
     }
 }
-//// קריאה למתודה ולקבלת התאריך העברי
-//String hebrewDateString = HebrewDateUtils.getHebrewDate();
-//// הצגת התאריך ב-TextView
-//TextView hebrewDateTextView = findViewById(R.id.hebrewDateTextView);
-//hebrewDateTextView.setText(hebrewDateString);
