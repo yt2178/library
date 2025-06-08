@@ -49,9 +49,7 @@ public class WidgetConfigActivity extends AppCompatActivity {
 
         SwitchMaterial switchGregorian = findViewById(R.id.switch_gregorian);
         SwitchMaterial switchParasha = findViewById(R.id.switch_parasha);
-        // הערה: נראה שהמתג הזה לא נטען או נשמר, נסיר אותו כרגע כדי למנוע קריסות
-        // SwitchMaterial switchIsIsrael = findViewById(R.id.switch_is_israel);
-        spinnerCities = findViewById(R.id.spinner_cities);
+         spinnerCities = findViewById(R.id.spinner_cities);
         SeekBar seekbarTransparency = findViewById(R.id.seekbar_transparency);
         Button saveButton = findViewById(R.id.btn_save);
 
@@ -95,7 +93,6 @@ public class WidgetConfigActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE);
         sGregorian.setChecked(prefs.getBoolean("show_gregorian", true));
         sParasha.setChecked(prefs.getBoolean("show_parasha", true));
-        // sIsrael.setChecked(prefs.getBoolean("is_israel", true));
         seekbar.setProgress(prefs.getInt("transparency", 128));
         String savedCity = prefs.getString("city_name", "ירושלים");
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
@@ -108,7 +105,6 @@ public class WidgetConfigActivity extends AppCompatActivity {
         SharedPreferences.Editor prefs = getSharedPreferences("widget_prefs_" + appWidgetId, Context.MODE_PRIVATE).edit();
         prefs.putBoolean("show_gregorian", sGregorian.isChecked());
         prefs.putBoolean("show_parasha", sParasha.isChecked());
-        // prefs.putBoolean("is_israel", sIsrael.isChecked());
         prefs.putInt("transparency", seekbar.getProgress());
         prefs.putString("city_name", selectedCity);
         prefs.apply();

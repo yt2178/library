@@ -30,12 +30,6 @@
             android:text="הצג פרשת השבוע"
             android:checked="true" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_is_israel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="חישוב לפי ארץ ישראל"
-            android:checked="true" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -31,6 +31,7 @@ public class HebrewDateUtils {
             Date checkDate = cal.getTime();
             JewishCalendar jc = new JewishCalendar(checkDate);
             String parshaName = hdf.formatParsha(jc);
+            jc.setInIsrael(true);
             if (parshaName != null && !parshaName.trim().isEmpty()) {
                 return "פרשת " + parshaName;
             }
