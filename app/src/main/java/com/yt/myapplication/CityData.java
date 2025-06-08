@@ -11,7 +11,7 @@ public class CityData {
 
     private static final Map<String, GeoLocation> cities = new LinkedHashMap<>();
 
-    // בלוק סטטי עם רשימת הערים החדשה והממוקדת לישראל
+    // רשימת הערים בישראל
     static {
         // אזור צפון
         addCity("צפת", 32.9647, 35.4981, "Asia/Jerusalem");
