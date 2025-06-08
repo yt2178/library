@@ -56,28 +56,34 @@
             android:name=".MainActivity"
             android:exported="true" />
 
-
-
+        <!-- ווידג'ט גדול -->
         <receiver
-            android:name=".HebrewDateWidgetProvider"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/hebrew_widget_info" />
+            android:name=".WidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_full_description">
+            <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> </intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/hebrew_widget_info" />
         </receiver>
-
-        <!-- 2. מסך ההגדרות של הווידג'ט -->
         <activity
             android:name=".WidgetConfigActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Dialog">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
-            </intent-filter>
-        </activity>
+        android:exported="true"
+        android:theme="@style/Widget.Configure.Dialog.Theme">
+        <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/> </intent-filter>
+    </activity>
 
+    <!-- ווידג'ט קטן -->
+    <receiver
+        android:name=".WidgetCompactProvider"
+        android:exported="true"
+        android:label="@string/widget_compact_description">
+        <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> </intent-filter>
+        <meta-data android:name="android.appwidget.provider" android:resource="@xml/compact_widget_info" />
+    </receiver>
+    <activity
+        android:name=".WidgetCompactConfigActivity"
+    android:exported="true"
+    android:theme="@style/Theme.AppCompat.Dialog">
+    <intent-filter> <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/> </intent-filter>
+</activity>
     </application>
 </manifest>

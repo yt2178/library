@@ -9,4 +9,8 @@
     <string name="history">היסטוריה 📅</string>
     <string name="settings">הגדרות ⚙️</string>
     <string name="about">אודות ℹ️</string>
+    <string name="widget_size_2x1">שעון ותאריך</string>
+    <string name="widget_size_2x2">ווידג\'ט מלא</string>
+    <string name="widget_full_description">ווידג\'ט רגיל</string>
+    <string name="widget_compact_description">ווידג\'ט  קטן</string>
 </resources>

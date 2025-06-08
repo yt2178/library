@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="מה להציג בווידג'ט?" android:textSize="18sp" android:textStyle="bold" />
+        <RadioGroup android:id="@+id/radio_group_compact_content" android:layout_width="match_parent" android:layout_height="wrap_content">
+            <RadioButton android:id="@+id/radio_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="הצג שעה" />
+            <RadioButton android:id="@+id/radio_hebrew_date" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="תאריך עברי" android:checked="true" />
+            <RadioButton android:id="@+id/radio_gregorian_date" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="תאריך לועזי" />
+            <RadioButton android:id="@+id/radio_parasha" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="פרשת השבוע" />
+        </RadioGroup>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="גודל טקסט" />
+        <SeekBar android:id="@+id/seekbar_compact_text_size" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="24" android:min="10" android:progress="14" />
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="שקיפות רקע" />
+        <SeekBar android:id="@+id/seekbar_compact_transparency" android:layout_width="match_parent" android:layout_height="wrap_content" android:max="255" android:progress="128" />
+
+        <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="24dp" android:text="שמור" />
+    </LinearLayout>
+</ScrollView>

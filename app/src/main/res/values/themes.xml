@@ -15,7 +15,10 @@
         <!-- הגדרת צבע ה-Navigation Bar -->
         <item name="android:navigationBarColor">@color/dark_brown</item>
     </style>
-
+    <style name="Widget.Configure.Dialog.Theme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
     <!-- סגנון מותאם אישית ל-ListView -->
     <style name="CustomListViewTheme" parent="Theme.AppCompat.Light">
         <item name="android:scrollbarThumbVertical">@color/semi_brown</item>
