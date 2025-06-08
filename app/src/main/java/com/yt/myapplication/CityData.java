@@ -13,7 +13,7 @@ public class CityData {
 
     // רשימת הערים בישראל
     static {
-        // אזור צפון
+        // אזור הצפון
         addCity("צפת", 32.9647, 35.4981, "Asia/Jerusalem");
         addCity("חיפה", 32.8184, 34.9885, "Asia/Jerusalem");
         addCity("טבריה", 32.7905, 35.5310, "Asia/Jerusalem");
