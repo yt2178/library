@@ -34,7 +34,6 @@ public class CityData {
         addCity("מודיעין", 31.9037, 35.0084, "Asia/Jerusalem");
 
         // אזור דרום
-        // אזור דרום
         addCity("אופקים", 31.3167, 34.6167, "Asia/Jerusalem");
         addCity("שדרות", 31.52875, 34.60117, "Asia/Jerusalem");
         addCity("אשדוד", 31.7917, 34.6435, "Asia/Jerusalem");
