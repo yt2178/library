@@ -62,6 +62,7 @@
         <receiver
             android:name=".WidgetProvider"
             android:exported="true"
+            android:excludeFromRecents="true"
             android:label="@string/widget_full_description">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -81,6 +82,7 @@
         <receiver
             android:name=".WidgetCompactProvider"
             android:exported="true"
+            android:excludeFromRecents="true"
             android:label="@string/widget_compact_description">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
