@@ -18,6 +18,16 @@ public class HebrewDateUtils {
         return hdf.format(jc);
     }
 
+    public static String getHebrewDayOfWeek() {
+        try {
+            String[] hebrewDays = {"", "ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"};
+            JewishCalendar jc = new JewishCalendar();
+            return "יום " + hebrewDays[jc.getDayOfWeek()];
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     public static String getParsha() {
         // מתחילים מהיום
         Date today = new Date();

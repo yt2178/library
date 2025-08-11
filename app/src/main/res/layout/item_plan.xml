@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/border_background">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_plan_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:text="מסכת ברכות מדף ב. עד דף י:"/>
+
+        <TextView
+            android:id="@+id/item_plan_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="יעד: 25/12/2024"/>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/item_plan_delete_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/ic_settings_delete" />
+
+</LinearLayout>

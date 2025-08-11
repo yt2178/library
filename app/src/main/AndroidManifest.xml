@@ -5,6 +5,8 @@
     <!-- הרשאות שביקשת (לא קשורות לווידג'ט) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- In AndroidManifest.xml -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -57,6 +59,10 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+        <activity
+            android:name=".PlanActivity"
+            android:exported="false"
+            android:label="הגדרת תוכנית לימוד" />
 
         <!--  הגדרות הווידג'ט הגדול -->
         <receiver
@@ -72,7 +78,7 @@
         <activity
             android:name=".WidgetConfigActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Dialog"> <!-- <<< כאן התיקון -->
+            android:theme="@style/Widget.Configure.Dialog.Theme"> <!-- <<< כאן התיקון -->
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
@@ -92,7 +98,7 @@
         <activity
             android:name=".WidgetCompactConfigActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Dialog">
+            android:theme="@style/Widget.Configure.Dialog.Theme">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>

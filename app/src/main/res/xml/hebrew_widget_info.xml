@@ -4,7 +4,7 @@
     android:minHeight="40dp"
     android:targetCellWidth="2"
     android:targetCellHeight="1"
-    android:updatePeriodMillis="0"
+    android:updatePeriodMillis="43200000"
     android:previewImage="@drawable/ic_widget_preview"
     android:previewLayout="@layout/hebrew_widget_layout_2x1"
     android:initialLayout="@layout/hebrew_widget_layout_2x1"

@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="2dp">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/iv_widget_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/widget_background"
+        android:scaleType="fitXY"
         android:contentDescription="@null" />
 
     <LinearLayout
@@ -24,37 +24,68 @@
             android:id="@+id/tc_clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:format12Hour="h:mm"
+            android:format12Hour="HH:mm"
             android:format24Hour="HH:mm"
             android:textColor="@android:color/white"
             android:textSize="48sp"
             android:textStyle="bold"
-            tools:text="12:34" />
+            tools:text="14:30" />
 
-        <!-- קונטיינר אנכי לתאריכים (זה המצב הצר) -->
+        <TextView
+            android:id="@+id/tv_day_of_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_marginTop="4dp"
+            tools:text="יום ראשון" />
+
+        <!-- קונטיינר אנכי (למצב הצר) -->
         <LinearLayout
-            android:id="@+id/date_container"
+            android:id="@+id/date_container_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginTop="4dp">
-
+            android:orientation="vertical">
             <TextView
-                android:id="@+id/tv_hebrew_date"
+                android:id="@+id/tv_hebrew_date_v"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                tools:text="י' סיוון התשפ'ה" />
-
+                tools:text="תאריך עברי" />
             <TextView
-                android:id="@+id/tv_gregorian_date"
+                android:id="@+id/tv_gregorian_date_v"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
-                tools:text="(8/6/25)" />
+                tools:text="(1/1/24)" />
+        </LinearLayout>
+
+        <!-- קונטיינר אופקי (מוסתר) -->
+        <LinearLayout
+            android:id="@+id/date_container_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_hebrew_date_h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                tools:text="תאריך עברי" />
+            <TextView
+                android:id="@+id/tv_gregorian_date_h"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                tools:text="(1/1/24)" />
         </LinearLayout>
 
         <TextView

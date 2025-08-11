@@ -10,6 +10,11 @@
     <item
         android:id="@+id/menu_set_target"
         android:title="הגדר יעד דפים 📈" />
+    <!-- In res/menu/main.xml -->
+    <!-- החלף את הפריט הישן בזה -->
+    <item
+        android:id="@+id/menu_learning_plan"
+        android:title="תוכנית הלימודים" />
     <item
         android:id="@+id/menu_history"
         android:title="@string/history"/>

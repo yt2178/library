@@ -67,12 +67,11 @@ public class WidgetCompactProvider extends AppWidgetProvider {
                 views.setTextViewText(R.id.tv_hebrew_date, contentToShow);
             }
 
-            // הגדרת הלחיצה על הווידג'ט לפתיחת מסך ההגדרות
-            Intent configIntent = new Intent(context, WidgetCompactConfigActivity.class);
-            configIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-            PendingIntent configPendingIntent = PendingIntent.getActivity(context, appWidgetId, configIntent, flags);
-            views.setOnClickPendingIntent(R.id.widget_root, configPendingIntent);
+            Intent updateIntent = new Intent(context, WidgetCompactProvider.class); // <-- שם המחלקה של ה-Provider
+            updateIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            updateIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
+            PendingIntent updatePendingIntent = PendingIntent.getBroadcast(context, appWidgetId, updateIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            views.setOnClickPendingIntent(R.id.widget_root, updatePendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
             Log.d(TAG, "--- COMPACT WIDGET UPDATE SUCCESS ---");

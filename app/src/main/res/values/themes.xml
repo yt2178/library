@@ -1,27 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Base application theme for Day Mode -->
-    <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- התאם אישית את נושא האור שלך כאן. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <!--
+    זו ערכת הנושא הראשית והיחידה של האפליקציה.
+    היא יורשת מ-DayNight, ולכן תגיב אוטומטית למצב המערכת.
+    -->
+    <style name="Theme.MyApplication" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- צבעי המותג הראשיים (לשימוש עתידי) -->
+        <item name="colorPrimary">@color/brown</item>
+        <item name="colorPrimaryVariant">@color/dark_brown</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- צבעי מותג משניים -->
+        <item name="colorSecondary">@color/semi_brown</item>
+        <item name="colorSecondaryVariant">@color/third_brown</item>
+        <item name="colorOnSecondary">@color/black</item>
 
-        <!-- הגדרת צבע ה-Status Bar למצב יום -->
+        <!-- הגדרות ספציפיות למצב יום -->
         <item name="android:statusBarColor">@color/colorLightStatusBar</item>
-    </style>
-
-    <!-- The final theme for the app -->
-    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication">
-        <!-- הגדרת צבע ה-Navigation Bar -->
         <item name="android:navigationBarColor">@color/dark_brown</item>
     </style>
-    <style name="Widget.Configure.Dialog.Theme" parent="Theme.AppCompat.Dialog">
+
+    <!-- סגנון לדיאלוגים (כמו מסכי קונפיגורציה של ווידג'טים) -->
+    <style name="Widget.Configure.Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
     </style>
-    <!-- סגנון מותאם אישית ל-ListView -->
+
+    <!-- סגנון מותאם אישית לפס הגלילה של ה-ListView -->
     <style name="CustomListViewTheme" parent="Theme.AppCompat.Light">
         <item name="android:scrollbarThumbVertical">@color/semi_brown</item>
         <item name="android:scrollbarTrackVertical">@color/third_brown</item>
     </style>
+
 </resources>

@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.gson)
     implementation(libs.zmanim)
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -40,4 +41,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
 }

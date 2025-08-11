@@ -432,7 +432,7 @@ public class MainActivity extends AppCompatActivity {
                     //איחוד כל השורות ברשימה lines לתווך אחד ארוך כשכל שורה מופרדת ע"י אנטר וכותב זאת לקובץ הפנימי
                     m_fileManager.writeInternalFile(TOTAL_USER_DATA, String.join("\n", lines), false);
                     // שמירת פעולה בהיסטוריה
-                    HistoryUtils.logAction(MainActivity.this, "השם לא שונה, נשמר השם הקודם: " + userName);
+                    HistoryUtils.logAction(MainActivity.this, "נשאר השם הקודם: " + userName);
                     hideKeyboard(input); // הסתרת המקלדת
                 } catch (IOException e) {
                     Toast.makeText(MainActivity.this, "אירעה שגיאה בשמירת שם המשתמש!", Toast.LENGTH_SHORT).show();
@@ -744,6 +744,8 @@ public class MainActivity extends AppCompatActivity {
         }if (item.getItemId() == R.id.menu_history) {
             startActivity(new Intent(this, History.class));
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+        }if (item.getItemId() == R.id.menu_learning_plan) { // <-- שינוי ה-ID
+            startActivity(new Intent(this, PlanActivity.class));
         }if (item.getItemId() == R.id.ask_User_Name) {
             askUserName();
         }else if (item.getItemId() == R.id.menu_set_target){
