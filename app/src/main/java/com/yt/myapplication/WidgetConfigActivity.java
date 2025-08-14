@@ -79,6 +79,8 @@ public class WidgetConfigActivity extends AppCompatActivity {
         sParasha.setChecked(prefs.getBoolean("show_parasha", true));
         sTransparency.setProgress(prefs.getInt("transparency", 128));
         sClockSize.setProgress(prefs.getInt("clock_size", 48));
+
+        @SuppressWarnings("unchecked")
         String savedCity = prefs.getString("city_name", "ירושלים");
         ArrayAdapter<String> adapter = (ArrayAdapter<String>) spinner.getAdapter();
         int position = adapter.getPosition(savedCity);

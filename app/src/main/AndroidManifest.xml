@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- הרשאות שביקשת (לא קשורות לווידג'ט) -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!-- In AndroidManifest.xml -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -19,10 +17,35 @@
         android:theme="@style/Theme.MyApplication"
         tools:targetApi="31">
 
-        <!-- הגדרות האקטיביטיז של האפליקציה שלך -->
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <!--  הגדרת מסך הפתיחה הראשי של האפליקציה (רק אחד צריך להיות LAUNCHER) -->
+        <!--  אני מנחש ש-Welcome הוא מסך הפתיחה, שנה אותו אם זה PlanActivity או MainActivity -->
         <activity
-            android:name=".Select_Masechet"
-            android:exported="false" />
+            android:name=".Welcome"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--  רישום שאר ה-Activities באפליקציה -->
+        <activity android:name=".PlanActivity" android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
+        <activity android:name=".SelectMasechet" android:exported="false" />
+        <activity android:name=".CongratulationsActivity" android:exported="false" />
+        <activity android:name=".History" android:exported="false" />
+        <activity android:name=".About" android:exported="false" />
+
+        <!--  הפעילות 'Settings' צריכה להיות exported="true" אם היא מקבלת קבצים חיצוניים -->
         <activity
             android:name=".Settings"
             android:exported="true">
@@ -39,32 +62,8 @@
                 <data android:mimeType="*/*"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Welcome"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".CongratulationsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".History"
-            android:exported="false" />
-        <activity
-            android:name=".About"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true" />
-        <activity
-            android:name=".PlanActivity"
-            android:exported="false"
-            android:label="הגדרת תוכנית לימוד" />
 
-        <!--  הגדרות הווידג'ט הגדול -->
+        <!--  הגדרות הווידג'טים (נשאר ללא שינוי) -->
         <receiver
             android:name=".WidgetProvider"
             android:exported="true"
@@ -78,13 +77,12 @@
         <activity
             android:name=".WidgetConfigActivity"
             android:exported="true"
-            android:theme="@style/Widget.Configure.Dialog.Theme"> <!-- <<< כאן התיקון -->
+            android:theme="@style/Widget.Configure.Dialog.Theme">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
         </activity>
 
-        <!-- הגדרות הווידג'ט הקטן -->
         <receiver
             android:name=".WidgetCompactProvider"
             android:exported="true"

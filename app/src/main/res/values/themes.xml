@@ -25,7 +25,11 @@
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
     </style>
-
+    <!-- בתוך קובץ ה-themes/styles הראשי שלך -->
+    <style name="BrownButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/brown</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
     <!-- סגנון מותאם אישית לפס הגלילה של ה-ListView -->
     <style name="CustomListViewTheme" parent="Theme.AppCompat.Light">
         <item name="android:scrollbarThumbVertical">@color/semi_brown</item>

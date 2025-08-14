@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_edit_plan"
+        android:title="עריכה" />
+    <item
+        android:id="@+id/menu_toggle_details"
+        android:title="הצג מידע פשוט" />
+    <item
+        android:id="@+id/menu_toggle_reminder"
+        android:title="הפעל תזכורת" />
+    <item
+        android:id="@+id/menu_delete_plan"
+        android:title="מחיקה" />
+</menu>

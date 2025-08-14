@@ -27,7 +27,18 @@ public class PlanManager {
         Type type = new TypeToken<ArrayList<LearningPlan>>() {}.getType();
         return gson.fromJson(json, type);
     }
+// בתוך הקובץ PlanManager.java
 
+    public LearningPlan getPlanById(String planId) {
+        if (planId == null) return null;
+        List<LearningPlan> plans = getPlans();
+        for (LearningPlan plan : plans) {
+            if (planId.equals(plan.id)) {
+                return plan;
+            }
+        }
+        return null; // לא נמצאה תוכנית עם ה-ID הזה
+    }
     public void savePlans(List<LearningPlan> plans) {
         String json = gson.toJson(plans);
         prefs.edit().putString(PLANS_KEY, json).apply();

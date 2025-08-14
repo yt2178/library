@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class Select_Masechet extends AppCompatActivity {
+public class SelectMasechet extends AppCompatActivity {
     private static final String TOTAL_USER_DATA = "user_data.shinantam";
     private ListView masechetListView;//משתנה מסוג ListView שמייצג את המסכתות שמוצגת למשתמש.
     private List<String> masechetList;//רשימה (ArrayList) שמכילה את כל המסכתות שמוצגות למשתמש.
@@ -63,7 +63,7 @@ public class Select_Masechet extends AppCompatActivity {
             } else {//אם המסכת שנבחרה לא נמצאת בתוך רשימת המסכתות שנבחרו
                 selectedMasechetList.add(selectedMasechet); // הוספת המסכת שנבחרה לרשימת המסכתות שנבחרו
                 saveSelectedMasechetToFile(selectedMasechet);//שמירת המסכתות שנבחרו לקובץ
-                HistoryUtils.logAction(Select_Masechet.this, "נבחרה מסכת " + selectedMasechet);
+                HistoryUtils.logAction(SelectMasechet.this, "נבחרה מסכת " + selectedMasechet);
                 adapter.notifyDataSetChanged();  // עדכון המתאם
             }
            //שליחה לפונקציה את המסכתות שנבחרה

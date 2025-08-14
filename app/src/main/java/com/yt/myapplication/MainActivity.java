@@ -24,7 +24,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -730,7 +729,7 @@ public class MainActivity extends AppCompatActivity {
     }//נבדק
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_select_maschet) {
-            Intent intent = new Intent(this, Select_Masechet.class);
+            Intent intent = new Intent(this, SelectMasechet.class);
             startActivityForResult(intent, REQUEST_CODE);
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             return true;
@@ -944,7 +943,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickAddMasechet(View view) {
-        Intent intent = new Intent(this, Select_Masechet.class);
+        Intent intent = new Intent(this, SelectMasechet.class);
         startActivityForResult(intent, REQUEST_CODE);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }

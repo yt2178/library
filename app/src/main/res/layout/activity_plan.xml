@@ -27,6 +27,7 @@
         android:background="@drawable/border_background"> <!-- Optional: a border to separate it -->
 
         <TextView
+            android:id="@+id/textview_form_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="הוספת תוכנית חדשה"
@@ -64,6 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="בחר תאריך סיום (עברי)"
+            style="@style/BrownButton"
             android:layout_marginTop="8dp"/>
         <TextView
             android:id="@+id/textview_plan_end_date"
@@ -78,14 +80,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
+            style="@style/BrownButton"
             android:text="הוסף תוכנית"/>
     </LinearLayout>
-    <!-- This RecyclerView will display the list of saved plans -->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_plans"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="8dp"/>
 
 </LinearLayout>

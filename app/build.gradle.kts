@@ -11,8 +11,7 @@ android {
         minSdk = 19
         targetSdk = 34
         versionCode = 1
-        versionName = "0.0.4"
-
+        versionName = "0.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -30,7 +29,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
-
 dependencies {
     implementation(libs.gson)
     implementation(libs.zmanim)
